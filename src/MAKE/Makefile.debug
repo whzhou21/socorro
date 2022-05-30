@@ -1,0 +1,88 @@
+#* ---------------------------------------------------------------------
+#  Compiler and compiler flags
+#* ---------------------------------------------------------------------
+
+FC		:= mpifort
+FC_FLAGS	:= -g -O0 -march=native -fopenmp -ffree-line-length-none -fallow-argument-mismatch
+
+CC		:= mpicc
+CC_FLAGS	:= -g -O0 -march=native -DFFT_FFTW -Wno-error=implicit-function-declaration
+
+CX		:= mpicxx
+CX_FLAGS	:= -g -O0 -march=native
+
+#* ---------------------------------------------------------------------
+#  Linker and linker flags
+#* ---------------------------------------------------------------------
+
+LD		:= $(FC)
+LD_FLAGS	:= $(FC_FLAGS) -lstdc++
+
+#* ---------------------------------------------------------------------
+#  Libraries
+#* ---------------------------------------------------------------------
+
+LIBXC_PATH	:= /Users/jastew09/Computing/libs/libxc_pkg/libxc-2.1.2/bin
+LIBXC_INCS	:= -I ${LIBXC_PATH}/include
+LIBXC_LIBS	:= -L ${LIBXC_PATH}/lib -lxc
+
+FFTW3_PATH	:= /Users/jastew09/Computing/libs/fftw3/fftw-3.3.10/bin
+FFTW3_INCS	:= -I ${FFTW3_PATH}/include
+FFTW3_LIBS	:= -L ${FFTW3_PATH}/lib -lfftw3 -lfftw3_threads
+
+FFTW2_PATH	:= /Users/jastew09/Computing/libs/fftw2/fftw-2.1.5/bin
+FFTW2_INCS	:= -I ${FFTW2_PATH}/include
+FFTW2_LIBS	:= -L ${FFTW2_PATH}/lib -lfftw
+
+BLAS_PATH	:= 
+BLAS_INCS	:= 
+BLAS_LIBS	:= 
+
+LAPACK_PATH	:= /Users/jastew09/Computing/libs/lapack
+LAPACK_INCS	:= 
+LAPACK_LIBS	:= -L ${LAPACK_PATH} -lrefblas -llapack
+
+SCALAPACK_PATH	:= /Users/jastew09/Computing/libs/scalapack
+SCALAPACK_INCS	:= 
+SCALAPACK_LIBS	:= -L ${SCALAPACK_PATH} -lscalapack
+
+#* ---------------------------------------------------------------------
+#  Combined libraries and includes: Do not edit
+#* ---------------------------------------------------------------------
+
+FC_INCS		:= $(LIBXC_INCS) $(FFTW3_INCS) $(BLAS_INCS) $(LAPACK_INCS) $(SCALAPACK_INCS)
+FCFLAGS		:= $(FC_FLAGS) $(FC_INCS)
+
+CC_INCS		:= $(FFTW2_INCS)
+CCFLAGS		:= $(CC_FLAGS) $(CC_INCS)
+
+CX_INCS		:= 
+CXFLAGS		:= $(CX_FLAGS) $(CX_INCS)
+
+LD_LIBS		:= $(LIBXC_LIBS) $(FFTW2_LIBS) $(FFTW3_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
+
+#* ---------------------------------------------------------------------
+#  Build rules: Do not edit
+#* ---------------------------------------------------------------------
+
+vpath		%.F90 ..
+vpath		%.c ..
+vpath		%.cpp ..
+
+%.o		: %.F90
+		$(FC) $(FCFLAGS) -c $< -o $@
+
+%.o		: %.c
+		$(CC) $(CCFLAGS) -c $< -o $@
+
+%.o		: %.cpp
+		$(CX) $(CXFLAGS) -c $< -o $@
+
+$(EXE)		: $(OBJ)
+		$(LD) $(LD_FLAGS) $(LD_LIBS) $(OBJ) -o $(EXE)
+
+include		Makefile.depends
+
+#* ---------------------------------------------------------------------
+#  End of the machine specific makefile
+#* ---------------------------------------------------------------------
