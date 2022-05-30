@@ -1,0 +1,11 @@
+# Ignore everything ...
+
+/*
+/*/
+
+# ... except these
+
+!.gitignore
+!Makefile
+!*.F90
+!/MAKE/

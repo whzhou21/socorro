@@ -3,7 +3,7 @@
 #* ---------------------------------------------------------------------
 
 FC		:= mpifort
-FC_FLAGS	:= -g -O0 -march=native -fopenmp -ffree-line-length-none -fallow-argument-mismatch
+FC_FLAGS	:= -g -O0 -Wall -march=native -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
 CC_FLAGS	:= -g -O0 -march=native -DFFT_FFTW -Wno-error=implicit-function-declaration

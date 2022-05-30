@@ -17,39 +17,45 @@ LIB_DIR	= $(@:lib-%=%)
 
 # ----- Cleanup ------------------------------------------------------ #
 
-purge	:
-	@( echo 'Removing all build related files in src and lib...' ; sleep 1s )
-	@( rm -rf $(OBJ_DIR) $(EXE) Makefile.depends )
-
 clean	:
-	@( echo 'Removing object files in src ...' ; sleep 1s )
-	@( rm -rf $(OBJ_DIR) )
+	@ echo 'Removing object files in src ...' ; sleep 1s
+	@ rm -rf $(OBJ_DIR)
 
 cleanall:
-	@( echo 'Removing all build related files in src ...' ; sleep 1s )
-	@( rm -rf $(OBJ_DIR) $(EXE) Makefile.depends )
+	@ echo 'Removing all build related files in src ...' ; sleep 1s
+	@ rm -rf $(OBJ_DIR) $(EXE) Makefile.depends
 
-# ----- Compilation -------------------------------------------------- #
+# ----- Library installation ----------------------------------------- #
+
+lib-%   :
+	@ if [ -e ../lib/$(LIB_DIR)/Install.py ] ; then \
+	  echo -e "Installing ../lib/$(@:lib-%=%)\n" ; sleep 1s ; \
+	  ( cd ../lib/$(LIB_DIR) ; $(PYTHON) Install.py $(args) ) ; \
+	else \
+	  echo "Install.py file for lib $(@:lib-%=%) does not exist" ; \
+	fi ; touch socorro.F90
+
+# ----- Socorro compilation ------------------------------------------ #
 
 depends	:
-	@( echo 'Creating the module dependency list ...' ; sleep 1s )
-	@( rm -rf Makefile.depends ; ../tools/bin/f90makedep.pl $(SRC) )
+	@ echo 'Creating the module dependency list ...' ; sleep 1s
+	@ rm -rf Makefile.depends ; ../tools/bin/f90makedep.pl $(SRC)
 
 .DEFAULT:
-	@( echo 'Gathering build information ...' ; sleep 1s )
-	@( if [ ! -d $(OBJ_DIR) ] ; then mkdir $(OBJ_DIR) ; fi )
-	@( if [ ! -f MAKE/Makefile.$@ ] ; then echo 'Error: Makefile.$@ was not found' ; exit ; fi )
-	@( cp MAKE/Makefile.$@ $(OBJ_DIR)/Makefile )
-	@( make depends ; mv Makefile.depends $(OBJ_DIR) )
-	@( echo 'Compiling socorro with Makefile.$@ settings ...' ; sleep 1s )
-	@( cd $(OBJ_DIR) ; $(MAKE) "OBJ = $(OBJ)" "EXE = ../$(EXE)" )
+	@ echo 'Gathering build information ...' ; sleep 1s
+	@ if [ ! -d $(OBJ_DIR) ] ; then mkdir $(OBJ_DIR) ; fi
+	@ if [ ! -f MAKE/Makefile.$@ ] ; then echo 'Error: Makefile.$@ was not found' ; exit ; fi
+	@ cp MAKE/Makefile.$@ $(OBJ_DIR)/Makefile
+	@ make depends ; mv Makefile.depends $(OBJ_DIR)
+	@ echo 'Compiling socorro with Makefile.$@ settings ...' ; sleep 1s
+	@ cd $(OBJ_DIR) ; $(MAKE) "OBJ = $(OBJ)" "EXE = ../$(EXE)"
 
 # ----- Create a tarball of the src dir ------------------------------ #
 
 tar	:
-	@( echo 'Creating socorro_src.tar.gz ...' )
-	@( make cleanall && cd ../ && tar -czf socorro_src.tar.gz src )
-	@( echo 'Finished socorro_src.tar.gz')
+	@ echo 'Creating socorro_src.tar.gz ...'
+	@ make cleanall && cd ../ && tar -czf socorro_src.tar.gz src
+	@ echo 'Finished socorro_src.tar.gz'
 
 # ----- Help message ------------------------------------------------- #
 
@@ -60,8 +66,7 @@ help	:
 	@echo 'make doc                     Create the documentation files for socorro'
 	@echo 'make tar                     Create socorro_src.tar.gz for the src dir'
 	@echo ''
-	@echo 'make purge                   Delete all build related files in src and lib'
-	@echo 'make clean                   Delete the object files in src'
+	@echo 'make clean                   Delete object files in src'
 	@echo 'make cleanall                Delete all build related files in src'
 	@echo ''
 	@echo 'make lib-package             Help for download/build/install a package in lib'
