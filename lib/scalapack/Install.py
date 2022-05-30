@@ -13,7 +13,7 @@ import os, shutil, subprocess, sys
 
 # *** Library version ************************************************ #
 
-version = "master"
+version = "v2.2.1"
 
 # *** Help message *************************************************** #
 
@@ -27,11 +27,11 @@ Syntax from lib dir: python Install.py -d
 
 # *** Input arguments ************************************************ #
 
-parser = ArgumentParser(prog = 'Install.py', description = "Helper script to download and build the FFTMPI library")
+parser = ArgumentParser(prog = 'Install.py', description = "Helper script to download and build the SCALAPACK library")
 
-parser.add_argument("-d", action = "store_true", help = "download the FFTMPI library to lib/fftmpi/")
-parser.add_argument("-b", action = "store_true", help = "build the FFTMPI library")
-parser.add_argument("-c", action = "store_true", help = "clean the FFTMPI build space")
+parser.add_argument("-d", action = "store_true", help = "download the SCALAPACK library to lib/scalapack/") 
+parser.add_argument("-b", action = "store_true", help = "build the SCALAPACK library")
+parser.add_argument("-c", action = "store_true", help = "clean the SCALAPACK build space")
 
 args = parser.parse_args()
 
@@ -39,8 +39,8 @@ cloneflag = args.d
 buildflag = args.b
 cleanflag = args.c
 
-clonepath = os.path.join(os.path.abspath(os.path.expanduser(".")),"fftmpi")
-buildpath = os.path.join(clonepath,"src")
+clonepath = os.path.join(os.path.abspath(os.path.expanduser(".")),"scalapack")
+buildpath = clonepath
 libprefix = os.path.join(buildpath,"bin")
 
 # *** Print the help message ***************************************** #
@@ -51,10 +51,10 @@ if not cloneflag and not buildflag and not cleanflag:
 
 # *** Download the library ******************************************* #
 
-cmd = 'git clone --depth 1 --branch %s https://github.com/lammps/fftmpi.git %s' % (version,clonepath)
+cmd = 'git clone --depth 1 --branch %s https://github.com/Reference-ScaLAPACK/scalapack.git %s' % (version,clonepath)
 
 if cloneflag:
-   print("Downloading the FFTMPI library ...")
+   print("Downloading the SCALAPACK library ...")
    if os.path.isdir(clonepath):
       print("ERROR: The destination path '" + clonepath + "' already exists.")
       sys.exit(1)
@@ -66,10 +66,10 @@ if cloneflag:
 
 # *** Build the library ********************************************** #
 
-cmd = 'cd %s && make lib CC=mpicxx CCFLAGS="-O3" fft=FFTW3 p=DOUBLE' % (buildpath)
+cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make lib FC=mpifort FCFLAGS="-O3 -fallow-argument-mismatch" CC=mpicc CCFLAGS="-O3 -Wno-error=implicit-function-declaration"' % (buildpath)
 
 if buildflag:
-   print("Building the FFTMPI library ...")
+   print("Building the SCALAPACK library ...")
    if not os.path.isdir(buildpath):
       print("ERROR: The destination path '" + buildpath + "' does not exist.")
       sys.exit(1)
@@ -82,10 +82,10 @@ if buildflag:
 
 # *** Clean the build space ****************************************** #
 
-cmd = 'cd %s && make clean-all' % (buildpath)
+cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make clean' % (buildpath)
 
 if cleanflag:
-   print("Cleaning the FFTMPI build space ...")
+   print("Cleaning the SCALAPACK build space ...")
    if not os.path.isdir(buildpath):
       print("ERROR: The destination path '" + buildpath + "' does not exist.")
       sys.exit(1)

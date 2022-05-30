@@ -1,12 +1,13 @@
-# Ignore everything
+# Ignore everything ...
 
 fftmpi/*
 fftw3/*
 lapack/*
 libxc/*
-scalapack*
+scalapack/*
 
-# Except these files ...
+# ... except these
 
-!README.md
+!.gitignore
 !Install.py
+!README.md
