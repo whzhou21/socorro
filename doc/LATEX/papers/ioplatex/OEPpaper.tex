@@ -1,0 +1,1205 @@
+\documentclass[12pt]{iopart}
+
+\usepackage{iopams}
+
+\usepackage{graphicx}
+\usepackage{lscape}
+
+\newcommand{\beas}{\begin{eqnarray*}}
+\newcommand{\enas}{\end{eqnarray*}}
+\newcommand{\bea}{\begin{eqnarray}} \newcommand{\ena}{\end{eqnarray}}
+\newcommand{\q}{k} \newcommand{\proof}{ {\bf Proof:} }
+\def\squarebox#1{\hbox to #1{\hfill\vbox to #1{\vfill}}}
+\newcommand{\qed}{\hfill\hfill\vbox{\hrule\hbox{\vrule\squarebox
+{.667em}\vrule}\hrule}\smallskip} \newcommand{\level}{\mbox{$\theta$}}
+\newcommand{\vspan}{\mbox{span}} \newcommand{\supp}{\mbox{supp}}
+\newcommand{\trace}{\mbox{tr}} \newcommand{\real}{\mathcal Re}
+\newcommand{\imag}{\mathcal Im} \newcommand{\diag}{\mbox{diag}}
+\newcommand{\offd}{\mbox{off}} \newcommand{\low}{\mbox{low}}
+\newcommand{\half}{{\frac{1}{2}}} \newcommand{\quarter}{{\frac{1}{4}}}
+\newcommand{\eighth}{{\frac{1}{8}}} \newcommand{\Det}{\mbox{det}}
+%\newcommand{\dim}{\mbox{dim}}
+\newcommand{\Vscp}{V}
+\newcommand{\rank}{\mbox{rank}}
+\newcommand{\eig}{\mbox{{\bf eig}}}
+\newcommand{\vect}{\mbox{vec}}
+\newcommand{\integers}{\mbox{Z}}
+\newcommand{\field}{\mathbb{F}}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\complexes}{\mathbb{C}}
+\newcommand{\nullspace}{Null}
+
+\newcommand{\Rl}{\mathbb{R}}
+\newcommand{\Nl}{\mathbb{N}}
+\newcommand{\Ir}{\mathbb{Z}}
+\newcommand{\Cx}{\mathbb{C}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mbox{ad}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Proj}{{\rm Proj}}
+\newcommand{\Span}{{\rm span}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil{#1}\right\rceil}
+\newcommand{\inp}[1]{\langle#1\rangle}
+\newcommand{\dropthis}[1]{}
+
+\newcommand{\dens}{P}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\begin{document}
+
+\title{The optimized effective potential with finite temperature}
+
+\author{R A Lippert$^1$, N A Modine$^2$, and A F Wright$^3$}
+
+\address{$^1$
+%           Building 2 Room 335,
+           MIT Department of Mathematics,
+           77 Massachusetts Avenue,
+           Cambridge, MA 02139-4307 USA.
+}
+\address{$^{2,3}$
+%MS1415,
+Sandia National Laboratories,
+P.O. Box 5800,
+Albuquerque, New Mexico 87185-0601 USA
+}
+\ead{$^1$\mailto{lippert@math.mit.edu},$^2$\mailto{namodin@sandia.gov},$^3$\mailto{afwrigh@sandia.gov}}
+
+\begin{abstract}
+The optimized effective potential OEP method provides an additional level
+of exactness in electronic structures computations, e.g., the exact
+exchange energy can be used.  This extra freedom is likely to be
+important in moving density functional methods beyond traditional
+approximations such as the local density approximation.  We provide
+a new density-matrix-based derivation of the gradient of the Kohn-Sham
+energy with respect to the effective potential.  This gradient can be
+used to iteratively minimize the energy in order to find the OEP.
+Previous work has indicated how this can be done in the zero temperature
+limit.  This paper generalizes the previous results to the finite
+temperature regime.  Equating our gradient to zero gives a finite-temperature
+version of the OEP equation.
+\end{abstract}
+
+\pacs{71.15.Mb,71.45.Gm}
+\ams{15A90,65F15,81V55,81Q05}
+% Keywords required only for MST, PB, PMB, PM, JOA, JOB?
+%\vspace{2pc}
+%\noindent{\it Keywords}: Article preparation, IOP journals
+% Uncomment for Submitted to journal title message
+\submitto{\JPCM}
+% Comment out if separate title page not required
+
+
+\maketitle
+
+
+\section{Introduction}
+
+The Kohn-Sham Density Functional Theory (DFT) \cite{KohnSham:65} has become one of the
+most powerful tools for understanding and predicting the properties of materials.  DFT has
+been applied to an ever increasing number of different types of systems and
+phenomena, and the results have frequently been remarkably useful.  Nevertheless,
+the accuracy of the results remains an important issue for many potential
+applications of DFT.  The main source of error in DFT calculations is the use
+of an approximate expression for the exchange-correlation energy, $E_{XC}$.
+Such an approximation is necessary for practical calculations, but improving
+the quality of the approximation, and hence, the accuracy of the calculations,
+is of great interest.  Conventional variants of DFT, such as LDA and GGA, take
+$E_{XC}$ to be an explicit functional of the electronic density.  Since the
+noninteracting Kohn-Sham orbitals are implicit functionals of the electronic
+density \cite{HohenbergKohn:64},  expressions for $E_{XC}$ that explicitly
+depend on the Kohn-Sham orbitals are also consistent with the DFT framework.
+An important example of such a functional is the functional used in the exact-exchange
+approximation
+\cite{TalmanShadwick:76, SahniGruenebaumPerdew:82,EngelVosko:93,GorlingLevy:94,
+Kotani:95,StadeleMajewskiVoglGorling:97,Gorling99}.  An explicit dependence
+on the orbitals allows approximate $E_{XC}$ expressions to capture physical
+behaviors of the exact Kohn-Sham $E_{XC}$ that can not be practically incorporated
+in an expression that is an explicit function of only the electronic density.  One
+example is the absence of self-interaction in the exact Kohn-Sham energy.
+Another example is the complex, non-local behavior of the exact exchange energy
+(see, for example, Ref.~\cite{KummelKronikPerdew:04}).  The exact
+exchange energy is the essential element to achieving the fourth rung of Perdew's
+famous Jacob's ladder of density functional approximations \cite{PerdewEtAl:05}.
+
+The difficulty in using an $E_{XC}$ expression that is explicitly dependent on
+the orbitals is that it is impossible to straightforwardly take the functional
+derivative of $E_{XC}$ with respect to the electronic density.  Therefore,
+standard self-consistent methods of minimizing the energy with respect to the
+density can not be used.  The solution to this problem is provided by the
+Optimized Effective Potential (OEP) formalism.  Since the energy is a functional
+of the Kohn-Sham orbitals, and the orbitals are solutions of the Kohn-Sham
+equation for some local potential, the energy can be viewed as a functional
+of the potential.  The OEP is defined to be the potential that minimizes
+the energy.  This minimization with respect to the potential is equivalent
+to the usual minimization with respect to the density.  Traditionally, the OEP
+has been calculated by solving the OEP integral equation, in which the gradient
+of the energy with respect to the potential is set to zero \cite{TalmanShadwick:76,
+SahniGruenebaumPerdew:82,EngelVosko:93,Kotani:95},
+or by directly evaluating and inverting a response function \cite{GorlingLevy:94,
+StadeleMajewskiVoglGorling:97,Gorling99}.
+
+Several recent papers have proposed calculation of the OEP by means of an iterative minimization
+of the energy \cite{YangWu:02,HymanStilesZangwill:00,KummelPerdew:03,KummelPerdewPRB:03}.
+Yang and Wu expanded the potential as a sum of basis functions, and used the chain rule
+and perturbation theory to derive an expression for the derivative of the energy with
+respect to the coefficients of the basis functions \cite{YangWu:02}.  Their expression
+involves a sum over unoccupied orbitals, and therefore, their approach is most suitable
+for basis sets, such as Gaussian orbitals, that use a relatively small number of functions.
+Hyman, Stiles, and Zangwill used Lagrange multiplier methods to derive an expression for
+the gradient of the energy with respect to the potential that does not involve an explicit
+sum over unoccupied orbitals, and they proposed using this gradient to minimize the
+energy iteratively \cite{HymanStilesZangwill:00}.  Kummel and Perdew derived an expression
+nearly identical to Hyman, Stiles, and Zangwill \cite{KummelPerdew:03,KummelPerdewPRB:03}.
+Although they did not claim that this expression gives the gradient, they noted that it
+provides a good update to the potential during an iterative minimization.  In this paper,
+we present a new derivation of the gradient based on the density matrix.  Our work goes
+beyond the previous papers in the following ways: (1) We believe that our derivation
+is particularly transparent, and therefore, it demonstrates that the expression found
+in \cite{HymanStilesZangwill:00,KummelPerdew:03, KummelPerdewPRB:03} is, in fact,
+the correct gradient.  (2)  The previous work assumed a negligible electronic temperature.
+Since our derivation is based on the density matrix, it is easily extended to finite
+temperatures, where the orbitals are partially occupied.
+
+One of the most exciting recent applications of DFT has been high energy density
+physics \cite{Desjarlais:02,Desjarlais:03}.  In this application, electronic temperatures
+that are substantial
+compared to the band gaps of typical semiconductors are common.  This makes
+the results sensitive to the band gap, which is too small in the standard
+versions of DFT. Therefore, the capability of performing calculations with
+advanced functionals that have explicit dependence on the orbitals at
+non-zero temperature is particularly important for high energy density physics
+applications.
+
+As an alternative to iterative minimization of the energy using the gradient,
+it is possible, in principle, to find the OEP by solving the equation in
+which the gradient is set to zero.  Therefore, our work provides the finite
+temperature equivalent of the standard OEP equation, giving the correct
+necessary condition for local optimality.
+
+In this article, we derive the OEP method in a finite temperature regime
+by considering the perturbation of the density matrix resulting from a
+perturbed Hamiltonian.
+The gradient will reduce to a combination of orbital shifts as one sees
+in the zero temperature limit plus some corrections which come from the
+finite temperature.  In section \ref{pert_sec}, we begin with a mathematical discussion
+of the perturbation theory of analytic functions of Hermitian operators.
+After a short review of density functional theory, we apply the results
+of Section \ref{pert_sec} to the density matrix $P$ viewed as a function of
+the Kohn-Sham Hamiltonian $H$, and thereby derive a finite temperature OEP
+equation in terms of $H$ and $P$.   This motivates the subsequent
+section, which describes the gradient expression in {\em orbital form}.
+We conclude with some computational results demonstrating the accuracy
+of the method.
+
+\section{Perturbation theory of operator functions}
+
+\label{pert_sec}
+
+A scalar function $f: \reals \rightarrow \reals$ naturally extends
+to a mapping of Hermitian operators to Hermitian operators by
+\bea
+f(H) = \sum_i f(\lambda_i) \phi_i \phi_i^\dagger,
+\ena
+summing over all eigenvectors $\phi_i$ of $H$ with eigenvalue $\lambda_i$
+(see \cite{HornJohnson.book:91}, chapter 6).
+The example with which we are primarily concerned is when $H$ is
+a finite sized Hamiltonian matrix and
+$f(x) = (1+\exp(\beta x))^{-1}$ is the Fermi function,
+although the results in this section are more general.
+Our primary goal is to develop formulas for the
+first variation of $f(H)$ with respect to an arbitrary 
+variation in $H$.
+\dropthis{which are amenable to large-scale computation.}
+
+If $\phi_1,\ldots,\phi_{N_b}$ is a complete basis of eigenvectors of $H$, with
+eigenvalues $\lambda_i$, and $f$ is analytic,
+then the first variation (by an infinitesimal $\delta H$) has a simple form,
+\beas
+  \delta f(H) = f(H + \delta H) - f(H) =
+  \sum_{i,j=1}^{N_b} 
+  \Delta f(\lambda_i,\lambda_j) \phi_i\left(\phi_i^\dagger \delta H \phi_j\right)\phi_j^\dagger
+\enas
+where $\Delta f(x,y)$ is the first divided difference of $f$, given by
+\beas
+  \Delta f(x,y) = \left\{
+    \matrix{\frac{f(x) - f(y)}{x-y} & x \ne y \cr f^\prime(x) & x = y}
+ \right. .
+\enas
+This formula can be directly verified for the matrix-power functions
+$H^k$ for all $k$,
+\beas
+(H + \delta H)^k - H^k &=& \sum_{m=0}^{k-1} H^m (\delta H ) H^{k-m-1}\\
+        &=& \sum_{m=0}^{k-1} \sum_{ij}
+            \lambda_i^m \lambda_j^{k-m-1} 
+            \phi_i \left(\phi_i^\dagger \delta H \phi_j\right) \phi_j^\dagger\\
+        &=& \sum_{ij} 
+            \left\{
+            \matrix{\frac{\lambda_i^{k} - \lambda_j^{k}}{\lambda_i-\lambda_j} & \lambda_i \ne \lambda_j \cr k \lambda_i^{k-1} & \lambda_i = \lambda_j}
+            \right\}
+            \phi_i \left(\phi_i^\dagger \delta H \phi_j\right) \phi_j^\dagger,
+\enas
+which, by linearity, extends to all power series. \dropthis{
+Thus, we will be interested in practical methods to compute
+\bea
+\label{dfdH_exp_eq}
+\Delta f(H)\left[ X \right] = 
+  \sum_{i,j=1}^{N_b}
+  \Delta f(\lambda_i,\lambda_j) \phi_i\left(\phi_i^\dagger X \phi_j\right)\phi_j^\dagger.
+\ena
+
+\subsection{Practical computation of the variation}
+
+\label{practical_sec}
+An alternative characterization of $\delta f(H)$
+can be motivated by considering its commutator with $H$.  Since
+$[H,f(H)] = H f(H) - f(H) H = 0$ and $[H+\delta H,f(H+\delta H)] = 0$, we have
+$[H,\delta f(H)] + [\delta H,f(H)] = 0$.  One can readily
+check that (\ref{dfdH_exp_eq}) is equivalent to:
+\beas
+\phi_i^\dagger \left( \Delta f(H)[X]\right) \phi_j
+   &=& f^\prime(\lambda_i) \phi_i^\dagger X \phi_j
+\quad\mbox{when } \lambda_i = \lambda_j\\
+\left[H,\Delta f(H)[X]\right] &=& [f(H),X]
+\enas
+
+This characterization lets us consider {\em iterative methods}
+for computing $\delta f(H)[X]$.
+We decompose $\Delta f(H)[X] = Y_0 + Y_1$,
+where $Y_0,Y_1$ are Hermitian matrices satisfying
+\bea
+\label{linear_y0_eq}
+\phi^\dagger_i Y_0 \phi_j = f^\prime(\lambda_i) \phi_i^\dagger X \phi_j,
+\mbox{ if }\lambda_i = \lambda_j\\
+\label{linear_const_y1_eq}
+\phi^\dagger_i Y_1 \phi_j = 0, \mbox{ if }\lambda_i = \lambda_j\\
+\label{linear_y1_eq}
+{\cal L}_H[Y_1] \equiv \left[H,Y_1\right] = [f(H), X] - [H,Y_0].
+\ena
+We have used the notation ${\cal L}_H[\cdot] = [H,\cdot]$ to emphasize that
+(\ref{linear_y1_eq}) is a linear equation with a matrix variable, $Y_1$.
+
+In sections \ref{dens_sec} and \ref{orbital_sec},
+we will given two different constructions for a $Y_0$
+satisfying (\ref{linear_y0_eq}), for now, assume a suitable $Y_0$ is
+given.
+We turn our attention to solving (\ref{linear_y1_eq}) for $Y_1$ numerically,
+satisfying (\ref{linear_const_y1_eq}).
+${\cal L}_H$ is symmetric in the sense that
+$\inp{Y,[H,Y^\prime]} = \inp{[H,Y], Y^\prime}$
+where $\inp{Y,Y^\prime} \equiv \trace\{Y^\dagger Y^\prime\}$.
+The matrix on the RHS of (\ref{linear_y1_eq}) is orthogonal
+to the nullspace of ${\cal L}_H$, in the $\inp{,}$ inner product;
+$C \in \nullspace\{ {\cal L}_H \}$
+is equivalent to $C$ commuting with $H$,
+and thus $C$ commutes with $f(H)$, hence
+$\inp{C,[f(H), X] - [H,Y_0]}
+=\inp{[f(H),C],X]} - \inp{[H,C],Y_0} = 0$.
+Any linear system, symmetric with respect to an inner product,
+where the RHS is orthogonal to the nullspace, has a unique
+solution which is also orthogonal to the nullspace.
+Such solutions can be found
+iteratively by a Krylov-based solver
+(e.g. conjugate gradient or MINRES \cite{minres,GolubVanLoan.book:89})
+by taking $Y_1 = 0$ as the initial guess.
+Because of this nullspace orthogonality,
+$\inp{\phi_i \phi_j^\dagger,Y_1} =  \phi_i^\dagger Y_1 \phi_j = 0$
+for all $Y_1$ iterates, and thus (\ref{linear_const_y1_eq}) is automatic.
+
+\dropthis{
+\section{The perturbation theory of matrix-analytic functions}
+
+\label{pert_sec}
+Let $f(x)$ be an analytic function of $x$ and $f(A)$ be the
+extension of $f$ to a matrix-analytic function
+(see \cite{HornJohnson.book:91}, chapter 6) on some algebra of
+Hermitian operators with a finite (or countable) spectrum.  Thus,
+\bea
+\label{com_eq}
+ [A, f(A)] &=& A f(A) - f(A) A = 0\\
+\label{eig_eq}
+ f_i &=& f(a_i)
+\ena
+where the $a_i$ are the eigenvalues of $A$ and the $f_i$ are
+the eigenvalues of $f(A)$.
+
+For an unconstrained variation $A \rightarrow A + \delta A$
+the variations of (\ref{com_eq}) and (\ref{eig_eq}) are
+\bea
+\label{dcom_eq}
+ [\delta A, f(A)]+[A, \delta f(A)] &=& 0\\
+\label{deig_eq}
+ \delta f_i &=& f^\prime (a_i) \delta a_i.
+\ena
+In a basis where $A$ is diagonal
+($a_i = A_{ii}, f(a_i) = \left[f(A)\right]_{ii}$),
+(\ref{dcom_eq}) and (\ref{deig_eq}) become,
+\bea
+\label{ddcom_eq}
+ (a_i - a_j) \left[\delta f(A)\right]_{ij} &=&  (f(a_i) - f(a_j)) \delta A_{ij}\\
+\label{ddeig_eq}
+ \delta \left[f(A)\right]_{ii} &=& f^\prime (a_i) \delta A_{ii}.
+\ena
+Thus (\ref{dcom_eq}) and (\ref{deig_eq})
+appear to be sufficient to determine $\delta f(A)$ in terms of $A,\delta A$.
+
+We may, somewhat informally, write the result as one equation
+\bea
+\label{jac_eq}
+ \left[\delta f(A)\right]_{ij} &=& \frac{f(a_i) - f(a_j)}{a_i - a_j} \delta A_{ij}
+\ena
+where it is understood that we treat
+$(f(a_i) - f(a_j))/(a_i - a_j)$
+as a {\em divided difference}, taking the limit as $a_i \rightarrow a_j$.
+
+A more rigorous proof of these results can be made in the following theorem,
+which also makes clear what happens in the presence of a repeated eigenvalue.
+\begin{theorem}
+The expansion of $f(A + \delta A) - f(A) = \delta f(A)$
+ to first order in $\delta A$ is given by
+%The expansion of $f(A + \delta A) - f(A) = \delta f(A) + \delta^2 f(A)$
+% to second order in $\delta A$ is given by
+\beas
+\left[ \delta f(A) \right]_{ij} 
+&=& \lim_{\epsilon\rightarrow 0}
+     \frac{f(a_i+\epsilon) - f(a_j)}{a_i - a_j+\epsilon}
+     \delta A_{ij} %\\
+%\left[ \delta^2 f(A) \right]_{ij} 
+%&=& 
+% \lim_{\epsilon_1,\epsilon_2\rightarrow 0}
+% \sum_{p}
+%                 \frac{2}{a_i - a_j+\epsilon_1-\epsilon_2}
+%		 \left(
+%		    \frac{(a_i+\epsilon_1)^k - a_p^k}{a_i - a_p+\epsilon_1}
+%		    -\frac{(a_j+\epsilon_2)^k - a_p^k}{a_j - a_p+\epsilon_2}
+%		 \right)
+%     \delta A_{ip} \delta A_{pj}
+\enas
+where the matrix elements are taken in an basis in which
+$A$ is diagonal.
+\end{theorem}
+\proof
+Since $f$ is analytic, it suffices to prove this theorem for
+$f(x) = x^k$ and extend by linearity.
+
+\beas
+ \delta f(x) &=& \sum_{m+n=k-1} A^m \delta A A^n %\\
+%             &=& \lim_{\epsilon_1,\epsilon_2 \rightarrow 0}
+%                      \sum_{m+n=k-1} (A+\epsilon_1 I)^m \delta A (A+\epsilon_2 I)^n  %\\
+% \delta^2 f(x) &=& 2 \sum_{l+m+n=k-2} A^l \delta A A^m \delta A A^n\\
+%               &=& \lim_{\epsilon_1,\epsilon_2,\epsilon_3 \rightarrow 0}
+%                   2 \sum_{l+m+n=k-2} (A+\epsilon_1 I)^l \delta A
+%		                    (A+\epsilon_2 I)^m \delta A
+%		                    (A+\epsilon_3 I)^n
+\enas
+in a diagonal basis,
+\beas
+ \left[\delta f(x)\right]_{ij}
+             &=& \sum_{m+n=k-1} a_i^m a_j^n \delta A_{ij}\\
+             &=& \sum_{m+n=k-1} \lim_{\epsilon\rightarrow 0} (a_i+\epsilon)^m a_j^n \delta A_{ij}\\
+             &=& \lim_{\epsilon\rightarrow 0}
+                 \frac{(a_i+\epsilon)^k - a_j^k}{(a_i+\epsilon) - a_j} \delta A_{ij} %\\
+%             &=& \lim_{\epsilon_1,\epsilon_2 \rightarrow 0}
+%                      \sum_{m+n=k-1} (a_i+\epsilon_1)^m (a_j+\epsilon_2)^n \delta A_{ij}\\
+%             &=& \lim_{\epsilon_1,\epsilon_2 \rightarrow 0}
+%		      (a_i+\epsilon_1)^{k-1}
+%                      \sum_{n=0}^{k-1} \left(\frac{a_j+\epsilon_2}{a_i+\epsilon_1}\right)^{n}
+%		      \delta A_{ij}\\
+%             &=& \lim_{\epsilon_1,\epsilon_2 \rightarrow 0}
+%                      \frac{(a_i+\epsilon_1)^k - (a_j+\epsilon_2)^k}
+%			   {(a_i+\epsilon_1) - (a_j+\epsilon_2)}
+%                      \delta A_{ij} %\\
+% \left[\delta^2 f(x)\right]_{ij}
+%               &=& \lim_{\epsilon_1,\epsilon_2,\epsilon_3 \rightarrow 0}
+%                   2 \sum_{p,l+m+n=k-2} (a_i+\epsilon_1)^l
+%		                    (a_p+\epsilon_2)^m 
+%		                    (a_j+\epsilon_3)^n
+%		   \delta A_{ip} \delta A_{pj}\\
+%               &=& \lim_{\epsilon_1,\epsilon_2,\epsilon_3 \rightarrow 0}
+%		 \frac{2}{(a_i+\epsilon_1) - (a_j+\epsilon_3)}
+%		 \left(
+%                      \frac{(a_i+\epsilon_1)^k - (a_p+\epsilon_2)^k}
+%			   {(a_i+\epsilon_1) - (a_p+\epsilon_2)}
+%                    - \frac{(a_j+\epsilon_3)^k - (a_p+\epsilon_2)^k}
+%			   {(a_j+\epsilon_3) - (a_p+\epsilon_2)}
+%		 \right)
+%                 \delta A_{ip} \delta A_{pj},
+\enas
+and the summation is interchanged with the limit.
+\qed
+
+Note that one could clearly obtain higher order derivatives in terms of higher order
+divided differences via the same approach.  To simplify forthcoming derivations,
+we omit $\epsilon$'s and limits,
+with the understanding that appropriate limits are to be taken for
+divided differences of the form $(f(x) - f(y))/(x-y)$.  We may interpret
+(\ref{jac_eq}) as the equation which specifies the action of the {\em
+Jacobian}, $\frac{\partial f(A)}{\partial A}$ on an arbitrary
+Hermitian operator of the mapping $f$.
+
+\subsection{Practical application of the Jacobian}
+
+
+An $A$-diagonalizing basis might not be a convenient means to compute
+the application of the Jacobian to an arbitrary variation.  We
+present here a short digression on how such computations can be
+carried out iteratively, without diagonalizing $A$.
+
+We will be interested in applications of linear operators to Hermitian
+(or anti-Hermitian) matrices.  To avoid some of the confusion entailed
+in {\em operators of operators} discussions, we introduce some
+notation, which we hope is clarifying.  We denote the application of a
+linear operator on a matrix with brackets, $L\left[A\right]$.  In
+terms of indices we may write this as $L\left[A\right]_{ij} = \sum_{kl} L_{ijkl} A_{kl}$.
+For Hermitian matrices, we write $\inp{X,Y} =
+\trace\{XY\}$, and it is well known that this is a 
+non-degenerate inner product on the vector space of Hermitian
+matrices.  For a vector subspace of Hermitian matrices, $A$, we let
+$A^\perp = \{B: \forall X\in A, \inp{X,B}=0\}$.
+
+We denote the linear action of a commutator $\LL_{X}\left[Y\right] = -\LL_{Y}\left[X\right] = [X,Y]$.
+\begin{lemma}
+\label{little_sym_lem}
+\beas
+\label{ad_transpose_eq}
+ \inp{X,\LL_Y[Z]} = -\inp{\LL_{Y}[X],Z}.
+\enas
+\end{lemma}
+\proof
+Applying the trace identity $\trace\{AB\} = \trace\{BA\}$,
+\beas
+  \trace\{X (Y Z - Z Y)\}
+  &=& \trace\{X Y Z - Y X Z\}\\
+  &=& -\trace\{(Y X - X Y) Z\}
+\enas
+\qed
+
+The {\em centralizer} of $X$ is the set $C_X =\{Y : [X,Y] = 0\}$.
+$C_X$ is the nullspace of $\LL_X$.
+\begin{lemma}
+\label{range_lem}
+$C_{X}^\perp$ is the range of $\LL_X$.
+\end{lemma}
+\proof
+For any $Y$ and some $Z \in C_{X}$,
+by lemma \ref{little_sym_lem},
+$\inp{\LL_{X}(Y),Z} = -\inp{Y,\LL_{X}(Z)}=0$,
+thus $\mbox{Range}\{\LL_{X}\} \subset C_{X}^\perp$.
+
+From elementary dimension counting,
+\beas
+\dim\left\{ \mbox{Range}\{ \LL_X \} \right\} 
++ \dim\left\{ \mbox{Null}\{ \LL_X \} \right\}&=&
+     \dim\{ C_{X} \} + \dim\{ C_{X}^\perp \} \\
+\dim\left\{ \mbox{Range}\{ \LL_X \} \right\} 
++ \dim\left\{ C_X \right\}&=&
+     \dim\{ C_{X} \} + \dim\{ C_{X}^\perp \} \\
+\dim\left\{ \mbox{Range}\{ \LL_X \} \right\} 
+   &=& \dim\{ C_{X}^\perp \} 
+\enas
+where $\dim\{ C_{X} \} = \dim\{ C_X \}$ obtains the
+last line.
+\qed
+
+Let $X_{ij} = \frac{f(a_i) - f(a_j)}{a_i - a_j} Y_{ij}$ in an
+$A$-diagonalizing basis.
+Then according to (\ref{com_eq}) and (\ref{dcom_eq}),
+\bea
+\label{sparse_com_eq}
+  \LL_A[X] &=& \LL_{f(A)}[Y].
+\ena
+The operator, $\LL_A$, has a non-trivial nullspace.
+However, $C_A \subset C_{f(A)}$ implies $\mbox{Range}\{\LL_{f(A)}\}
+\subset \mbox{Range}\{\LL_A\}$, by lemma \ref{range_lem}, thus
+(\ref{sparse_com_eq}) has a unique solution.
+
+Since we are dealing with a linear space (albeit of matrices),
+with a linear operator and an inner product, we can
+use a Krylov-based iterative solver to solve (\ref{sparse_com_eq})
+(e.g. conjugate gradient or MINRES \cite{minres,GolubVanLoan.book:89})
+with some initial guess, $X_0$, yielding
+\beas
+  X = X_0 + c_1 \LL_A[X_0] +  c_2 \LL_A^2[X_0] + \cdots
+\enas
+with $X - X_0 \in C_A^\perp$.
+
+By (\ref{deig_eq}), we additionally require $X_{ii} = f^\prime(a_i) Y_{ii}$.
+For example, if we take
+\beas
+  X_0 = \half \left(f^\prime(A) Y + Y f^\prime(A) \right) + X_1,
+\enas
+where $X_1 \in C_A^{\perp}$ is arbitrary,
+then the iterative solution of (\ref{sparse_com_eq}) will be correct,
+i.e. $X = \delta f(A)$.  In the remainder of this article we take
+$X_1 = 0$.
+}
+
+}
+\section{Density functional theory review}
+
+\label{dft_review}
+Let $\dens$ be a density matrix (Hermitian),
+$K$ be the kinetic energy operator, $V_{I}$ be the ionic (and
+external) potential, with $E_{HXC}(\dens)$ the Hartree, exchange, and
+correlation energy.  With
+$S(\dens) =  - \trace\{ \dens \log(\dens) + (I-\dens) \log(I-\dens) \}$
+as the entropy expression and
+$\beta$ inversely proportional to temperature,
+the variational energy is
+\bea
+E(\dens) = \trace\{ \dens (K + V_I) \} + E_{HXC}(\dens) - \frac{1}{\beta} S(\dens).
+\ena
+The unconstrained derivative is 
+\beas
+\frac{\partial E}{\partial \dens} &=&
+ K + V_I + \frac{\partial E_{HXC}}{\partial \dens} +
+ \frac{1}{\beta} \log(\dens(I-\dens)^{-1}).
+\enas
+
+The Kohn-Sham Hamiltonian is given by $H = K + V_I + \Vscp$ where
+$\Vscp$ is the self-consistent potential (to be determined).
+In the Kohn-Sham DFT, $\dens$ is the minimizer of
+$\trace\{\dens H \} - (1/\beta) S(\dens)$
+with $\trace\{\dens\}=n$, which is equivalent to the conditions,
+\bea
+\label{rho_eq}
+  \dens &=& \frac{1}{1+\exp(\beta (H - \mu I))} = f_\beta(H-\mu I)\\
+\label{trace_rho_eq}
+  \trace\{\dens\} &=& n
+\ena
+for some chemical potential $\mu$.
+Thus, we can consider $\dens$ to be parametrized by two unknowns
+$\Vscp$ and $\mu$ with two relations (\ref{rho_eq}) and (\ref{trace_rho_eq}).
+Note: one could absorb $\mu$ into $\Vscp$, but we find it
+advantageous to keep it distinct in its role as a Lagrange multiplier.
+
+With $\dens$ satisfying these relations, the energy differential simplifies
+\bea
+\frac{\partial E}{\partial \dens}
+ &=&
+ K + V_I + \frac{\partial E_{HXC}}{\partial \dens} +
+ \frac{1}{\beta} \log(\dens(I-\dens)^{-1})\\
+ &=&
+ K + V_I + \frac{\partial E_{HXC}}{\partial \dens} 
+ - (H - \mu I)\\
+\label{VHXC_eq}
+ &=& 
+  \frac{\partial E_{HXC}}{\partial \dens} 
+ - (\Vscp - \mu I).
+\ena
+\label{dft_review_sec}
+
+\section{Finite temperature OEP with density operators}
+
+\label{dens_sec}
+From section \ref{dft_review_sec}, the density matrix is
+related to the Kohn-Sham Hamiltonian,
+$H$, by (\ref{rho_eq}) and (\ref{trace_rho_eq}).
+Let $\varepsilon_i$ be the eigenvalues of $H$, and let
+$\omega_i = f_\beta (\varepsilon_i-\mu)$ be the eigenvalues of $\dens$.
+The divided difference factors are given by
+\bea
+\label{omega_def_eq}
+\omega_{ij} \equiv \Delta f_\beta(\varepsilon_i-\mu,\varepsilon_j-\mu)
+ &=& \left\{
+ \matrix{\frac{\omega_i - \omega_j}{\varepsilon_i - \varepsilon_j}
+            & \varepsilon_i \ne \varepsilon_j \cr
+           -\beta \omega_i (1-\omega_i) & \varepsilon_i = \varepsilon_j}
+  \right.
+\ena
+and we write
+$\Delta \omega [ X ]
+ = \sum_{ij} \omega_{ij} \phi_i (\phi_i^\dagger X \phi_j) \phi_j^\dagger$.
+In an $H$-diagonalizing basis, with $X_{ij} \equiv \phi_i^\dagger X \phi_j$
+for any $X$,
+$\Delta \omega$ has the action
+$X_{ij} \rightarrow \omega_{ij} X_{ij}$.
+We note that
+\beas
+\omega_{ij} &=& \left\{
+ \matrix{-\frac{\sinh(\beta ({\varepsilon_i - \varepsilon_j})/2)}
+               {2({\varepsilon_i - \varepsilon_j})
+                   \cosh(\beta (\varepsilon_i-\mu)/2)\cosh(\beta (\varepsilon_j-\mu)/2)}
+            & \varepsilon_i \ne \varepsilon_j \cr
+           -\frac{\beta}{4\cosh(\beta (\varepsilon_i-\mu)/2)^2}
+            & \varepsilon_i = \varepsilon_j }
+  \right.
+\enas
+is equivalent to (\ref{omega_def_eq}),
+but numerically more accurate.
+
+Let $E(\dens)$ be a function of a density matrix, $\dens$.
+We can implicitly define $E(H) = E(\dens(H,\mu(H)))$.
+Formally varying $E(H)$,
+\beas
+ \delta E(H) =
+     \trace\left\{
+     \frac{\partial E(\dens(H,\mu))}{\partial \dens} \delta \dens
+     \right\}.
+\enas
+in an $H$-diagonalizing basis,
+\beas
+ \delta \dens_{ij} = \omega_{ij}
+               \left( \delta H_{ij} - \delta \mu \delta_{ij} \right).
+\enas
+By (\ref{trace_rho_eq}), the trace of $\delta \dens$ vanishes,
+\beas
+ \delta \mu 
+   &=& 
+    \frac{\sum_{ii}
+      \omega_{ii} \delta H_{ii}
+    }{\sum_{ii} \omega_{ii}
+    }
+   = \frac{ \trace\{ \dens(I-\dens)\delta H \} }
+         { \trace\{ \dens(I-\dens) \} }.
+\enas
+Thus, in an $H$-diagonalizing basis,
+\beas
+ \delta E
+&=& \sum_{ij}
+       \frac{\partial E}{\partial \dens_{ij}} 
+       \omega_{ij}
+        \left( \delta H_{ij} - \delta \mu \delta_{ij} \right)\\
+&=& \sum_{ij}
+       \frac{\partial E}{\partial \dens_{ij}} 
+       \omega_{ij}
+       \left(
+       \delta H_{ij}
+               -
+       \delta_{ij}
+       \frac{\sum_k \omega_{kk} \delta H_{kk} }
+	     {\sum_k \omega_{kk} }
+       \right)\\
+&=&
+    \sum_{ij}
+       \omega_{ij}
+    \left(
+       \frac{\partial E}{\partial \dens_{ij}} 
+               -
+       \delta_{ij}
+         \frac{1}{\sum_k \omega_{kk}}
+    \sum_{k} \omega_{kk}
+              \frac{\partial E}{\partial \dens_{kk}}
+       \right)       \delta H_{ij}
+\enas
+and the gradient is therefore
+\bea
+\label{diag_grad_eq}
+ \frac{\partial E}{\partial H_{ij}}
+  &=& \omega_{ij}\left(
+       \frac{\partial E}{\partial \dens_{ij}} 
+               -
+       \delta_{ij} \frac{\chi}{\zeta}
+      \right)\\
+\label{nodiag_grad_eq2}
+\frac{\partial E}{\partial H}
+  &=& \Delta \omega
+       \left[\frac{\partial E}{\partial \dens} - 
+       \frac{\chi}{\zeta} I
+       \right]
+\ena
+where $\chi = \sum_{kk} \omega_{kk} \frac{\partial E}{\partial \dens_{kk}}
+            = \trace\left\{\Delta \omega
+               \left[\frac{\partial E}{\partial \dens}\right]\right\}$
+and $\zeta = \sum_k \omega_{kk} = \trace\left\{\Delta \omega\left[ I \right]\right\}$.
+Note: these expressions are manifestly traceless.
+
+\dropthis{
+The application of $\Delta \omega$, to obtain
+$\frac{\partial E}{\partial H} = \Delta \omega
+       \left[\frac{\partial E}{\partial \dens} - 
+	 \frac{\chi}{\zeta}
+%       \frac{ \trace\left\{\frac{\Delta \omega}{\Delta \varepsilon}
+%               \left[\frac{\partial E}{\partial \dens}\right]\right\} }
+%	    { \trace\left\{\frac{\Delta \omega}{\Delta \varepsilon}
+%              \left[ I \right]\right\} }
+	    I
+       \right]$,
+%$\frac{\Delta \omega}{\Delta \varepsilon}\left[\frac{\partial E}{\partial \dens}\right]$,
+can be done by iteratively solving
+\bea
+\label{DFT_com_eq}
+  \left[H,\frac{\partial E}{\partial H} \right]
+  = \left[\dens, \frac{\partial E}{\partial \dens}\right]\\
+  \left[H,\left(\frac{\partial E}{\partial H}\right)_1 \right]
+  = \left[\dens, \frac{\partial E}{\partial \dens}\right]
+  - \left[H,\left(\frac{\partial E}{\partial H}\right)_0 \right]
+\ena
+with initial guess $\left(\frac{\partial E}{\partial H}\right)_1 = 0$,
+where
+\bea
+\label{DFT_init_eq}
+  \left(\frac{\partial E}{\partial H}\right)_0 &=& 
+   - \frac{\beta}{2} \left(
+      \dens (I - \dens) \frac{\partial E}{\partial \dens}
+    + \frac{\partial E}{\partial \dens} \dens (I - \dens)
+  \right)
+  + \frac{\beta \chi}{\zeta}
+   \dens(I - \dens)        .
+\ena
+Since $\phi_i^\dagger P \phi_j = \omega_i \delta_{ij}$,
+one readily checks that $\left(\frac{\partial E}{\partial H}\right)_0$
+satisfies (\ref{linear_y0_eq}).
+We also note that
+$\lim_{\beta \rightarrow \infty} \beta \dens (I-\dens) \propto \delta(H - \mu I)$,
+a delta function on the spectrum of $H$.  Thus at low temperature,
+only the eigenvalues of $H$ near $\mu$ contribute to
+$\left(\frac{\partial E}{\partial H}\right)_0$.  In the limit,
+if no eigenvalues coincide with $\mu$,
+$\left(\frac{\partial E}{\partial H}\right)_0$ vanishes.
+
+%It is also worth noting here the asymptotic behavior of the individual
+%$\frac{\partial E}{\partial H_{ij}}$ in an $H$-diagonal basis.
+%\beas
+% \lim_{\omega_i,\omega_j \rightarrow 1}\frac{\partial E}{\partial H_{ij}}&=&0\\
+% \lim_{\omega_i,\omega_j \rightarrow 0}\frac{\partial E}{\partial H_{ij}}&=&0,
+%\enas
+%thus, we see that as $\beta\rightarrow \infty$, the couplings are
+%between occupied and unoccupied eigenstates of $H$.  Similarly, we
+%see that for finite $\beta$ as $\varepsilon_i,\varepsilon_j \rightarrow \infty$
+%the coupling between states $i$ and $j$ vanishes.  These vanishing couplings
+%are of great importance when translating these results to an orbital
+%representation.
+}
+
+To obtain an OEP gradient, we restrict the
+variability of $H$ to $H = H_0 + \Vscp$ where $H_0 = K + V_{I}$
+is fixed and $\Vscp$ is a
+local operator.  The gradient is then
+\bea
+\label{dEdV_eq}
+ \frac{\partial E}{\partial V(r)} 
+     &=& \sum_{ij} \phi_i(r) 
+         \frac{\partial E}{\partial H_{ij}} \phi_j^*(r)
+\ena
+where $\phi_i(r)$ is the eigenvector of $H$ with eigenvalue $\varepsilon_i$
+in the position representation.
+
+\label{density_sec}
+
+\section{Finite temperature OEP with orbitals}
+
+
+\label{orbital_sec}
+Instead of representing the density matrix, it is often
+more practical to express $\dens$ in terms of an incomplete basis
+of partially occupied orbitals.
+Let $\phi_1,\phi_2,\ldots,\phi_{N_b}$ be a complete eigenbasis of $H$
+sorted non-decreasingly in eigenvalue ($H$ is $N_b \times N_b$).
+Let $N$ be sufficiently
+large that $\omega_i, \omega_{ij} \sim 0$ when $i,j > N$.
+Then we may truncate the basis so that
+\bea
+  \dens = \phi \Omega \phi^\dagger
+\ena
+where $\phi = \left[ \matrix{ \phi_1 & \phi_2 & \cdots & \phi_N }\right]$
+is $N_b \times N$,
+$\Lambda$ is the diagonal matrix of the first $N$ eigenvalues, and
+$\Omega$ is the diagonal matrix with entries $\omega_1,\ldots,\omega_N$
+(i.e. $\Omega = f_\beta(\Lambda - \mu I)$).  Note, $N$ will
+usually be smaller than the number of primitive basis elements, $N_b$, so
+$\phi$ will be a rectangular matrix with orthonormal columns,
+i.e. $\phi^\dagger \phi = I$ (the $N \times N$ identity)
+and $\phi \phi^\dagger$ is the $N_b\times N_b$ orthogonal projector
+onto the span of the $\phi_i$ (and hence commutes with $H$).
+
+Since $\omega_{ii} \sim 0$ for $i>N$, the expressions for $\chi$ and
+$\zeta$ can be truncated,
+\beas
+\chi = \sum_{i=1}^{N} \omega_{ii} \frac{\partial E}{\partial \dens_{ii}}
+\quad,
+\quad
+\zeta = \sum_{i=1}^{N} \omega_{ii}.
+\enas
+Since $\omega_{ij} \sim 0$ when $i,j > N$,
+all components of $\frac{\partial E}{\partial H_{ij}}$,
+given by (\ref{diag_grad_eq}),
+likewise vanish and
+\beas
+\frac{\partial E}{\partial H}
+&=& \sum_{i,j\le N} \phi_i \bar{J}_{ij} \phi_j^\dagger
++ \sum_{i\le N < j} \phi_i \left( \omega_{ij} \frac{\partial E}{\partial \dens_{ij}} \phi_j^\dagger \right) 
++ \sum_{j\le N < i} \left(\phi_i\omega_{ij} \frac{\partial E}{\partial \dens_{ij}}\right) \phi_j^\dagger \\
+&=& \phi \bar{J} \phi^\dagger + \phi \psi^\dagger + \psi \phi^\dagger
+\enas
+where $\psi$ is $N_b \times N$ with
+$\psi_{j} =
+\sum_{N < i} \phi_i \left( \omega_{ij}  \frac{\partial E}{\partial \dens_{ij}}\right)
+$
+and $\bar{J}$ is the $N\times N$ (Hermitian) matrix given by
+\beas
+\bar{J}_{ij} =
+ \omega_{ij}
+   \left(\frac{\partial E}{\partial \dens_{ij}} - \frac{\chi}{\zeta}\delta_{ij}\right) =
+ \omega_{ij}
+   \left(\phi_{i}^\dagger \frac{\partial E}{\partial \dens}\phi_j
+    - \frac{\chi}{\zeta}\delta_{ij}\right).
+\enas
+and requires only matrix elements on $\phi$.
+This gives an orbital form of (\ref{dEdV_eq}),
+\bea
+\label{new_oep_eq}
+\frac{\partial E}{\partial V(r)}
+     &=& \sum_{i,j=1}^N \phi_i(r) \bar{J}_{ij} \phi_j^*(r)
+         +\sum_{i=1}^N \left(\phi_i(r) \psi_i^*(r)+\psi_i(r) \phi_i^*(r)\right)
+\ena
+which is similar to the equation derived in numerous sources
+in the OEP literature  \cite{HymanStilesZangwill:00,KummelPerdew:03},
+with a modification of (the $\bar{J}$ term) to
+accommodate the finite temperature regime.
+
+If full diagonalization were possible, then one needs only evaluate
+$\frac{\partial E}{\partial P_{ij}}$, which by (\ref{VHXC_eq}) is
+\beas
+\frac{\partial E}{\partial \dens_{ij}}&=& \phi_i^\dagger \frac{\partial E}{\partial \dens}\phi_j
+  = \int \int  \phi_i(r) \left[\frac{\partial E_{HXC}}{\partial P(r,r^\prime)} - \delta(r-r^\prime)\Vscp(r)\right] \phi_j(r^\prime) d^3 r d^3 r^\prime,
+\enas
+and carry out the sums.
+Alternatively, for any $j \le N < i$, we have
+\beas
+ (\varepsilon_i -\varepsilon_j) \omega_{ij}
+&=& 
+ -\omega_j\\
+ (\varepsilon_i -\varepsilon_j) \phi_i \omega_{ij} \frac{\partial E}{\partial P_{ij}}
+&=& 
+ -\omega_j \phi_i  \frac{\partial E}{\partial P_{ij}}\\
+\sum_{N<i} \varepsilon_i \phi_i \omega_{ij} \frac{\partial E}{\partial P_{ij}}
+ -\varepsilon_j \sum_{N<i}\phi_i \omega_{ij} \frac{\partial E}{\partial P_{ij}}
+&=& 
+ -\sum_{N<i} \phi_i  \frac{\partial E}{\partial P_{ij}}\omega_j \\
+\enas
+which can be expressed in basis-free terms as
+\bea
+\label{final_eq}
+(H -  \varepsilon_j I) \psi_j 
+&=& -(I - \phi \phi^\dagger)\frac{\partial E}{\partial P} \phi_j \omega_j
+\dropthis{\\
+H \psi - \psi \Lambda
+&=& -(I - \phi \phi^\dagger) \frac{\partial E}{\partial P} \phi \Omega
+}
+\ena
+The LHS and RHS of (\ref{final_eq}) are orthogonal to $\phi$,
+by construction, as is each $\psi_j$.
+Thus an iterative method
+(e.g. conjugate gradient or MINRES \cite{minres,GolubVanLoan.book:89})
+can be used to solve for $\psi$
+while preserving the constraint $\phi^\dagger \psi = 0$.
+
+\dropthis{
+Otherwise,
+we may decompose $\psi = \half \phi \bar{J}+\psi_{\perp}$,
+This decomposition is
+equivalent to setting
+$\left(\frac{\partial E}{\partial H}\right)_0 = \phi \bar{J} \phi^\dagger$
+and
+$\left(\frac{\partial E}{\partial H}\right)_1 =
+ \phi \psi_\perp^\dagger + \psi_\perp \phi^\dagger$
+in section \ref{practical_sec}.
+We can derive an equation for $\psi_{\perp}$,
+by multiplying (\ref{DFT_com_eq})
+on the left by the projector
+$I - \phi \phi^\dagger$ (which commutes with $H$) and on the
+right by $\phi$, {\bf start with diag representation and then go from there.}
+\bea
+ (I-\phi \phi^\dagger)
+ \left[H,\frac{\partial E}{\partial H}\right] \phi 
+  &=&
+ (I-\phi \phi^\dagger)
+ \left[\dens, \frac{\partial E}{\partial \dens}\right]\phi
+\\
+ (I-\phi \phi^\dagger)
+ \left(H \psi - \psi \Lambda\right)
+  &=&
+ -(I - \phi \phi^\dagger) \frac{\partial E}{\partial \dens} \dens \phi
+\\
+\label{final_eq}
+ H \psi_{\perp} - \psi_{\perp} \Lambda
+  &=&
+ -(I - \phi \phi^\dagger) \frac{\partial E}{\partial \dens} \phi \Omega.
+\ena
+The LHS and RHS of (\ref{final_eq}) are orthogonal to $\phi$,
+by construction.
+Thus we have a well-defined
+equation for $\psi_{\perp}$.
+%We can solve for $\bar{J}$ in the $\phi$ basis by diagonalization.
+An iterative method can thus be used to solve for $\psi_{\perp}$ without any
+special initialization beyond $\phi^\dagger \psi_{\perp} = 0$.
+}
+
+We digress momentarily to recover the results of \cite{KummelPerdew:03}
+in the zero temperature limit.  Assuming that
+$\lambda_N < \mu < \lambda_{N+1}$, 
+\beas
+\omega_i = \left\{ \matrix{ 1 & i \le N \cr 0 & i > N } \right.
+\mbox{ and }
+\omega_{ij} = \left\{ \matrix{
+ \frac{1}{\varepsilon_i - \varepsilon_j} & i \le N < j\cr
+ \frac{1}{\varepsilon_j - \varepsilon_i} & j\le N < i \cr
+   0 & \mbox{else} } \right. .
+\enas
+$\bar{J}=0$, $\chi = \zeta = 0$ and
+$\psi$ is given by,
+\beas
+\psi_j(r) &=&
+\sum_{i > N} \frac{\phi_i(r) }{\varepsilon_i-\varepsilon_j} \frac{\partial E}{\partial \dens_{ij}}\\
+&=& \sum_{i > N} \frac{\phi_i(r) }{\varepsilon_i-\varepsilon_j} 
+\int \int  \phi_i(r) \left[\frac{\partial E_{HXC}}{\partial P(r,r^\prime)} - \delta(r-r^\prime)\Vscp(r)\right] \phi_j(r^\prime) d^3 r d^3 r^\prime.
+\enas
+The only non-trivial difference between this result and that of
+\cite{KummelPerdew:03} is the sum defining $\psi_j(r)$,
+which, in (3) of \cite{KummelPerdew:03}, ranges over all $i\ne j$
+instead of $i>N$.
+Such $\psi_i$ are the
+unnormalized orbital shifts of the perturbed Hamiltonian
+$H + \delta H$ and are of some interest.  However,
+$\frac{\partial E}{\partial \dens_{ij}}=
+\frac{\partial E}{\partial \dens_{ji}}^*$
+ensures that
+this difference vanishes in the sum in (\ref{new_oep_eq}).
+
+Finally, we note that $\omega_{ii} \sim \frac{1}{4}\beta$ if
+$\varepsilon_i \sim \mu$, which suggests that in the low temperature
+limit, numerical instability might result if any of the
+eigenvalues of $H$ are close to the Fermi level.
+
+\dropthis{
+$\lim_{\beta \rightarrow \infty} \beta \dens (I-\dens) \propto \delta(H - \mu I)$,
+a delta function on the spectrum of $H$.  Thus at low temperature,
+only the eigenvalues of $H$ near $\mu$ contribute to
+$\left(\frac{\partial E}{\partial H}\right)_0$.  In the limit,
+if no eigenvalues coincide with $\mu$,
+$\left(\frac{\partial E}{\partial H}\right)_0$ vanishes.
+}
+
+\section{Computational results}
+
+In order to test the above approach, it was implemented in the orbital representation
+within the Socorro electronic
+structure software using a plane wave basis set and norm-conserving pseudopotentials.
+The conjugate gradient algorithm was used to solve the linear systems involved in the
+evaluation of the gradient.  Using this algorithm, the computational cost of solving
+the set of linear systems determining $\psi$ is comparable to the cost of
+solving the Kohn-Sham eigenproblem for $\phi$.  Therefore, each gradient evaluation
+is approximately as computationally expensive as one step of the self-consistency
+loop in a standard DFT code.
+
+For traditional approximations to the exact DFT,
+such as the Local Density Approximation (LDA) and Generalized Gradient Approximation (GGA),
+$E_{HXC}$ is an explicit functional of the electronic density, which is the diagonal of
+the density matrix $\dens$ in a position representation.  In this case,
+$\frac{\partial E_{HXC}}{\partial \dens}$ has the form of a local potential operator $V_{HXC}$,
+and the energy minimum occurs at self-consistency, i.e., when $\Vscp = V_{HXC}$.
+In this case, the OEP is the self-consistent potential, and the results of our iterative
+minimization approach can be compared directly to well-tested results obtained from
+conventional self-consistent methods.
+
+In the case of exact exchange (EXX) calculations, we neglect correlation and take $E_{HXC}$
+to be the sum of the Hartree and exchange energies.  The evaluation of $E_{HXC}$ and
+$\frac{\partial E_{HXC}}{\partial \dens}$ involves the same exchange integrals required
+in a Hartree-Fock calculation, but they only need to be performed once per gradient evaluation.
+We follow the approach of Gygi and Baldereschi to evaluate
+the exchange integrals using a plane wave basis \cite{GygiBaldereschi:86}.
+
+Our test system consists of a two atom unit cell of silicon in the diamond structure.  We used a
+20 Rydberg plane-wave cutoff and a $2 \times 2 \times 2$ Monkhorst-Pack k-point sampling.
+This k-point sampling does not give a converged total energy, but this is not an issue for
+the purpose of testing our approach.  Two electronic temperatures were used: (1) Room Temperature
+($k_B T = 25.67$ meV), and (2) High Temperature ($k_B T = 1.0$ eV).
+
+\begin{figure}
+\centerline{
+\includegraphics[height=5in]{finite_diff_high.eps}
+}
+\caption{A comparison of the energy change predicted from the gradient
+and the actual energy change observed during a random walk in the
+potential.  The crosses are the calculated values.  The solid
+line is a guide to the eye representing perfect agreement.}
+\label{fd_test}
+\end{figure}
+
+In order to test the correctness of our gradient, we applied the finite difference approach to
+the EXX energy functional.
+During each of a series of steps, the value of $\Vscp$ at each point on a real-space grid was
+varied by a small ($o(10^{-4}$)) random perturbation $\Delta V(r)$.  During this random walk, the
+energy and the gradient were evaluated at each step.  A linear approximation to the change
+in energy during each step is given by
+\bea
+  \Delta E \approx \int{\frac{\partial E}{\partial V(r)} \Delta V(r) dr}.
+\ena
+For the small steps taken in this test, we would expect this linear approximation to be accurate if
+the gradient is accurate.  Therefore, we can compare this predicted energy change to the actual
+energy change observed during the random walk.  The results of this comparison for the high
+temperature case are shown in figure \ref{fd_test}.  Since the step direction is random,
+this represents a very stringent test of the accuracy of the gradient, and we believe that
+the excellent agreement between the predicted and actual energy changes demonstrates
+that our approach gives an accurate gradient, even at large electronic temperatures.
+
+\begin{figure}
+\centerline{\includegraphics[height=3in]{cvg_room.eps}}
+\centerline{\includegraphics[height=3in]{cvg_1eV.eps}}
+\caption{The error in the {\bf LDA} energy, as well as the square-norm of gradient,
+during the iterative minimization on a log scale.  The top plot
+was run at room temperature ($25.67$ meV) and the bottom at
+high temperature ($1$ eV).  $g = \frac{\partial E}{\partial V(r)}$ from
+(\ref{new_oep_eq}).
+}
+\label{energy_convergence}
+\end{figure}
+
+\begin{figure}
+\centerline{\includegraphics[height=3in]{cvg_room_exx.eps}}
+\centerline{\includegraphics[height=3in]{cvg_1eV_exx.eps}}
+\caption{The convergence of the {\bf exact exchange} energy,
+as well as the square-norm of gradient,
+during the iterative minimization on a log scale.  The top plot
+was run at room temperature ($25.67$ meV) and the bottom at
+high temperature ($1$ eV).  $g = \frac{\partial E}{\partial V(r)}$ from
+(\ref{new_oep_eq}).
+}
+\label{energy_exx_convergence}
+\end{figure}
+
+The OEP is found by using the gradient to iteratively minimize the energy.  We implemented this
+minimization using Chebyshev acceleration on the fixed point equation
+$x_{i+1} = x_i + \tau \nabla f(x_i)$ for some fixed $\tau$, empirically chosen.
+The minimization step replaces the standard self-consistency iteration in our code with the
+gradient calculation and potential update replacing the conventional density mixing.
+The convergence of the energy of our test
+system during this process is shown in figures
+\ref{energy_convergence} and \ref{energy_exx_convergence}.
+In figure \ref{energy_convergence}, we used our approach to perform a LDA calculation.
+The errors in the energy during the iterative minimization are computed by comparing
+to the result of a highly converged self-consistent calculation.  The convergence demonstrates
+that the iterative OEP and self-consistent approaches give the same result, as would be expected
+for the LDA energy functional.  This shows that our minimization approach is reaching the minimum
+of the energy functional.
+In figure \ref{energy_exx_convergence}, we performed an EXX calculation.
+The errors in the energy were approximated by comparing to the converged result.
+In both the LDA and EXX cases, we found that the convergence is only weakly dependent on the electronic
+temperature.  The asymptotic rate of convergence obtained in the iterative OEP approach is
+not as rapid as the highly optimized mixing methods typically used in self-consistent calculations,
+but a reasonable accuracy for practical purposes ($10^{-4}$ Ry.) can be obtained easily.
+
+\section{Discussion}
+
+We have found and verified an expression for the gradient of the Kohn-Sham energy with
+respect to the local potential appearing in the Kohn-Sham Hamiltonian.  Our derivation
+based on the density matrix naturally provides a result that is valid at finite temperature.
+The cost of evaluating the optimized effective potential using this approach should be
+comparable to the cost of a traditional density functional calculation using standard
+functionals such as the LDA or GGA, but a greatly extended family of exchange-correlation
+functionals that have an explicit dependence on the Kohn-Sham orbitals can be considered.
+
+\ack
+
+We would like to thank Rich Lehoucq of Sandia and
+Natalie Holzwarth at Wake Forest University for their
+suggestions and corrections to the initial draft of
+this article.
+
+Sandia is a multiprogram laboratory operated by Sandia Corporation, a
+Lockheed Martin Company for the United States Department of Energy's
+National Nuclear Security Administration under contract DE-AC04-94AL85000.
+
+
+%\bibliographystyle{abbrv}
+%\bibliography{/home/r1/lippert/REF/ref}
+
+\section*{References}
+
+\begin{thebibliography}{14}
+
+\bibitem{KohnSham:65}
+Kohn W L and Sham L J 1965 {\it Phys. Rev.} {\bf 140} A1133
+
+\bibitem{HohenbergKohn:64}
+Hohenberg P and Kohn W 1964 {\it Phys. Rev.} {\bf 136} B864
+
+\bibitem{TalmanShadwick:76}
+Talman J D and Shadwick W F 1976 {\it Phys. Rev. A} {\bf 14} 36
+
+\bibitem{SahniGruenebaumPerdew:82}
+Sahni V, Gruenebaum J and Perdew J P 1982 {\it Phys. Rev. B} {\bf 26} 4371
+
+\bibitem{EngelVosko:93}
+Engel E and Vosko S H 1993 {\it Phys. Rev. A} {\bf 47} 2800;
+1994 {\it Phys. Rev. B} {\bf 50} 10498
+
+\bibitem{GorlingLevy:94}
+G\"{o}rling A and Levy M 1994 {\it Phys. Rev. A} {\bf 50} 196
+
+\bibitem{Kotani:95}
+Kotani T 1995 {\it Phys. Rev. Lett.} {\bf 74} 2989
+
+\bibitem{StadeleMajewskiVoglGorling:97}
+St\"{a}dele M, Majewski J A, Vogl P and G\"{o}rling A 1997
+{\it Phys. Rev. Lett.} {\bf 79}, 2089;
+St\"{a}dele M, Moukara M, Majewski J A, Vogl P and G\"{o}rling A 1999
+{\it Phys. Rev. B} {\bf 59} 10031
+
+\bibitem{Gorling99}
+G\"{o}rling A 1999
+{\it Phys. Rev. Lett.} {\bf 83} 5459
+
+\bibitem{KummelKronikPerdew:04}
+K\"{u}mmel S, Kronik L and Perdew J P 2004
+{\it Phys. Rev. Lett.} {\bf 93(21)}, 213002
+
+\bibitem{PerdewEtAl:05}
+Perdew J P, Ruzsinszky A, Tao J, Staroverov V N, Scuseria G E and Csonka G I 2005
+{\it J. Chem. Phys.} {\bf 123(6)} 62201
+
+\bibitem{YangWu:02}
+Yang W and Wu Q 2002
+{\it Phys. Rev. Lett.} {\bf 89(14)}, 143002
+
+\bibitem{HymanStilesZangwill:00}
+Hyman R, Stiles M and Zangwill A 2000
+{\it Phys. Rev. B} {\bf 62(23)} 15521
+
+\bibitem{KummelPerdew:03}
+K\"{u}mmel S and Perdew J P 2003
+{\it Phys. Rev. Letters} {\bf 90(4)} 43004
+
+\bibitem{KummelPerdewPRB:03}
+K\"{u}mmel S and Perdew J P 2003
+{\it Phys. Rev. B} {\bf 68(3)} 35103
+
+\bibitem{Desjarlais:02}
+Desjarlais M P, Kress J D and Collins L A 2002
+{\it Phys. Rev. E} {\bf 66(2)} 25401
+
+\bibitem{Desjarlais:03}
+Desjarlais M P 2003
+{\it Phys. Rev. B} {\bf 68(6)} 64204
+
+\bibitem{HornJohnson.book:91}
+Horn R A and Johnson C R 1991
+{\it Topics in Matrix analysis}.
+(Cambridge: Cambridge University Press, Cambridge)
+
+\bibitem{minres}
+Paige C C and Saunders M A 1975
+{\it {SIAM} J. Numer. Anal.} {\bf 12} 617
+
+\bibitem{GolubVanLoan.book:89}
+Golub G H and Loan C F V 1989.
+{\it Matrix Computations 2nd edition},
+(Baltimore: Johns Hopkins University Press)
+
+\bibitem{GygiBaldereschi:86}
+Gygi F and Baldereschi A 1986
+{\it Phys. Rev. B} {\bf 34} 4405
+
+\end{thebibliography}
+
+\end{document}
+

@@ -1,0 +1,841 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+\usepackage{color}
+
+\newcommand{\beas}{\begin{eqnarray*}}
+\newcommand{\enas}{\end{eqnarray*}}
+\newcommand{\bea}{\begin{eqnarray}} \newcommand{\ena}{\end{eqnarray}}
+\newcommand{\q}{k} \newcommand{\proof}{ {\bf Proof:} }
+\def\squarebox#1{\hbox to #1{\hfill\vbox to #1{\vfill}}}
+\newcommand{\qed}{\hfill\hfill\vbox{\hrule\hbox{\vrule\squarebox
+{.667em}\vrule}\hrule}\smallskip} \newcommand{\level}{\mbox{$\theta$}}
+\newcommand{\vspan}{\mbox{span}} \newcommand{\supp}{\mbox{supp}}
+\newcommand{\trace}{\mbox{tr}} \newcommand{\real}{\mathcal Re}
+\newcommand{\imag}{\mathcal Im} \newcommand{\diag}{\mbox{diag}}
+\newcommand{\offd}{\mbox{off}} \newcommand{\low}{\mbox{low}}
+\newcommand{\half}{{\frac{1}{2}}} \newcommand{\quarter}{{\frac{1}{4}}}
+\newcommand{\eighth}{{\frac{1}{8}}} \newcommand{\Det}{\mbox{det}}
+%\newcommand{\dim}{\mbox{dim}}
+\newcommand{\scp}{\mbox{scp}}
+\newcommand{\rank}{\mbox{rank}}
+\newcommand{\eig}{\mbox{{\bf eig}}}
+\newcommand{\vect}{\mbox{vec}}
+\newcommand{\integers}{\mathbb{Z}}
+\newcommand{\field}{\mathbb{F}}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\complexes}{\mathbb{C}}
+\newcommand{\nullspace}{Null}
+
+\newcommand{\Vscp}{V}
+\newcommand{\Rl}{\mathbb{R}}
+\newcommand{\Nl}{\mathbb{N}}
+\newcommand{\Ir}{\mathbb{Z}}
+\newcommand{\Cx}{\mathbb{C}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mbox{ad}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Proj}{{\rm Proj}}
+\newcommand{\Span}{{\rm span}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil{#1}\right\rceil}
+\newcommand{\ket}[1]{\lvert#1\rangle}
+\newcommand{\Red}{\color{red}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\title{{\bf Practical Optimized Effective Potential Calculations}}
+
+\author{Ross A. Lippert and N.~A. Modine}
+
+\begin{document}
+
+\maketitle
+
+{\bf Note: I am making this more of a work report, though it will, hopefully
+get turned into a publication}
+
+\begin{abstract}
+During the summer of 2005, these authors attempted to add a production
+quality finite temperature OEP capacity to the SOCORRO code.  The OEP
+formulation promises to yield more accurate results for density functional
+theory.  However, there have been no implementations of the formulation
+which address both our scientific goals (finite temperature simulations,
+calculation of variational quantities at the optimum) and our
+computational goals (utilizing cutoffs and pseudo-potentials,
+obtaining good convergence, preconditioning).  We have made substantial
+progress towards our goals in both these areas.  We have isolated a number
+of computational pitfalls and some new theory concerning variations of the
+optimum which we believe have not been noted before.  This document 
+reviews and outlines our OEP work and results.
+\end{abstract}
+
+\section{Introduction}
+
+{\Red
+We really should give a review of what results are currently circulating
+about OEP and OEP in finite temperature.  We should say something about
+what kinds of systems have been solved and whether or not anyone has
+demonstrated the superior performance we expect to see on some interesting
+system, like silicon.  What are the practical limitations by currently
+reported simulations?  Do we have the only production code ready to do
+serious OEP?  Literature searches are dull, but we do need this.  Perhaps
+Normand can email that Perdew guy and ask some questions about the state
+of the art.
+}
+
+\section{Review of the OEP formulation}
+
+We have a ``bare'' Hamiltonian $H_0 = K + V_{I}$ representing
+the sum of kinetic energy and ionic (or otherwise external) potentials.
+The $V_{I}$ operator is theoretically local, but in practice, it is
+much more computationally effective to use a non-local pseudo-potential.
+We will hence consider $V_{I}$ to be a general operator.
+
+We consider two energy functions
+\beas
+E_{*} &=& H_0 \bullet \rho + \Vscp \bullet \rho + \frac{1}{\beta}
+           \left( \rho \bullet \log \rho + (I-\rho) \bullet\log (I-\rho) \right)\\
+E &=& H_0 \bullet \rho + E_{HXC}(\rho) + \frac{1}{\beta}
+           \left(\rho\bullet \log\rho +(I-\rho) \bullet\log (I-\rho) \right)\\
+  &=& E_{*} + E_{HXC}(\rho) - \Vscp \bullet \rho
+\enas
+where we adopt the convention $A \bullet B = \trace\{A^H B\}$.
+In the OEP formulation,
+we consider $\rho$ to be a function of $\Vscp$ defined by the condition
+that $I \bullet \rho = n$ and $E_{*}(\rho)$ is minimized with $\Vscp$ fixed.
+This is equivalent to the condition that
+$\frac{\partial E_{*}}{\partial \rho} = \mu I$, for some
+Lagrange multiplier $\mu$.
+Thus we may equivalently take
+$\rho(\Vscp) = (I + e^{\beta (H_0 + \Vscp - \mu I)})^{-1}$,
+where $\mu$ is selected to ensure $I\bullet \rho(\Vscp) = n$.
+
+We then minimize $E(\rho(\Vscp))$ as a function of $\Vscp$.
+In translating derivatives in $\rho$ to derivatives in $\Vscp$ we make use of
+a {\em chain rule} for functions of Hermitian matrices,
+\beas
+  \frac{\partial F( f(X) )}{\partial X}
+  = \frac{\Delta f}{\Delta x}\left[ 
+    \left. \frac{\partial F(Y)}{\partial Y}\right|_{Y = f(X)} \right]
+\enas
+where the action of $\frac{\Delta f}{\Delta x}\left[\cdot\right]$, in an
+$X$ diagonal basis (letting $x_i = x_{ii}$ be the eigenvalues of $X$), is given by
+\beas
+\left(\frac{\Delta f}{\Delta x}\left[ Z \right]\right)_{ij}
+  = \frac{f(x_{i}) - f(x_{j})}{x_{i}-x_{j}} Z_{ij}
+\enas
+where $ \frac{f(x_{i}) - f(x_{j})}{x_{i}-x_{j}}$ is
+a divided difference (i.e. taking derivatives when $x_{i} = x_{j}$).
+
+For the application of interest, our function is
+$\omega(\varepsilon) = \frac{1}{1+e^{\beta \varepsilon}}$.
+The gradient of $E$ as a function of $\Vscp$ is
+\beas
+  \frac{\partial E}{\partial \Vscp}
+  &=& \frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E}{\partial \rho} + \nu I \right]\\
+  &=& \frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \nu I \right].
+\enas
+where $\nu$ (actually the derivative of $\mu$) is selected so that 
+$I\bullet \frac{\partial E}{\partial \Vscp} = 0$.
+Thus, for OEP, where $\Vscp$ is restricted to be a local operator,
+and the gradient is
+\beas
+  \frac{\partial E}{\partial \Vscp}
+  &=& \diag\left[\frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \nu I \right]\right],
+\enas
+where we understand the $\diag$ above to be the diagonal piece of a Hermitian
+matrix taken in real space.
+
+At this point, we should comment that when
+$\frac{\partial E_{HXC}}{\partial \rho}$ is a local operator, as in the
+case of LDA, then one can motivate the so-called {\em self-consistent}
+iteration $\Vscp \leftarrow \frac{\partial E_{HXC}}{\partial \rho} + \nu I$,
+which should converge nicely as long as 
+$\frac{\Delta \omega}{\Delta \varepsilon}$ does not change much.
+This is one reason why LDA calculations have never needed 
+to think about $\frac{\Delta \omega}{\Delta \varepsilon}$ or a gradient
+formulation of LDA.
+
+As an aside, in Hartree-Fock it is the case
+that $\frac{\partial E_{HXC}}{\partial \rho}$ is non-local but that
+there is no restriction on $\rho$, which can be thought (perversely)
+as there being no locality restriction on $\Vscp$, and thus HF is effectively
+doing $\Vscp \leftarrow \frac{\partial E_{HXC}}{\partial \rho} + \nu I$
+as well.
+
+However, when doing exact exchange
+$\frac{\partial E_{HXC}}{\partial \rho}$ is a non-local operator, and
+it is not clear how a fixed-point scheme, similar to that of LDA could
+be generated.  This leaves us with the gradient search as our best
+available approach.
+
+\section{OEP Helman-Feynman correction}
+
+One of the surprising results we've obtained is the failure of the
+Helman-Feynman theorem in general OEP problems.
+
+The Helman-Feynman theorem is the basis for
+doing perturbative analysis of LDA approximations or Hartree-Fock to
+obtain variations in the ground state energy
+as a result of a varying Hamiltonian.
+It says that if the bare Hamiltonian is a linear functon
+$H_0(s) = H_0 + s H_1$,
+and $E_{min}(s)$ is the minimum of $E$ (as a function of $\Vscp$)
+with the given $H_0(s)$, then
+\beas
+\frac{d E_{min}}{d s} = H_1\bullet \rho(\Vscp)
+\enas
+where $\Vscp$ is the minimizer at $s=0$,
+giving a linearization of the energy which is independent of
+any first derivatives of $\Vscp$ at the minimum.
+These first order variations of the minimum energy are the basis for
+the calculation of a variety of bulk material properties, like conductivity,
+the dielectric constant, as well as stress and strain.
+This is
+what one would generally expect from an arbitrary
+function of the form $f(s) = \min_{x} F(s,x)$, a short sketch of
+why being,
+\beas
+ \frac{\partial}{\partial x} F(x,s) &=& 0\\
+ \frac{d}{d s} F(x(s),s) &=& \frac{\partial}{\partial x} F(x(s),s) \frac{dx(s)}{ds} + \frac{\partial}{\partial s} F(x(s),s)\\
+                        &=& 0 + \frac{\partial}{\partial s} F(x(s),s).
+\enas
+However, our problem is analogous to
+\beas
+ \frac{\partial}{\partial y} F(x(y,s),s) &=&
+ \frac{\partial}{\partial x} F(x(y,s),s) \frac{\partial x}{\partial y} = 0\\
+ \frac{d}{d s} F(x(y(s),s),s) &=&
+ \frac{\partial}{\partial x} F(x(y,s),s)
+ \left(\frac{\partial x}{\partial y} \frac{dy(s)}{ds} + 
+       \frac{\partial x}{\partial s}\right)
+ + \frac{\partial}{\partial s} F(x(y(s),s),s)\\
+                              &=&
+ \frac{\partial}{\partial x} F(x(y,s),s)
+       \frac{\partial x}{\partial s}
+ + \frac{\partial}{\partial s} F(x(y(s),s),s),
+\enas
+and it is this 
+$\frac{\partial}{\partial x} F(x(y,s),s)
+       \frac{\partial x}{\partial s}$
+term, which comes from the fact that the relation between $x$ and $y$ is
+dependent on $s$,  that we must account for.
+
+For the OEP formulation,
+\beas
+\frac{d}{ds} E &=&
+         \frac{\partial E}{\partial H} \bullet H_1+
+          \frac{\partial E}{\partial s}\\
+ &=&
+      \left( \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I \right)
+      \bullet       \frac{\Delta \omega}{\Delta \varepsilon}
+      \left[H_1\right]+ \trace\{\rho H_1\}\\
+ &=&
+      \frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I \right]
+      \bullet H_1+ \trace\{\rho H_1\}
+\enas
+The second term vanishes if
+\begin{itemize}
+\item $H_1$ is local (since the local part of 
+$\frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I \right]$
+vanishes)
+\item LDA: $\frac{\partial E_{HXC}}{\partial \rho}$ is local
+(since $\frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I$ vanishes)
+\item Hartree-Fock: $\Vscp$ is not restricted to be local
+(since $\frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I$ vanishes)
+\end{itemize}
+Thus, this correction is not present in the previous methods of
+LDA and Hartree-Fock.  Corrections to higher order derivatives are
+thus also expected to appear in an OEP problem with non-local
+$\frac{\partial E_{HXC}}{\partial \rho}$.
+{\Red Does the first bullet mean that the HF correction disappears
+when you are doing forces?}
+
+\subsection{Higher derivatives}
+
+Although we have avoided any considerations of higher derivatives of
+the relation between $rho$ and $\Vscp$, it might be important to
+list their forms.
+
+Higher order variations on $f(X)$ can be given by divided differences
+which generalize the first variation formula
+\beas
+\left(\frac{\partial f(X)}{\partial X}\left[Z\right]\right)_{ij}
+ &=&
+  \frac{f(x_{i}) - f(x_{j})}{x_{i}-x_{j}} Z_{ij}\\
+\left(\frac{\partial^2 f(X)}{\partial X^2}\left[Z^{(1)},Z^{(2)}\right]\right)_{ij}
+ &=&
+  \sum_k \frac{
+  \frac{f(x_{i}) - f(x_{k})}{x_{i}-x_{k}}
+  -\frac{f(x_{j}) - f(x_{k})}{x_{j}-x_{k}}
+  }
+       {x_{i}-x_{j}}
+ \left(Z^{(1)}_{ik} Z^{(2)}_{kj}+Z^{(2)}_{ik} Z^{(1)}_{kj}\right)\\
+\left(\frac{\partial^n f(X)}{\partial X^n}\left[Z^{(1)},\ldots,Z^{(n)}\right]\right)_{ij}
+ &=&
+ \sum_{k_1,\ldots,k_{n-1}} f[x_{i},x_{k_1},\ldots,x_{k_{n-1}}
+                                 x_{j}]
+ \sum_{\sigma \in S_n} 
+  Z^{(\sigma_1)}_{ik_1} Z^{(\sigma_2)}_{k_1k_2} \cdots Z^{(\sigma_{n-1})}_{k_{n-2}k_{n-1}} Z^{(\sigma_n)}_{k_{n-1}j}
+\enas
+
+\section{A review of the application of
+$\frac{\Delta \omega}{\Delta \varepsilon}\left[\cdot\right]$}
+
+A full diagonalization of $H = H_0 + \Vscp$ is computationally impractical
+for large basis sets.  We review here how the OEP gradient can be found
+by solving for 
+$\frac{\Delta \omega}{\Delta \varepsilon}\left[Z \right]$ 
+(for $Z$ a Hermitian operators) iteratively
+on a set of orbitals $\phi = \pmatrix{\phi_1 & \cdots & \phi_N}$ which
+are the lowest $N$ eigenvectors of $H$ with
+eigenvalues $\varepsilon_i$ and occupations $\omega_i$ (we assuming
+$\omega_i \sim 0$ for $i>N$).
+
+We will generalize slightly, to the computation of $\frac{\Delta
+\omega}{\Delta \varepsilon}\left[Z + \nu I \right]$, where $\nu$ is
+chosen so that $\trace\{\frac{\Delta \omega}{\Delta
+\varepsilon}\left[Z + \nu I \right]\} = t$ (in the case where there is
+no trace constraint, $\nu = 0$.
+Let $\bar{E}$ and $\bar{J}$ be $N\times N$ matrices given by
+\beas
+\bar{E} &=&
+ \phi^\dagger Z \phi
+\\
+\bar{J} &=&
+ \phi^\dagger 
+   \frac{\Delta \omega}{\Delta \varepsilon} \left[
+        Z
+  + \nu I
+   \right]
+   \phi
+ =\left[
+ \frac{\omega_i - \omega_j}{\varepsilon_i - \varepsilon_j} 
+  \right] \circ
+  \left(\bar{E} + \nu I \right),
+\enas
+where
+$\left[\frac{\omega_i - \omega_j}{\varepsilon_i - \varepsilon_j}\right]$
+is the $N\times N$ matrix of divided differences, $\circ$ denotes
+elementwise multiplication and $\nu$ is chosen such that
+$\trace\{\bar{J}\}=t$.
+Let $\psi_{\perp}$ satisfy $\phi^\dagger \psi_{\perp} = 0$ and
+\bea
+\label{psi_perp_eq}
+H \psi_{\perp} - \psi_{\perp} \Lambda
+  &=&
+ -(I - \phi \phi^\dagger) Z \phi \Omega,
+\ena
+where $\Lambda,\Omega$ are diagonal matrices with entries
+$\varepsilon_i,\omega_i$ respectively.
+Then
+\beas
+\frac{\Delta \omega}{\Delta \epsilon}\left[ Z + \nu I\right]
+      = \psi_{\perp} + \frac{1}{2} \phi \bar{J}.
+\enas
+
+We see that we can compute
+$\frac{\Delta \omega}{\Delta \epsilon}\left[ Z + \nu I \right]$
+from products of the form $Z \phi$.  However, this does require an
+iterative solution to (\ref{psi_perp_eq}).  It is customary to
+allow fairly loose tolerances for the underlying eigenproblem when far from
+convergence.  Thus, $\phi$ may be substantially different from
+the true lowest eigenvalues of $H$ and $[\phi \phi^\dagger, H]$
+may not be small.  In that case, we can do additional projection,
+\beas
+(I - \phi \phi^\dagger) H \psi_{\perp} - \psi_{\perp} \Lambda
+  &=&
+ -(I - \phi \phi^\dagger) Z \phi \Omega,
+\enas
+to ensure that we take a principle submatrix of the
+$\left[H,\cdot\right]$ operator on the left hand side, and thus
+a well-posed problem.  Even so, if an iterative solution method
+requiring positive definiteness is used, poorly converged $\phi$ can
+lead to a principle submatrix which is not positive definite.
+
+Generally, we have found that we require our tolerances for the
+eigenvectors, $\phi$, to be a bit higher than those required for
+self-consistent LDA.
+
+\section{OEP gradients in the non-interacting free metal}
+
+In order to obtain some insight into the relation of the various
+OEP derived quantities we have been exploring, we can take a look at a
+system of plane waves.  In fact, we will simplify things further by
+considering non-interacting plane waves.
+
+Since the system is non-interacting, the $E_{HXC}$ term vanishes
+and $\Vscp = 0$ is optimal.  The gradient is
+\beas
+  \frac{\partial E}{\partial \Vscp} = 
+\diag\left(\frac{\Delta \omega}{\Delta \varepsilon}\left[ 0 \right]\right)
+\enas
+which can be varied by $\Vscp \rightarrow 0 + \delta V$ to obtain
+the variation of the gradient,
+\beas
+\delta \frac{\partial E}{\partial \Vscp} &=& 
+\diag\left(\frac{\Delta \omega}{\Delta \varepsilon}\left[ -\delta V \right]\right)
++\diag\left(\left(\delta \frac{\Delta \omega}{\Delta \varepsilon}\right)\left[ 0 \right]\right)
+\\
+&=&
+-\diag\left(\frac{\Delta \omega}{\Delta \varepsilon}\left[ \delta V \right]\right)
+\enas
+Thus we see that the Hessian is given by the action of the Jacobian
+restricted to local operators $\delta V$.  There being no possibility
+of confusion, we will drop the $\delta$ and use $V$ for a variation of
+the (vanishing) optimum effective potential.
+
+Let us suppose that we have a discrete set of wave numbers $K \subset
+\reals^3$, which we will use to represent the occupied orbitals of an
+idealized system.  In this case, the density operator is
+\beas
+\rho(\bar{x},\bar{x}^\prime)
+= \sum_{\bar{k} \in K} |\bar{k}><\bar{k}|
+= \frac{1}{N} \sum_{\bar{k}\in K} e^{-i\bar{k} \cdot(\bar{x}-\bar{x}^\prime)}.
+\enas
+with $\rho(\bar{x},\bar{x}) = n_e/N$ where $n_e = |K|$ is the number of
+electrons and $N$ is the unit volume.
+
+%It can be shown that for any zero temperature system, the local part
+%of the Jacobian acting on a local potential $V(\bar{x})$ is given by
+%\beas
+%   V(\bar{x}) &\rightarrow&
+%    2 \sum_{\bar{k} \in K, \bar{k}^\prime \notin K}
+%    |\bar{k}><\bar{k}| V |\bar{k}^\prime><\bar{k}^\prime|\\
+%  &=&
+% 2 \int d\bar{x}^\prime 
+%  \left(\rho(\bar{x},\bar{x})\delta(\bar{x}-\bar{x}^\prime) -
+%        |\rho(\bar{x},\bar{x}^\prime)|^2\right) V(\bar{x}^\prime)\\
+%   &=& 2 \rho(\bar{x},\bar{x}) V(\bar{x}) - 
+%        2 \int d\bar{x}^\prime |\rho(\bar{x},\bar{x}^\prime)|^2
+%         V(\bar{x}^\prime)
+%\enas
+%which, for plane waves, becomes,
+%\beas
+% V(\bar{x}) &\rightarrow&
+%   \frac{2 n_e}{N} V(\bar{x}) - 
+%   \frac{2}{N^2} \sum_{\bar{k},\bar{k}^\prime\in K}
+%        \int d\bar{x}^\prime
+%e^{-i (\bar{k}-\bar{k}^\prime)\cdot(\bar{x}-\bar{x}^\prime) }
+%         V(\bar{x}^\prime).
+%\enas
+%The eigenmodes for this action are likewise planewaves,
+%$e^{-i \bar{\alpha} \cdot \bar{x}}$ with eigenvalues
+%$\frac{2}{N} \left( n_e - n_{\bar{\alpha}} \right)$
+%where $n_{\bar{\alpha}} = |\{ (\bar{k},\bar{k}^\prime) \in K^2 | \bar{k} - \bar{k}^\prime = \bar{\alpha}\}|$,
+%i.e. the number of occupied orbitals whose wave numbers differ by
+%$\bar{\alpha}$.
+%Note: $\bar{\alpha} = 0$ is the only zero mode, corresponding to constant
+%shifts in the local operators.
+%Thus, the effective condition number of the Jacobian restricted to
+%local operators is
+%$\frac{\max\{n_e - n_{\bar{\alpha}}\}}{\min\{n_e - n_{\bar{\alpha}}\}}$
+%where the minimum is taken over $\bar{\alpha}\ne 0$.
+
+%If $K = \{ \bar{k} \in \integers^3 | ||\bar{k}|| \le k_{\max}\}$, then we
+%would expect the condition number to be $\sim \frac{2}{3} k_{\max}
+%\sim \sqrt[3]{\frac{2}{9} n_e}$.
+
+We can carry out a general derivation for planewaves in finite
+temperature, by taking $D_{\bar{k}\bar{k}^\prime}(\beta) =
+ \frac{\omega(\varepsilon_{\bar{k}})-\omega(\varepsilon_{\bar{k}^\prime})}
+      {\varepsilon_{\bar{k}}-\varepsilon_{\bar{k}^\prime}}$
+and thus the localized Jacobian is given by
+\beas
+  V(\bar{x}) &\rightarrow&
+    \sum_{\bar{k},\bar{k}^\prime} D_{\bar{k}\bar{k}^\prime}(\beta)
+    |\bar{k}><\bar{k}| V |\bar{k}^\prime><\bar{k}^\prime|\\
+  &=&
+  \sum_{\bar{k}\bar{k}^\prime}
+  e^{-i\bar{k}\cdot \bar{x}}  e^{i\bar{k}^\prime \cdot \bar{x}}
+  D_{\bar{k}\bar{k}^\prime}(\beta)
+  \int d^3 \bar{x}^\prime
+  e^{ i\bar{k}\cdot \bar{x}^\prime}  e^{-i\bar{k}^\prime \cdot \bar{x}^\prime}
+  V(\bar{x}^\prime)\\
+  &=&
+  \sum_{\bar{k}\bar{k}^\prime}
+  D_{\bar{k}\bar{k}^\prime}(\beta)
+  \int d^3 \bar{x}^\prime
+  e^{-i (\bar{k}-\bar{k}^\prime) \cdot (\bar{x}-\bar{x}^\prime)}
+  V(\bar{x}^\prime)\\
+  &=&
+  \sum_{\bar{\alpha}}
+  d_{\bar{\alpha}}(\beta)
+  \int d^3 \bar{x}^\prime
+  e^{-i \bar{\alpha} \cdot (\bar{x}-\bar{x}^\prime)}
+  V(\bar{x}^\prime)\\
+  &=&
+  \sum_{\bar{\alpha}}
+  d_{\bar{\alpha}}(\beta)
+  |\bar{\alpha}><\bar{\alpha}|
+  V
+\enas
+where $d_{\bar{\alpha}}(\beta) =
+  \sum_{\bar{k}-\bar{k}^\prime = \bar{\alpha}}
+  D_{\bar{k}\bar{k}^\prime}(\beta)$.  We notes that if
+$\int d^3 \bar{x} V(\bar{x})$ vanishes, then so does the 
+integral of the RHS, thus $\nu = 0$, and the sum over $\bar{\alpha}$
+can be restricted to $\bar{\alpha} \ne \bar{0}$.
+
+We may consider a more specific metallic case where
+the possible states are all $\reals^3$ with
+\beas
+\varepsilon_{\bar{k}} &=& ||\bar{k}||^2\\
+\omega(\bar{k}) &=& \frac{1}{1 + e^{\beta(||\bar{k}||^2 - \mu)}}
+\enas
+where $\mu$ is selected by
+$
+\int \frac{4 \pi k^2 dk}{1 + e^{\beta(k^2 - \mu)}} = n,
+$
+for some constant $n$.
+
+Passing from sums to integrals we find (taking $\alpha = ||\bar{\alpha}||$),
+\beas
+d_{\alpha}(\beta) &=&
+\sum_{\bar{k}} D_{(\bar{k}+\half\bar{\alpha})(\bar{k}-\half\bar{\alpha})}\\
+&=&
+\int \frac{
+\omega(\bar{k}+\half \bar{\alpha}) - \omega(\bar{k}-\half \bar{\alpha})
+}{
+ 2 \bar{k} \cdot \bar{\alpha}
+}
+d^3\bar{k}\\
+d_{\alpha}(\beta) &=&
+\int \frac{
+\frac{1}{1+e^{\beta( (x+\half\alpha)^2 + y^2 + z^2 - \mu)}}
+- \frac{1}{1+e^{\beta( (x-\half\alpha)^2 + y^2 + z^2 - \mu)}}
+}{
+ 2 x \alpha
+}
+dx dy dz\\
+&=&
+\int_{r \in \reals_+} \int_{x\in \reals}
+\pi r \frac{
+\frac{1}{1+e^{\beta( (x+\half\alpha)^2 + r^2 - \mu)}}
+- \frac{1}{1+e^{\beta( (x-\half\alpha)^2 + r^2 - \mu)}}
+}{
+ x \alpha
+}
+dx dr\\
+&=&
+\int_{x\in \reals}
+\pi \frac{
+\left.
+\log
+\frac{1+e^{\beta( (x-\half\alpha)^2 + r^2 - \mu)}}
+     {1+e^{\beta( (x+\half\alpha)^2 + r^2 - \mu)}}
+\right|_{r=0}^\infty
+}{
+ 2 \beta x \alpha
+}
+dx\\
+&=&
+\int_{x\in \reals}
+\pi \frac{
+\log
+\frac{e^{\beta( (x-\half\alpha)^2 - \mu)}}
+     {e^{\beta( (x+\half\alpha)^2 - \mu)}}
+-
+\log
+\frac{1+e^{\beta( (x-\half\alpha)^2 - \mu)}}
+     {1+e^{\beta( (x+\half\alpha)^2 - \mu)}}
+}{
+ 2 \beta x \alpha
+}
+dx\\
+&=&
+\int_{x\in \reals}
+\frac{\pi}{2x\alpha} \frac{1}{\beta}
+\log
+\frac{e^{-\beta( (x+\half\alpha)^2 - \mu)}+1}
+     {e^{-\beta( (x-\half\alpha)^2 - \mu)}+1}
+dx.
+\enas
+Taking the limit as $\beta \rightarrow \infty$, noting that
+$\lim_{\beta \rightarrow \infty} \frac{1}{\beta} \log(e^{\beta c}+1)
+=\max\{c,0\}$ for all $c$,
+\beas
+d_{\alpha}(\infty)
+ &=&
+\int_{x\in \reals}
+\frac{\pi}{2 x \alpha}
+\left(\max\left\{\mu - (x+\half\alpha)^2,0\right\}
+-\max\left\{\mu - (x-\half\alpha)^2,0\right\}\right)
+dx\\
+ &=&
+ \int_{x=\half \alpha - \sqrt{\mu}}^{\half \alpha + \sqrt{\mu}}
+\frac{\pi}{x \alpha}
+\left((x-\half\alpha)^2-\mu\right)
+dx\\
+ &=&
+\int_{x=\half \alpha - \sqrt{\mu}}^{\half \alpha + \sqrt{\mu}}
+\pi
+\left(\frac{x}{\alpha} -1 + \frac{\frac{1}{4} \alpha^2-\mu}{x \alpha}\right)
+dx\\
+ &=&
+\left.
+\pi
+\left(\frac{x^2}{2\alpha}-x + \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}\log|x|\right)
+\right|_{x=\half \alpha - \sqrt{\mu}}^{\half \alpha + \sqrt{\mu}}\\
+ &=&
+-\pi
+\left(\sqrt{\mu} - \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}
+\log\frac{\half \alpha + \sqrt{\mu}}{\left|\half \alpha - \sqrt{\mu}\right|}
+\right).
+\enas
+
+We now note some of the features of $d_\alpha(\infty)$.  It is continuous
+everywhere, taking the value $-\pi\sqrt{\mu}$ at $\alpha = 2\sqrt{\mu}$.
+It is differentiable for all $\alpha \ne 2\sqrt{\mu}$
+(where it is infinite),
+which is associated with the Friedel oscillations in metals.
+
+For large $\alpha$,
+\beas
+d_\alpha(\infty)
+ &=&
+-\pi
+\left(\sqrt{\mu} - \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}
+\log\frac{1+\frac{2\sqrt{\mu}}{\alpha}}{1-\frac{2\sqrt{\mu}}{\alpha}}\right)
+\\
+ &=&
+-\pi
+\left(\sqrt{\mu} - \left(\frac{1}{4} \alpha-\frac{\mu}{\alpha}\right)
+2 \left(\frac{2\sqrt{\mu}}{\alpha} + \frac{1}{3}\left(\frac{2\sqrt{\mu}}{\alpha}\right)^3 + \cdots\right)\right)
+\\
+&=&
+-\pi
+\left(\frac{4 \mu^{3/2}}{\alpha^2}
+-\left(\frac{1}{2} \alpha-\frac{2\mu}{\alpha}\right)
+\left(\frac{1}{3}\left(\frac{2\sqrt{\mu}}{\alpha}\right)^3 + \cdots\right)
+\right)
+\\
+&\sim&
+-\pi
+\frac{8 \mu^{3/2}}{3 \alpha^2}.
+\enas
+
+For small $\alpha$,
+\beas
+d_\alpha(\infty)
+ &=&
+-\pi
+\left(\sqrt{\mu} - \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}
+\log\frac{1+\frac{\alpha}{2\sqrt{\mu}}}{1-\frac{\alpha}2\sqrt{\mu}}\right)
+\\
+&=&
+-\pi
+\left(\sqrt{\mu} - \left(\frac{1}{4} \alpha-\frac{\mu}{\alpha}\right)
+2 \left(\frac{\alpha}{2\sqrt{\mu}} + \frac{1}{3}\left(\frac{\alpha}{2\sqrt{\mu}}\right)^3 + \cdots\right)\right)
+\\
+&\sim&
+-\pi
+\left(2\sqrt{\mu}
+-\frac{\alpha^2}{6\sqrt{\mu}}
+\right).
+\enas
+
+A bit of empirical curve fitting and screwing around then shows that
+\beas
+C \sqrt{\mu} \le
+d_{\alpha}(\infty) \cdot
+\left(
+\frac{1}{1+\frac{\alpha^2}{\mu}}
++\frac{3\alpha^2}{4 \mu}\right) \le 2 C \sqrt{\mu}
+\enas
+for some C, which implies that
+\beas
+\frac{1}{1-\frac{\nabla^2}{\mu}}
+-\frac{3\nabla^2}{4 \mu}
+\quad\mbox{or}\quad
+1 - \frac{3}{4\mu} \nabla^2
+\enas
+should be a good preconditioner in the low temperature regime.
+
+We have used the $1 - \frac{3}{4 \mu} \nabla^2$ preconditioner in our
+OEP implementation.  It seems to be doing a good job even on non-metallic
+silicon.
+
+
+\section{Accelerating convergence}
+
+Since line minimization is expensive and the Hessian in this
+case is difficult to apply, we explore a {\em fixed step}
+approach such as Richardson iteration.
+
+The basic relaxation step is of the form
+\beas
+  x_{i+1} = x_i - \gamma g_i,
+\enas
+where $g_i = \nabla f(x_i)$, which linearizes to
+\beas
+  x_{i+1} = x_i + \gamma (b - A x_i).
+\enas
+The iteration on the error $e_i = x_i - x_*$ is given by
+\beas
+  e_{i+1} &=& (I - \gamma A) e_i\\
+  e_{i} &=& (I - \gamma A)^i e_0
+\enas
+from which we see that $e_i \rightarrow 0$ only if
+$-1 \le 1 - \gamma \lambda \le 1$ for all eigenvalues $\lambda$ of $A$.
+
+If the eigenvalues of $A$ occur in $(0,1)$ then convergence
+occurs when $\gamma \le 2$ and $\gamma = 2$ is the largest convergent
+step size.
+In practice, we do not start with the spectrum of $A$ in $(0,1)$,
+but we scale all gradients by an empirically determined factor to place
+the eigenvalues of $A$ between $(0,1)$ in a more-or-less centered
+fashion.
+
+With $\gamma = 2$, if $\lambda_{\min} = \epsilon$ or
+$\lambda_{\max} = 1-\epsilon$,
+the error in the extreme modes will be $|1 - 2 \epsilon|^i$.
+Thus convergence is eventually dominated
+by the value of $\kappa = \frac{1}{\epsilon}$,
+which is approximately equal to the condition number of $A$.
+
+One technique which works well when good estimates of the Hessian
+norm and condition number are available is {\em Chebyshev acceleration}.
+One considers a Chebyshev polynomial, $T_i$, affinely
+translated so that $(-1,1)\rightarrow (\epsilon,1)$ where the
+eigenvalues of the Hessian occur in $(\epsilon,1)$.
+The goal is to have $e_i =
+\frac{1}{T_i(\beta)} T_i(\beta - \alpha A) e_0$ where $\alpha =
+\frac{2}{1-\epsilon}$ and $\beta = \frac{1+\epsilon}{1-\epsilon}$.
+The Chebyshev polynomials, given by
+\beas
+  T_0(y) &=& 1\\
+  T_1(y) &=& y\\
+  T_{i+1}(y) &=& 2 y T_{i}(y) - T_{i-1}(y).
+\enas
+The error will decrease roughly as
+$\frac{1}{T_i(\beta)}
+\sim \left(\frac{1-\sqrt{\epsilon}}{1+\sqrt{\epsilon}}\right)^{-i}$
+with a need for periodic resets to correct non-linearities
+(which should be reasonable to perform after $2/\sqrt{\epsilon}$ steps).
+
+The recurrences for Chebyshev polynomials can be re-arranged a bit to
+give
+\beas
+\tau_0 &=& 1\\
+\tau_1 &=& 1\\
+\tau_{i+1} &=& 2 \tau_i - \beta \tau_{i-1}\\
+x_1 &=& x_0 - \alpha g_0\\
+x_{i+1} &=& x_{i} +
+\frac{1}{\tau_{i+1}}\left(\tau_{i-1} \beta (x_i-x_{i-1}) -2 \tau_i \alpha g_i\right)
+\enas
+and thus we need only keep around a {\em velocity} vector
+$x_{i} - x_{i-1}$ and mix it with the gradient to obtain the
+update.
+
+With the preconditioner in place, it is reasonable to assume that
+Hessian norms and condition numbers are fairly insensitive to problem
+size.  We have observed that the same pair of parameters achieve
+nearly the same convergence on $2$ atom, $8$ atom, and $64$ atom
+silicon, supporting this intuition.  This also suggests that one
+might use smaller systems to estimate the optimal convergence
+parameters for larger ones.
+
+\section{Potential cut-offs}
+
+{\Red This argument is something of a handwave, but I think I only
+ever had a handwave argument for it. It works though.}
+
+Let us consider the case where we have used a planewave basis with
+some cutoff $||\bar{k}|| < k_W$ and fully diagonalized $H = H_0 + \Vscp$
+into a complete eigenbasis $\phi_1,\ldots,\phi_N$ (where $N$ is the
+dimension of the planewave basis).  Let us also assume that we have
+likewise represented the local operator, $\Vscp$,
+in a planewave basis with a cutoff of $k_V$.
+
+We consider the case where
+$\Vscp = \Vscp_* + \epsilon e^{i \bar{\alpha} \cdot \bar{x}}$,
+where $\Vscp_*$ is the optimal and $v$ is small.  Then the gradient at
+$\Vscp$ is
+\beas
+  \frac{\partial E}{\partial V}
+  &=& \diag\left( \frac{\Delta \omega}{\Delta \varepsilon} \left[
+       \frac{\partial E_{HXC}(\rho)}{\partial \rho}
+       - \Vscp_* - \epsilon e^{i \bar{\alpha}\cdot \bar{x}}
+       + (\nu_*+v \gamma) I
+       \right]\right)
+  = -\epsilon\diag\left( \frac{\Delta \omega}{\Delta \varepsilon} \left[
+        e^{i \bar{\alpha}\cdot \bar{x}} - \gamma I
+       \right]\right)
+\enas
+where $\gamma$ is chosen to make $\frac{\partial E}{\partial V}$
+traceless.  In terms of the complete eigenbasis,
+\bea
+\label{deltar_eq}
+  \frac{\Delta \omega}{\Delta \varepsilon}
+       \left[
+        e^{i \bar{\alpha}\cdot \bar{x}}
+       \right]
+  &=& - \sum_{ij}
+    \left(\frac{\omega_i - \omega_j}{\varepsilon_i-\varepsilon_j}\right)
+    \left(\phi_i^{\dagger} e^{i \bar{\alpha} \cdot \bar{x}} \phi_j\right)
+    \phi_i \phi_j^{\dagger},
+\ena
+from which we see a vanishing gradient for $||\bar{\alpha}|| > 2 k_W$.
+This is to be expected, however, since the coupling between $\Vscp$ and
+$\rho$ in $E_*$ is $\Vscp \bullet \rho$ and
+$e^{i \bar{\alpha} \cdot \bar{x}} \bullet \rho$ identically vanishes
+when $||\bar{\alpha}|| > 2 k_W$.  One way to look at this is that high
+frequency modes of $\Vscp$ have no effect on $\rho$ in the presence of
+cutoffs, and thus, no effect on the energy $E$.  If we started the
+minimization from
+$\Vscp=\Vscp_* + \epsilon e^{i \bar{\alpha} \cdot \bar{x}}$, we could not
+expect to see $\epsilon$ decrease.
+
+However, this is not enough.  We have observed that with $\Vscp$ cutoff
+at $2 k_W$ the convergence of the gradient search is very sub-linear.
+
+In fact, any first order perturbation to $\Vscp_*$ which gives a
+second order gradient could not be expected to decrease rapidly
+(i.e. linearly) in a gradient-based minimization.  Such perturbations
+are then null vectors of the objective function $E(\rho(\Vscp))$.
+
+Consider that in order for a term in (\ref{deltar_eq}) to contribute
+significantly to the sum, at least one of $\phi_i$ or $\phi_j$ must
+have $\omega_i,\omega_j$ non-vanishing, i.e. be {\em partially
+occupied}.  In a typical calculation, the partially occupied states
+have planewave components which become vanishingly small for
+$||\bar{k}|| > k_0$ with $k_0$ independent of $k_{W}$ so long as
+$k_{W}$ is picked to be well enough above $k_0$ (an extreme case is
+the free non-interacting metal in which $k_{0}$ is minimal and
+independent of $k_W$ for $k_W > k_0$).  Thus if $||\bar{\alpha}|| >
+k_{W}+k_{0}$ the first order contribution to $\rho$ will be likewise
+small and ill-conditioning of the optimization results.
+
+This ill-conditioning is entirely non-physical, coming from the choice
+of $k_W$.  If we consider the effect of increasing $k_{W}$, $k_{0}$
+would change negligibly, and thus $k_W + k_0$ would increase and more
+$\bar{\alpha}$'s would be able to significantly contribute
+(\ref{deltar_eq}).  In non-OEP formulations, the criterion for $k_W$
+is to provide a good representation of the partially occupied
+orbitals.  However, the OEP gradient couples unoccupied and partially
+occupied orbitals, and this coupling can only be represented
+faithfully so long as the unoccupied orbitals can be represented
+faithfully.
+
+We have used a more stringent cutoff for $\Vscp$ therefore, taking it
+to be $k_W$ instead of the customary $2 k_W$.  We have found, with
+experiments on silicon, that the number of correctly converged digits
+in the resulting energies did not change.  This is to be expected,
+since a tiny contribution to the gradient indicates a tiny
+contribution to the overall energy.
+
+\end{document}

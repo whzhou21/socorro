@@ -1,0 +1,531 @@
+\section{Modular programming}
+
+Data encapsulation is the organizing principle of modularity in the
+Socorro code.  This is to say that the bulk of Socorro's functionality
+is expressed in terms of definitions for abstract data types and their
+interrelations through public specifications.  Because the
+interfaces between types are public and general, it is possible
+replace or extend the functionality of a given module by editing only
+the definition of that module.  This flexibility comes about by what
+is termed {\em data hiding} by software engineers.  Data hiding is an
+investment by programmers in self-discipline, for which modularity is the
+return.  
+
+The current FORTRAN standard supports strict modularity by allowing
+the author of a module to declare which definitions are accessible to
+the module users through \verb+private+ and \verb+public+ attributes;
+notably, the ability to have public derived types with private
+members, which is the foundation of an abstract data type.
+
+Since our motivation for Socorro included a code base which could
+incorporate various representations of electronic data, this kind of
+modularity was given great priority.  The design of the function
+interfaces to be general, modular, yet reasonably efficient, took up
+the vast majority of group discussions.
+
+In this section, we will review the formal concepts behind data
+encapsulation, and describe how these concepts are put into practice
+in terms of Socorro's modularization.  We will conclude with a
+description of the public interface documentation scheme we employed.
+
+\subsection{Data encapsulation}
+
+For each type, one can associate a set of values, or a {\em domain}.
+For example, for \verb+integer*4+ the domain is ${\cal D}_{int4} =
+\left\{-2^31-1,\dots,0,\dots,2^31\right\}$, or for
+\verb+integer*4,dimension(3)+ the domain is ${\cal D}_{int4(3)} = 
+{\cal D}_{int4} \times
+{\cal D}_{int4} \times{\cal D}_{int4}  = {\cal D}_{int4}^3$.
+These two examples are simple and might
+cause one to confuse the bitwise representation with the domain.
+However, the reader can counter that that confusion by considering the
+domain of \verb+real*4+, ${\cal D}_{real4}$.  While the bitwise
+representation has $2^32$ bit patterns, some of those bit patterns
+will cause a runtime floating point exception when used (unless one is
+trapping all floating exceptions with appropriate IEEE responses--- an
+unusual state of affairs for scientific programming).  Such patterns
+are not in ${\cal D}_{real4}$.  Another example are FORTRAN variables
+with the pointer attribute, which can cause a runtime error on
+\verb+associated()+ inquiries (which should be applicable to any
+pointer) if their bit patterns are illegitimate (not nullified or
+ever associated).
+
+More formally, we can recognize that between the bit patterns in the
+memory of the computer and the data those patterns represent is an
+implicit function, called a {\em abstraction function}
+\cite{LiskovGuttag.RedBook}, which associates
+the state of the constituents (bit patterns) with the value of the
+data.\footnote{fundierung: n. the phenomenological relationship
+between the facticity and the phenomenon} The domain of a type is, the
+domain of the abstraction function, the subset of bit patterns for
+which the data in question represent a legitimate member of that data
+type.  There may not be a rigorous definition of ``legitimate'', but
+having runtime exceptions might be included there.
+
+Generalizing from this point, we turn to derived types.  Consider a vector
+derived type:
+\begin{verbatim}
+type, public :: vector
+  real*4 x,y,z
+end type
+\end{verbatim}
+Clearly, the domain of \verb+type(vector)+ is ${\cal D}_{real4}^3$.  
+One is assured that an instance of \verb+type(vector)+ is in its domain
+so long as its members \verb+x,y,z+ are in theirs.  Since the 
+domain is trivially deduced, we are free to confuse the representation
+of \verb+type(vector)+ with abstraction defined by \verb+type(vector)+.
+
+Let us now consider a \verb+type(unit_vector)+, represented by
+\begin{verbatim}
+type, public :: unit_vector
+  real*4 x,y,z
+end type
+\end{verbatim}
+which is supposed to represent a vector with unit length.
+In this
+case, the domain is $\left\{ {\cal D}_{real4}^3 : x^2+y^2+z^2 = 1 \pm
+\epsilon \right\} \subset {\cal D}_{real4}^3$.  The domain of this
+type, is a nontrivial subset of the domain of the representation.
+Just as one could experience bizarre runtime behavior by using certain
+floating point or pointer bit patterns, so might one expect bizarre
+runtime behavior from a variable of \verb+type(unit_vector)+ when its
+members violate $x^2+y^2+z^2 = 1 \pm \epsilon$, because its data is
+no longer in its proper domain.
+
+This is a general pattern for data abstraction.  The domain of the
+abstract type is equal to the domain of the representation plus
+additional constraints (e.g.  $x^2+y^2+z^2 = 1 \pm \epsilon$), called
+{\em representation invariants}, or {\em rep-invariants}.  If the
+representation invariants get violated by normal use of the type
+(there are always exceptional ways to get ones hands on the bits), the
+data is no longer meaningful, and one can expect undefined runtime
+behavior.  When designing abstract data types, what the representation
+invariants are and how they are to be preserved are crucial issues.
+
+\subsection{Maintaining rep-invariants}
+
+There are a number of ways that one might ensure that abstract data
+remain coherent.
+
+The easiest of which is to adopt a convention which places the burden
+entirely on the user--- a line of documentation near the type
+definition saying ``this is the rep-invariant: please don't break
+it''.  This might be the highest performing method, as it introduces
+no language or procedural overhead.  Although, expecting all users of
+all types to respect all documented rep-invariants, is excessive, it
+is not an unreasonable burden for programmers to adopt a small set of
+conventions which facilitates data abstraction (see the SADR section).
+
+The other extreme is to ensure that the functions which can directly
+manipulate constituents of the representation, are in a single (or
+limited number of) unit(s), and that those functions never leave the
+data in a state in which the representation invariants are violated.
+This is the approach adopted in Socorro, through the use of FORTRAN's
+\verb+module+ and \verb+use+ directives.
+
+As an example, we continue with \verb+type(unit_vector)+, defining
+a small module for it as follows:
+
+\begin{verbatim}
+  module unit_vector_mod
+
+    private   ! private attribute makes all things private by
+              ! default.  For large modules this is a good 
+              ! default.
+
+    type, public :: unit_vector  ! users can declare 
+    private          ! but x,y,z are private members
+      real*4 :: x,y,z
+    end type
+! rep invariant: x**2 + y**2 + z**2 = 1 +/- eps
+
+    public :: unit,vec,reflect,average
+
+  contains
+
+    function unit(v) result(uv)    ! unit vector from vector
+      type(vector) :: v
+      type(unit_vector) :: uv
+!   requires : norm(v) .ne. 0
+      t = sqrt(v%x**2+v%y**2+v%x**2)
+      uv%x = v%x/t
+      uv%y = v%y/t
+      uv%z = v%z/t
+    end function unit
+
+    function vec(uv) result(v)     ! vector from unit vector
+      type(vector) :: v
+      type(unit_vector) :: uv
+      v%x = uv%x
+      v%y = uv%y
+      v%z = uv%z
+    end function vec
+
+    function reflect(rv_in,uv) result(rv_out) !=reflect rv_in by uv
+      type(unit_vector) :: uv
+      type(vector) :: rv_in, rv_out
+      t = uv%x*rv_in%x+uv%y*rv_in%y+uv%z*rv_in%z
+      rv_out%x = rv_in%x - 2*t*uv%x
+      rv_out%y = rv_in%y - 2*t*uv%y
+      rv_out%z = rv_in%z - 2*t*uv%z
+    end function reflect
+
+    function average(v1,v2) result(v3) ! v3=normed avg v1,v2
+      type(unit_vector) :: v1,v2
+      v3%x = v1%x + v2%x
+      v3%y = v1%y + v2%y
+      v3%z = v1%z + v2%z
+      t = sqrt(v3%x**2+v3%y**2+v3%x**2) ! re-normalize
+      v3%x = v3%x/t
+      v3%y = v3%y/t
+      v3%z = v3%z/t
+    end function average
+
+  end module unit_vector_mod
+
+\end{verbatim}
+
+Users of this module would find that they do not have access to the
+\verb+x,y,z+ members of the unit vectors they declare (though they can
+access them via the \verb+vec()+ function).  However, they have the
+guarantee that data of \verb+type(unit_vector)+ will behave as proper
+unit vectors, e.g. that the \verb+reflect()+ function will always be
+an orthogonal transformation.
+
+\subsection{Specification}
+
+\label{specsec}
+Continuing with the \verb+type(unit_vector)+ example, the reader may
+wonder whether the representation of \verb+type(unit_vector)+ has any
+relevance to the user of the \verb+unit_vector+ module.  The user
+cannot access the data, and therefore cannot violate or verify the
+rep-invariant.  The rep-invariant would appear to be a black box
+detail that is of concern only to the implementer of the black box.
+This is sort of true, which brings us to the notion of {\em
+specification}, which, simply put, is how the user sees the data.
+
+A specification is a semi-formal description of a procedure, with
+enough detail to allow the user to understand how to use it properly
+without having to examine the procedure definition.  It is the entirely
+public interface for the data abstraction, a contract of services
+guaranteed by the implementer to be provided to the user.
+
+For Socorro, we have adopted the strategy of specifying modules
+procedurally, with the specification of a procedure consisting of
+its name and argument types, augmented with one or more clauses
+of the form (lifted, more or less from \cite{LiskovGuttag.RedBook})
+\begin{itemize}
+\item requires: constraints on the argument values within which the
+procedure can be expected to function as specified.
+\item effects: a brief description of what the procedure does with
+its arguments and results.
+\item errors: conditions under which this procedure might abnormally
+exit, raise an exception, or otherwise turn lethal.
+\item warns: conditions under which this procedure might issue some
+sort of exceptional output, but still exit normally.
+\item modifies: the variables and other forms of program state which
+are modified by the application of this procedure.
+\end{itemize}
+
+\subsubsection{requires:}
+
+Some procedures cannot be expected to give a reasonable result for
+every combination of legitimate input arguments.  One example might be
+the \verb+unit+ constructor for unit vectors, which cannot give a
+proper response to the $0$-vector.  Hypothetically, a routine which
+solves a linear system might require that the linear system be
+non-singular within some tolerance, or a Fibonacci number function
+might require its input to be only positive integers.  In any of these
+cases, the user might run into all sorts of catastrophes (runtime
+errors) should the procedure be used in violation of its requirements.
+
+The requirements of a procedure can be thought of as the definition of
+the domain of applicability of the given function.  It is a requirement
+upon the user of the function to be sure that the input data is within
+the requirements of the procedure.  It is not the procedures job to
+detect and react to violations of the requirements.
+
+\subsubsection{effects:}
+
+Every nontrivial procedure has an effect, so the effects clause is mandatory.
+There are many ways to interpret the effect of a procedure.  Some examples
+are
+\begin{enumerate}
+\item calculate the ewald energy of the crystal
+\item use by the \verb+check_matrix()+ function the norm of the matrix
+\item $x = \sum_{k=0}^{n} k \cdot y_k$
+\item (see Golub and Van Loan page 1001)
+\item compute the sum of squares of the input and return the result.
+\end{enumerate}
+Each of these statements differ in the type of information the give
+about the procedure they document.  The first two suffer from over
+specialization.  The first, is appealing to the scientist who might be
+using the procedure in a computation, but would be completely obscure
+to anyone outside the field of material science.  The second would be
+very useful for the implementer of the \verb+check_matrix()+ function,
+but requires anyone else to know \verb+check_matrix()+ is implemented.
+Contextual information should not be required to describe an effect.
+It may be that the person implementing \verb+check_matrix()+ chose not
+use the procedure in question, turning this effects clause into a lie.
+Example 3 is succinct and precise, so long as the reader understands
+the notation.  Most procedures do not have succinct and precise
+formulations.  Example 4 refers the reader to an article or book.  For
+a very complicated routine, this might be the best thing to do.
+the last example is less mathematically formal, yet the English is precise
+enough to give the reader a clear meaning.
+
+The act of programming can be thought of as the act of describing in
+a precise notation the effects of a procedure.  In that sense, one might
+believe that the most precise effects clause will be patterned on the
+body of the procedure itself.  This misses the point, which is that
+the user of the procedure is seldom interested in how the results are
+computed, but on how the results relate to the inputs, and occasionally
+at what efficiency.  A good effects clause lies somewhere between the
+two poles of what does it compute (``the Monkhorst pack parameters'')
+and how does it compute (``set \verb+x+ to \verb+0+, then do \dots'').
+
+A scientist may think about the effects clause as a general theory
+about what the procedure does, the implementation of the procedure
+itself being the only evidence to support any theories.  A statement
+in the effects clause that is not falsifiable based on the procedure
+body probably has no place there.  At the same time, the clause must
+be sufficiently precise to allow the user to know how to use the
+function in his/her routines.
+
+\subsubsection{errors:}
+
+The distinction between an error condition and a requirement is
+simple.  When an error happens it is the procedures job to detect and
+report it.  When a requirement is violated the procedure can perform
+whatever act it chooses.  For example, if I have a data structure which
+is a list of $n$ objects and I write a procedure which allows someone
+to query the $i^{th}$ one, it could be a requirement that $1\le i\le n$
+(so the program might unexplainably crash if $i=0$), or it could be
+an error condition (the program prints ``bad i value'' and stops).
+
+Whether to make an error condition a requirement or a requirement an
+error condition is a matter of design in some part.  It is also a
+matter of efficiency, as some conditions are easier for the caller to
+check than that callee.
+
+In languages that support exception handling, the errors clause gives
+the conditions under which the procedure might exit abnormally by {\em
+throwing an exception}.  The present FORTRAN standard does not support
+exception handling, making error recovery very difficult, but one can
+follow a strategy of error reporting.  Socorro has an error reporting
+mechanism which tries to isolate the first occurrence of an error and
+write it to an error log, while terminating the program cleanly.
+
+\subsubsection{warns: }
+
+Occasionally, one wishes to log conditions which might indicate an
+error, but should not terminate program execution, or one wishes to
+monitor the performance of expensive or buggy operations.  for this
+case we have the warns clause.  Like the error clause, the warns
+clause is a set of exception-like conditions under which the procedure
+is likely to generate some auxiliary output.  Unlike the error
+clause, the presence of a warning condition does not lead to program
+termination.
+
+In Socorro, warnings are printed out in the error logs, so that there is
+one stream of warnings per processor, and to help with debugging.  Several
+high-level and expensive components issue warnings so that the program
+progress can be tracked.  Additionally, warnings are issued with every 
+FFT for performance analysis.
+
+\subsubsection{modifies: }
+
+The modifies clause highlights any side effects which are carried
+out by the procedure.  Although the use of \verb+intent+ attributes
+in FORTRAN makes this mostly obvious, some variables (like those
+with the pointer attribute) cannot be give \verb+intent+ attributes.
+For technical hang-ups such as these we continue to need the
+modifies clause.
+
+\subsection{Data hiding}
+
+Specifications allow the implementer and the user to draw a line
+between their codes, issuing each other guarantees as to what minimum
+sorts of functionality they will provide and require (resp.).  With a
+specification in place, the implementer and the user can go their
+separate ways.  For example, if we try to specify the short
+\verb+unit_vector+ module, we might have
+
+\begin{verbatim}
+    function unit(v) result(uv)
+      type(vector) :: v
+      type(unit_vector) :: uv
+    requires : 0< norm(v) < Inf
+    effects  : sets uv = v/||v||_2 (since v/||v|| is a unit vector)
+
+    function vec(uv) result(v)
+      type(vector) :: v
+      type(unit_vector) :: uv
+    effects  : sets v = uv (since uv is a special kind of vector)
+
+    function reflect(rv_in,uv) result(rv_out)
+      type(unit_vector) :: uv
+      type(vector) :: rv_in, rv_out
+    effects  : rv_out = rv_in - 2*dot(rv_in,uv)*uv
+
+    function average(v1,v2) result(v3) 
+      type(unit_vector) :: v1,v2
+    effects  : v3 = unit(vec(v1)+vec(v2)) (see unit,vec above)
+\end{verbatim}
+
+However, so long as this specification is adhered to, the user will
+not notice if the implementer of \verb+type(unit_vector)+ changes
+his/her mind on how to represent that data.  This replaceability of the
+code for \verb+type(unit_vector)+ is a direct result of the fact that
+the data contained in the \verb+type(unit_vector)+ derived type is
+hidden from the user.
+
+\begin{verbatim}
+  module unit_vector_mod
+
+    private
+
+    type, public :: unit_vector  ! users can declare 
+    private          ! but x,y,z are private members
+      real*4 :: x,y,z
+    end type
+! rep invariant: x**2 + y**2 + z**2 > eps (must be nonzero)
+
+    public :: unit,vec,reflect,average
+
+  contains
+
+    function unit(v) result(uv)    ! unit vector from vector
+      type(vector) :: v
+      type(unit_vector) :: uv
+!   requires : 0< norm(v) < Inf
+      uv%x = v%x
+      uv%y = v%y
+      uv%z = v%z
+    end function unit
+
+    function vec(uv) result(v)
+      type(vector) :: v
+      type(unit_vector) :: uv
+      t = sqrt(uv%x**2+uv%y**2+uv%x**2)
+      v%x = uv%x/t
+      v%y = uv%y/t
+      v%z = uv%z/t
+    end function vec
+
+    function reflect(rv_in,uv) result(rv_out)
+      type(unit_vector) :: uv
+      type(vector) :: rv_in, rv_out
+      t = (uv%x*rv_in%x+uv%y*rv_in%y+uv%z*rv_in%z) &
+          /(uv%x**2+uv%y**2+uv%x**2)
+      rv_out%x = rv_in%x - 2*t*uv%x
+      rv_out%y = rv_in%y - 2*t*uv%y
+      rv_out%z = rv_in%z - 2*t*uv%z
+    end function reflect
+
+    function average(v1,v2) result(v3)
+      type(unit_vector) :: v1,v2
+      t1 = sqrt(v1%x**2+v1%y**2+v1%x**2)
+      t2 = sqrt(v2%x**2+v2%y**2+v2%x**2)
+      v3%x = v1%x*t2 + v2%x*t1
+      v3%y = v1%y*t2 + v2%y*t1
+      v3%z = v1%z*t2 + v2%z*t1
+    end function average
+
+  end module unit_vector_mod
+\end{verbatim}
+
+The representation has changed, and so has the rep-invariant.
+However, from the users point of view, the data really hasn't changed:
+\begin{itemize}
+\item \verb+reflect()+ is still going to be an orthogonal transformation,
+\item \verb+norm(vec(unit(v)))==1+ for all finite
+vectors v.
+\end{itemize}
+From the users point of view, satisfaction the constraints
+in the specification is evidence of the 
+preservation of the abstraction, and of the maintenance
+of the rep-invariant of the representation.
+
+\subsection{Wormholes}
+
+It would be nice to think of all forms of data encapsulation 
+as an iron abstraction barrier which separates the user of the data from
+the internals of the data.  We could call this {\em strict privacy}.
+This is not always a useful strategy.
+
+Consider, for example, an abstract \verb+type(matrix)+ and
+\verb+type(vector)+ (perhaps one or both are sparse).
+The module defining \verb+type(matrix)+
+and its properties would naturally define an overloaded
+\verb+operator(*)+ function on pairs of matrices.  However,
+one would also wish for an overloaded \verb+operator(*)+ which allowed
+matrices to operate on vectors.  Unfortunately, if the internals for
+\verb+type(matrix)+ and \verb+type(vector)+ are strictly private,
+one can only implement the multiply in one of the following dissatisfying
+ways:
+
+{\bf Elementwise operations:}  if matrices and vectors are specified to
+have indexing procedures of some sort, then could write the multiply
+with such procedures, perhaps with a loop like
+\begin{verbatim}
+  do i=1,n
+    do j=1,n
+      call set(w,i, get(M,i,j) * get(v,j))
+    end do
+  end do
+\end{verbatim}
+implementing it.  By placing three procedure calls in the inner loop we
+are likely to find the code spending more time doing procedure calls
+and copying than arithmetic.
+
+{\bf Contrived primitives:} if matrices had a multiply primitive which
+operated on rank 1 arrays, and vectors had a primitive which would translate
+themselves back and forth to rank 1 arrays, then the efficiency issues
+might be taken care of, with the loop replaced by
+\begin{verbatim}
+    call make_vector(w, multiply_array(M,get_array(v)))
+\end{verbatim}
+which essentially pulls the procedure calls and copying inside the loops.
+
+Both of the previous solutions presuppose that public indexing or
+conversion procedures of some sort can be created for these types.
+One way out that, would be to combine the \verb+type(matrix)+ and
+\verb+type(vector)+ definitions in the same module.  In so doing, the
+matrix and vector types remain private to other types, but their
+procedures can freely manipulate the internals of both.
+Unfortunately, if one wants more than one type of matrix or more than
+one type of vector and wishes them all to interoperate in some way,
+this tactic can result in extremely bloated modules.  Such bloated
+modules are harder to maintain and debug than separate modules.
+
+What is really missing here is a declaration like the C++
+\verb+friend+ which gives permission for select procedures or types to
+violate another type's abstraction barrier.  If FORTRAN supported
+\verb+friend+ declarations, then \verb+type(vector)+ could grant
+a multiply function defined by the implementer of \verb+type(matrix)+
+access to its internal structures.  Such a declaration violates data
+encapsulation, but does so in a way that is documented clearly by the
+violated type (if the maintainer of \verb+type(vector)+ was considering
+implementation changes he/she would know just what other procedures
+might have to be changed).
+
+In Socorro, we have found it necessary to have something friend-like.
+Our solution has been to have a function defined for some types which
+returns a pointer to the essential internal data of that type.  
+We call this function a {\em wormhole}.  Unlike
+\verb+friend+, there is no selectivity to the permission.  Anyone
+can call \verb+wormhole()+, and one just has to hope that users of
+that type will do so with the utmost restraint.
+
+
+
+
+
+
+
+
+
+
+
+

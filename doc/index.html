@@ -1,0 +1,501 @@
+<html>
+
+<P> Need a fast index of the modules.
+</P>
+
+      <P><B>module KIND_MOD</B><A HREF="../src/kind_mod.f90">  src</A></P>
+
+<P>
+      the module which holds kind info.  The contents are replicated in
+      this documentation.
+</P>
+
+      <P><B>module CORE_MOD</B><A HREF="../src/core_mod.f">  src</A></P>
+
+<P>
+      Designed to give I/O abstractions to procs under mpi.
+      Designed to encapsulate basic MPI calls.
+      Designed to provide error tracing routines.
+      Since these three functions rely heavily on each other, the
+      only way to satisfy this mutual dependence is to place them in
+      a single module.
+</P>
+
+      <P><B>module MATH_MOD</B><A HREF="../src/math_mod.f">  src</A></P>
+
+<P>
+      This module is a dumping ground of all sort of mathematical procedures
+      and constants.
+</P>
+
+
+
+      <P><B>module DEFAULT_MOD</B><A HREF="../src/default_mod.f">  src</A></P>
+
+<P>
+      the module contains compiled in constants relating to system-wide
+      behavior.  This includes file names for I/O/Error as well as the
+      default file-modes (first_only, and name mangling).
+</P>
+
+      <P><B>module SYS_MOD</B><A HREF="../src/sys_mod.f">  src</A></P>
+
+<P>
+      sys_mod provides two functions which should be used to setup the runtime
+      environment for a running program.
+</P>
+
+      <P><B>module ARG_MOD</B><A HREF="../src/arg_mod.f90">  src</A></P>
+
+<P>
+      The arg module provides a means of extracting input from the control file
+</P>
+
+      use kind_mod
+      use core_mod
+      use default_mod
+
+      <P><B>module CPOINTER_MOD</B><A HREF="../src/cpointer32_mod.f90">  src</A></P>
+
+<P>
+
+      Some essential components of the Socorro code are written in C
+      and requires the concept of a c-pointer storage type.  Since the
+      width of a pointer is processor dependent, we capture that with
+      one of two possible implementations of the cpointer_mod:
+      cpointer32_mod.f90 and cpointer64_mod.f90
+</P>
+
+      <P><B>module LATTICE_MOD</B><A HREF="../src/lattice_mod.f90">  src</A></P>
+
+<P>
+      The lattice module hold basic lattice concepts: the lattice vectors
+      the lattice reciprocal vectors.
+</P>
+
+      use kind_mod
+      use core_mod
+      use diary_mod
+      use arg_mod
+      use math_mod
+      use ghost_mod
+
+      <P><B>module layout_mod</B><A HREF="../src/layout_mod.f">  src</A></P>
+
+<P>
+      use kind_mod
+      use diary_mod
+      use ghost_mod
+      use core_mod
+      use math_mod
+      use fft_mod
+      use lattice_mod
+</P>
+
+<P>
+      The layout is suppposed to represent the distribution of space
+      across processors, encapsulating the basic routines needed to
+      operate on distributed 3D datasets.
+</P>
+
+      <P><B>module SYMMETRY_MOD</B><A HREF="../src/symmetry_mod.f90">  src</A></P>
+
+<P>
+
+      Two datatypes are available here: type(point_group_obj) and type(space_gr
+      both of which are objects.
+</P>
+
+<P>
+      The space group is derived from the positions of the atoms
+      and the point group of the lattice.  It is a finite subgroup
+      of the Poincare subgroup given by point_group+translations.
+</P>
+
+<P>
+      The point group of a lattice is the set of point transformations
+      (excluding translations) that map the mesh points (defined by all
+      integer combinations of the lattice vectors) into themselves.  It
+      is a finite subgroup of the orthogonal group in real space.  The
+      point group of a space group is the set of point transformations.
+      It may or may not map the set of atoms into themselves depending
+      on whether the corresponding translations are or are not zero.
+</P>
+
+<P>
+      The purpose of point and space groups is to provide facilities
+      for symmetrizing grids, atoms_vectors (vectors at atom positions
+      such as forces) and space tensors (such as the stress tensor).
+</P>
+
+      <P><B>module FFT_MOD</B><A HREF="../src/fft_mod.f90">  src</A></P>
+
+<P>
+
+      Thus is a small module used to encapsulate the fourier transform
+      routines.
+      Currently is it set to use fftw for serial transforms and to use
+      Steve Plimpton's fft3d wrapper for parallel transformations.
+</P>
+
+<P>
+      use kind_mod
+      use core_mod
+</P>
+
+      <P><B>module DIARY_MOD</B><A HREF="../src/diary_mod.f">  src</A></P>
+
+<P>
+      The purpose of this module is to set up the output files and
+      the parameter file, defining their io characteristics.
+      Output files must include the standard output, which we term
+      the 'diary'.
+</P>
+
+<P>
+      Additionally, the diary provides the functions by which to
+      write strings to its output file.
+</P>
+
+<P>
+      The setup and nature of the input file is handled in argv_mod.
+      (this is primarily due to the possible complexity of input parameters).
+</P>
+
+
+      use kind_mod
+      use core_mod
+      use default_mod
+
+
+      <P><B>module ghost_mod</B><A HREF="../src/ghost_mod.f">  src</A></P>
+
+<P>
+      The purpose of this module is to define a ghost function
+      which always returns a unique identifier. Commonly this
+      identifier is used to see if an object has changed.
+</P>
+
+      <P><B>module CRYSTAL_mod</B><A HREF="../src/crystal_mod.f">  src</A></P>
+
+<P>
+
+
+      use ghost_mod
+      use core_mod
+      use math_mod
+      use kind_mod
+      use lattice_mod
+      use atomic_data_mod
+      use atoms_mod
+</P>
+
+      <P><B>module ATOMIC_DATA_MOD</B><A HREF="../src/atomic_data_mod.f90">  src</A></P>
+
+<P>
+
+      Defines a type(atomic_data), which is a compendium of atomic data.
+      It is an object.
+</P>
+
+<P>
+      Queries about the nature of atoms are encapulated here,
+      as well as, inquiries about ppots, atomic orbitals, etc. (I hope).
+</P>
+
+
+      <P><B>module CONFIG_MOD</B><A HREF="../src/config_mod.f90">  src</A></P>
+
+<P>
+
+      config_mod defines an object type(config_obj), which represents
+      an entire electronic structure calculations for a given configuration
+      of atoms.
+</P>
+
+      use electrons_mod
+      use wavefunctions_mod
+      use multibasis_mod
+      use eigensolver_mod
+      use mixer_mod
+      use layout_mod
+      use lattice_mod
+      use crystal_mod
+      use grid_mod
+      use external_mod
+      use fields_mod
+      use core_mod
+      use kind_mod
+      use ghost_mod
+      use arg_mod
+</P>
+
+      <P><B>module MULTIBASIS_MOD</B><A HREF="../src/multibasis_mod.f90">  src</A></P>
+
+<P>
+
+      This module is suppose to encapsulate the parameters for determining
+      the protobasis at every kpoint.
+</P>
+
+<P>
+      This module also defines multibasis, which provide basic capabilities
+      for the operations performed in multivector.
+</P>
+
+<P>
+      This module contains data declarations which are to be held in common
+      by interdependent modules.  We call these declarations "wormhole".
+      Since no "friend" attribute exists for fortran modules, we must fake
+      it by using dangerous pointer transfers.
+</P>
+
+   use kind_mod
+   use arg_mod
+   use core_mod
+   use lattice_mod
+   use ghost_mod
+   use layout_mod
+   use crystal_mod
+
+      <P><B>module MULTIVECTOR_MOD</B><A HREF="../src/multivector_mod.f90">  src</A></P>
+
+<P>
+
+   use multibasis_mod
+   use kind_mod
+   use core_mod
+   use grid_mod
+   use layout_mod
+   use ghost_mod
+</P>
+
+      WORMHOLE
+
+      <P><B>module WAVEFUNCTIONS_MOD</B><A HREF="../src/wavefunctions_mod.f90">  src</A></P>
+
+<P>
+
+      Basic encapsulation of the eigenproblem solved at a given
+      quantum number (kpoint).
+</P>
+
+<P>
+      It unifies a hamiltonian operator on a multivector eigenbasis
+</P>
+
+<P>
+   use hamiltonian_mod
+   use multivector_mod
+   use eigensolver_mod
+   use multibasis_mod
+   use ghost_mod
+   use grid_mod
+   use layout_mod
+   use crystal_mod
+</P>
+
+      <P><B>module HAMILTONIAN_MOD</B><A HREF="../src/hamiltonian_mod.f90">  src</A></P>
+
+<P>
+  This modules contains the functions needed to form and apply the
+  Hamiltonian.
+</P>
+
+<P>
+   use grid_mod
+   use multibasis_mod
+   use math_mod
+   use multivector_mod
+   use crystal_mod
+   use atomic_data_mod
+   use lattice_mod
+   use ppot_data_mod
+</P>
+
+      <P><B>module local_ppot_mod</B><A HREF="../src/local_ppot_mod.f">  src</A></P>
+
+<P>
+
+
+      use core_mod
+      use kind_mod
+      use grid_mod
+      use lattice_mod
+      use layout_mod
+      use atoms_mod
+      use atomic_data_mod
+      use ppot_data_mod
+      use crystal_mod
+</P>
+
+<P>
+      This module handles the local pseudopotential entities like the
+      core change and the local pseudopotential (potential for confusion
+      with this terminology).
+</P>
+
+<P>
+      Why no nonlocal ppot?  Well, the nonlocal ppot needs to be written
+      in a custom way for the variety of wavefunction implementations that
+      are possible.  nonlocal ppot should be something the electons know
+      about.
+</P>
+
+      <P><B>module grid_mod</B><A HREF="../src/grid_mod.f">  src</A></P>
+
+<P>
+
+      use kind_mod
+      use core_mod
+      use layout_mod
+      use ghost_mod
+</P>
+
+<P>
+      grid provides the common medium of exchange as well as basic
+      type conversions.
+</P>
+
+
+      <P><B>module external_mod</B><A HREF="../src/external_mod.f">  src</A></P>
+
+<P>
+      the external type defines, completely the "exterior" aspects of the
+      configuration problem.  It determines symmetry groups, optimal layout
+      and form factors for the local pseudo-potential information.
+      Design note: this module might be inapproriately named, and the
+      question of whether pseudopotential forms belong here is also
+      debatable.
+</P>
+
+<P>
+      use ghost_mod
+      use kind_mod
+      use core_mod
+      use arg_mod
+      use layout_mod
+      use grid_mod
+      use crystal_mod
+      use symmetry_mod
+      use local_ppot_mod
+</P>
+
+      <P><B>module fields_mod</B><A HREF="../src/fields_mod.f">  src</A></P>
+
+<P>
+      This module gives part of the configuration state, namely the part
+      concerned with the internal fields.
+</P>
+
+      <P><B>module EIGENSOLVER_MOD</B><A HREF="../src/eigensolver_mod.f90">  src</A></P>
+
+<P>
+      This module encapsulates the eigensolver method.  The eigensolver
+      method is roughly independent of the choice of basis used.  Instead
+      the eigensolver is a block of control-flow information used to
+      guide a general iterative method described in this module.
+</P>
+
+<P>
+   use kind_mod
+   use arg_mod
+   use math_mod
+   use multivector_mod
+   use hamiltonian_mod
+</P>
+
+
+<P>
+      Program note: currently, the different format filters do not
+      do adequate error checking of their input for format errors.
+      This shouldn't be difficult to improve, but has yet to get
+      done.
+</P>
+
+<P>
+      Design note: If you look at the source of this module you will have
+      a pretty good idea for why C++ supports virtual functions....
+</P>
+
+      <P><B>module ppot_data_mod</B><A HREF="../src/ppot_data_mod.f">  src</A></P>
+
+<P>
+      use kind_mod
+      use math_mod
+      use core_mod
+</P>
+
+
+<P>
+      This module exists in order to encapsulate the radial functions required
+      by various pseudo-potential methods.
+</P>
+
+<P>
+      The radial data is meant to be read in as part of the atomic database,
+      read in at the same time at the rest of the atomic data.  Thus, unlike
+      other datatypes, this object can only be instantiated properly by the
+      an atomic_data_obj: which calls the special read constructor for
+      to parse to pseudo-potential block of an atom file.
+</P>
+
+      <P><B>module mixer_mod</B><A HREF="../src/mixer_mod.f">  src</A></P>
+
+<P>
+      use core_mod
+      use kind_mod
+      use lattice_mod
+      use grid_mod
+      use layout_mod
+      use math_mod
+      use ghost_mod
+</P>
+
+<P>
+      The mixing module provides the functions which combine a
+      density and a residual to form a new density.  There are a few
+      different forms of filtering which one typically wishes before
+      doing just dens(new) = dens(old) + res.
+</P>
+
+      <P><B>module electrons_mod</B><A HREF="../src/electrons_mod.f">  src</A></P>
+
+<P>
+      use kind_mod
+      use grid_mod
+      use math_mod
+      use layout_mod
+      use lattice_mod
+      use crystal_mod
+      use external_mod
+      use symmetry_mod
+      use wavefunctions_mod
+      use atomic_data_mod
+      use atoms_mod
+      use diary_mod
+      use arg_mod
+      use ghost_mod
+</P>
+
+<P>
+      This module defines type(electrons_obj).  This type is meant to
+      represent a set of electrons initialized relative to an external,
+      and a screening potential.
+</P>
+
+
+<P>
+      A set of electrons can be viewed as a set of symmetrized kpoints
+      for each representative of which one has a wavefunctions object
+</P>
+
+<P>
+      Basic utilities are provided for extracting density info and fermi
+      energy info from electrons.  There should be more features once I
+      am told what they are.
+</P>
+
+   
+</html>
+

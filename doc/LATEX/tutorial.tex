@@ -1,0 +1,70 @@
+\documentclass[letterpaper]{article}
+\usepackage{fullpage}
+\usepackage{epsfig}
+
+\title{Socorro: modular programming in FORTRAN}
+\author{Ross Lippert, et al}
+
+\begin{document}
+
+\maketitle
+
+Current version of this document will be essays or rants
+which may then be remixed into a coherent article.
+
+
+\section{C++ vs. FORTRAN: opinions}
+
+\begin{verbatim}
+(there should be some section like this in the paper, I think
+though just what form it should take I do not know)
+\end{verbatim}
+
+Engaging in a large-scale software project begs the question
+``why not use C++?''  C++ has emerged as a standardized
+programming language to support a variety of software abstraction
+techniques without loss of efficiency.
+
+One answer is inertia.  This project began as an attempt to refactor
+an legacy plane-wave code into a more maintainable and extensible
+piece of software.  Since the bulk of that code was written in
+FORTRAN, is was easier just to keep the FORTRAN for next incarnation.
+
+Another answer is audience.  The electronic structures community
+remains wedded to FORTRAN.  It may not be incorrect to say FORTRAN on
+SGI's.  The primary goal of Socorro is to be extensible and
+understandable by outsiders, and if those outsiders are FORTRAN users,
+then Socorro will be FORTRAN for now (though one might argue its the
+grad students who do the programming anyway and they all know C++).
+
+Although FORTRAN does not supply the support for all modern software
+engineering practices, significant improvements in data abstraction
+have been provided which, when augmented by some minor user
+conventions, we exploit in Socorro to give nearly first class support
+for user defined types.
+
+\include{modularity}
+
+\include{memory}
+
+\include{socorro}
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,501 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{amsfonts}
+
+\newcommand{\beas}{\begin{eqnarray*}}
+\newcommand{\enas}{\end{eqnarray*}}
+\newcommand{\bea}{\begin{eqnarray}} \newcommand{\ena}{\end{eqnarray}}
+\newcommand{\q}{k} \newcommand{\proof}{ {\bf Proof:} }
+\def\squarebox#1{\hbox to #1{\hfill\vbox to #1{\vfill}}}
+\newcommand{\qed}{\hfill\hfill\vbox{\hrule\hbox{\vrule\squarebox
+{.667em}\vrule}\hrule}\smallskip} \newcommand{\level}{\mbox{$\theta$}}
+\newcommand{\vspan}{\mbox{span}} \newcommand{\supp}{\mbox{supp}}
+\newcommand{\trace}{\mbox{tr}} \newcommand{\real}{\mathcal Re}
+\newcommand{\imag}{\mathcal Im} \newcommand{\diag}{\mbox{diag}}
+\newcommand{\offd}{\mbox{off}} \newcommand{\low}{\mbox{low}}
+\newcommand{\half}{{\frac{1}{2}}} \newcommand{\quarter}{{\frac{1}{4}}}
+\newcommand{\eighth}{{\frac{1}{8}}} \newcommand{\Det}{\mbox{det}}
+%\newcommand{\dim}{\mbox{dim}}
+\newcommand{\scp}{\mbox{scp}}
+\newcommand{\rank}{\mbox{rank}}
+\newcommand{\eig}{\mbox{{\bf eig}}}
+\newcommand{\vect}{\mbox{vec}}
+\newcommand{\integers}{\mbox{Z}}
+\newcommand{\field}{\mathbb{F}}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\complexes}{\mathbb{C}}
+\newcommand{\nullspace}{Null}
+
+\newcommand{\Rl}{\mathbb{R}}
+\newcommand{\Nl}{\mathbb{N}}
+\newcommand{\Ir}{\mathbb{Z}}
+\newcommand{\Cx}{\mathbb{C}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mbox{ad}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Proj}{{\rm Proj}}
+\newcommand{\Span}{{\rm span}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\paren}[1]{\left({#1}\right)}
+\newcommand{\bparen}[1]{\left\{{#1}\right\}}
+\newcommand{\brparen}[1]{\left[{#1}\right]}
+\newcommand{\norm}[1]{\left|\left|{#1}\right|\right|}
+\newcommand{\inp}[1]{\left<{#1}\right>}
+\newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil{#1}\right\rceil}
+\newcommand{\ket}[1]{\lvert#1\rangle}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\begin{document}
+
+It has been noted that the exact exchange OEP optimization
+problem seems to suffer from certain pathologies which
+lead to either non-uniqueness of the effective potential
+at optimality or the equivalence of the calculated OEP density
+and energy to that of the corresponding Hartree-Fock quantities.
+
+The argument can be summarized as follows.
+Let $P$ be any two-point Hermitian function
+(i.e. $P(x_1,x_2) = \bar{P}(x_2,x_1)$).
+The total energy functional, in either the Hartree-Fock or exchange-only
+KS schemes, is
+\beas
+E[P] = \int \delta(x-x^\prime) \paren{
+-\half \nabla_{x}^2 + v_{\mbox{ext}}(x) + \half v_J(x)
+}
+P(x,x^\prime)
+dx dx^\prime 
+ + E_X
+\enas
+where
+\beas
+v_J(x) &=& \int \frac{P(x^\prime,x^\prime)}{|x-x^\prime|} dx^\prime\\
+E_X &=& - \half \int \frac{|P(x,x^\prime)|^2}{|x-x^\prime|}
+ dx dx^\prime.
+\enas
+For the Hartree-Fock method, $E[P]$ is minimized over all
+$P$ of the form $P = \sum_{i=1}^{n_e} \phi_i(x_1) \bar{\phi}_i(x_2)$
+where $\inp{\phi_i, \phi_j } = \delta_{ij}$.
+The local optimality conditions for HF are
+$\brparen{P, \hat{H}^{HF}} = 0$, where
+\beas
+\hat{H}^{HF} = -\half \nabla^2 + v_{\mbox{ext}} + v_J + \hat{K}
+\enas
+where
+\beas
+\hat{K} \phi(x) = \int \frac{P(x^\prime,x)}{|x-x^\prime|} \phi(x^\prime) dx^\prime .
+\enas
+For exact exchange-only Kohn-Sham, $E[P]$ is also optimized with the added
+condition that the $\phi_i$ are eigenfunctions of
+\beas
+\hat{H}^{KS} = -\half \nabla^2 + v_{\mbox{ext}} + v_J + v_X
+\enas
+for some local potential $v_X$, which implies
+$\brparen{P, \hat{H}^{KS}} = 0$.  Since this merely restricts
+the search space for optimizing $E[P]$, the exact exchange-only
+KS solution cannot have a lesser energy than the exact HF solution.
+
+The paper by
+Staroverov et al explores seemingly paradoxical results
+where, in certain finite bases, it is possible to construct a
+$v_X$ such that $\brparen{P, \hat{H}^{KS}} = 0$ (i.e.
+$P$ satisfies the exact exchange-only KS constraints)
+when $P$ is the optimum of the associated Hartree-Fock
+problem.  Thus
+the minimum exact exchange-only KS energy coincides
+with that of HF and $P$ minimizes of both problems.
+
+The essence of the argument is the observation that
+$\hat{H}^{KS} -  \hat{H}^{HF} = v_X - \hat{K}$, and hence
+$\brparen{P, \hat{H}^{KS}} = 0$ if 
+$\brparen{ P , \hat{H}^{HF} } = 0$ and
+$\brparen{ P, v_X } = \brparen{ P, \hat{K} }$.
+Taking $P$ to be the HF minimizer gives the first condition,
+and a the choice of basis functions provides the second.
+Let $a_\mu(x)$ be real basis functions for the orbitals, thus
+$P(x_1,x_2) = \sum_{\mu_1,\mu_2} P^{\mu_1\mu_2} a_{\mu_1}(x_1) a_{\mu_2}(x_2)$,
+and $b_{\nu}(x)$ be real basis functions for the potentials,
+$v_X = \sum_{\nu} v^\nu_{X} b_{\nu}(x)$.  Then the relevant products are
+\beas
+  (v_X P)(x_1,x_2) &=& \sum_{\mu_1 \mu_2 \nu} v^\nu_{X} P^{\mu_1\mu_2}
+              b_{\nu}(x_1) a_{\mu_1}(x_1) a_{\mu_2}(x_2)\\
+  (\hat{K} P)(x_1,x_2) &=&
+      \sum_{\mu^\prime \mu_2} P^{\mu^\prime \mu_2}
+     \paren{ \int \frac{P(x^\prime,x_1)}{|x_1-x^\prime|} a_{\mu^\prime}(x^\prime) dx^\prime }
+     a_{\mu_2}(x_2)\\
+ &=&
+      \sum_{\mu_1 \mu \mu^\prime \mu_2} P^{\mu^\prime \mu_2}
+     \paren{ \int \frac{ P^{\mu \mu_1} a_{\mu}(x^\prime) a_{\mu_1}(x_1) }{|x_1-x^\prime|} a_{\mu^\prime}(x^\prime) dx^\prime }
+     a_{\mu_2}(x_2)\\
+ &=&
+      \sum_{\mu_1 \mu \mu^\prime \mu_2}  P^{\mu \mu_1} P^{\mu^\prime \mu_2}
+     \paren{ \int \frac{ a_{\mu}(x^\prime)a_{\mu^\prime}(x^\prime) }{|x_1-x^\prime|} dx^\prime }
+     a_{\mu_1}(x_1) a_{\mu_2}(x_2).
+\enas
+Clearly, we can have $v_X P = \hat{K} P$ by
+\beas
+b_{\nu(\mu,\mu^\prime)}(x) 
+&=& \int \frac{ a_{\mu}(x^\prime)a_{\mu^\prime}(x^\prime) }{|x-x^\prime|}
+   dx^\prime\\
+v^{\nu(\mu,\mu^\prime)}_{X}
+ &=& \frac{P^{\mu \mu_1} P^{\mu^\prime \mu_2}}
+          {P^{\mu_1 \mu_2}}
+\enas
+for some appropriate choice of index map, $\nu(\mu,\mu^\prime)$
+(generically, $P^{\mu_1\mu_2}$ is non-vanishing).
+Staroverov et al acknowledge that this construction reveals that
+for a generic basis of wavefunction, $\{a_\mu\}$, there is at least
+one choice of potential basis, $\{ b_{\nu} \}$ such that non-local
+effects can be {\em simulated} by an appropriate choice of local potential.
+Even for $\{ b_{\nu} \}$ not so pathologically chosen, we might expect
+to see some ability to simulate non-local parts of $\hat{K}$ with
+a sufficiently large number of local basis functions.
+
+
+\subsection{A truly degenerate case}
+
+It is certainly possible that, in a finite wavefunction basis, the optimal
+energies given by both the OEP and HF methods coincide.  One very contrived
+example is a basis consisting of $n_e$ functions $a_{1},\ldots,a_{n_e}$
+where the $a_i(x)$ are the exact orbitals of the Hartree-Fock energy.
+In such a basis, no matter what $v_X$ may be, the $P$ corresponding to
+the eigenvectors of $\hat{H}^{KS}$ is the identity matrix and the
+solution coincides with the Hartree-Fock solution.  Without much
+effort one can select a basis, which ensures that the Kohn-Sham solutions
+are arbitrarily close to the Hartree-Fock solutions, {\em independent} of the
+choice of basis for $v_X$.  Our thesis is that this example is generic.
+If the wavefunction basis is sufficiently small, and spans the HF
+solution, then the xOEP solution will be forced to resemble the HF solution.
+Staroverov et al, in constrast, have considered the wave function basis
+fixed and reasonably rich, while having too large a potential function basis.
+
+\subsection{How large is too large?}
+
+Consider the plane-wave bases, $a_\mu(x) = e^{i \mu \dot x}$ and
+$b_\nu(x) = e^{i \nu \dot x}$ where $\norm{\mu}^2 \le \varepsilon_C$.
+Clearly, the eigenvectors of $\hat{H}^{KS}$ have no dependence of any
+potential basis elements with $\norm{\nu}^2 > 4 \varepsilon_C$.
+In periodic systems, the number of basis elements for potentials
+can be no larger that eight times the number of basis elements for
+wavefunctions.  If the wavefunctions have $n$ degrees of freedom,
+then the potentials should have, at most, $\propto n$ degrees of freedom.
+The construction of Staroverov requires $\propto n^2$ basis functions
+for potentials and does not apply to plane wave bases.  These considerations
+raise some doubt regarding the nature of their manipulations.
+
+There is some reasonably physical reasoning to suspect that the
+dimension of potential space should be proportional (if not less than
+or equal) to the dimension of wavefunction space.  One interpretation
+of the term {\em local} as applied to a finite basis representation of
+$v_X$ is that $v_X$ approximately commute with the position operator.
+In a finite wavefunction basis, the position operators are matrices of
+order $|\{a_{\mu}\}|$.  Hence, the space of operators which commute
+with the finite basis position operators can be no more than
+$|\{a_{\mu}\}|$ dimensional.
+
+For our own plane-wave work, we take $\norm{\nu}^2 \le \varepsilon_C$,
+ensuring an equal number of degrees of freedom.  This also has the
+effect of removing certain null-vectors of the $v_X$ minimization which
+ultimately arise from the ability of the wavefunction basis to represent
+the first-order orbital shifts used to compute the OEP gradient.
+
+\subsection{The KS-wavefunctions are not variational}
+
+It is easy to carrying over intutions from previous methods for DFT
+which do not apply to OEP calculations.  One of these is that the
+energy is variational in the wavefunction basis, i.e. as one adds more
+elements to the basis, the optimal $E$ value must decrease.  This is
+true for traditional DFT and HF, but is not true for xOEP.  Additional basis
+functions allow for more accurate $\hat{H}^{KS}$ wavefunctions, of
+course, but this need not be accompanied by a decrease in $E[P]$, it
+may increase, in fact.  For example, consider a basis which initially
+consists of exact HF orbitals.  If the wavefunction basis is extended
+by a generic basis function, $E[P]$ can be expected to increase.
+
+In xOEP, $E[P]$ is variational in $v_X$ and, hence, the local potential
+basis but not the wavefunction basis, which serve merely to accurately
+calculate $E$ as a functional of $v_X$.
+
+As an illustration of principle, we outline a hypothetical procedure
+to obtain a converged OEP solution.  One fixes a $\{b_\nu\}$ potential
+basis and an initial $\{a_\mu\}$ wavefunction basis.  One solves the
+finite dimensional OEP problem.  Then one extends the $\{a_\mu\}$
+basis with new elements, resolving for $v_X$ with its basis fixed,
+until $E[P]$ converges.  (Since the energy can change in either direction
+as the wavefunction basis is increased, and this could be a serious
+theoretical problem in ascertaining convergence.)  One then has an
+upper bound on the true OEP energy, variational in $v_X$.  One can
+then augment the $\{b_\nu\}$ and begin again.
+
+We suspect that if the wavefunction basis of Staroverov's examples
+were extended by even a few basis functions, it would be clear that
+their HF and xOEP solutions will stop coinciding.
+
+
+{\bf **** stop reading here ****}
+
+
+{\bf Some rambling about cutoffs again}
+
+Suppose I wish to optimize $e(x)$ such that $x = G(y)$ for some $y$.
+This is, essentially, the sort of system one solves in an OEP problem.
+Clearly, if the matrix
+$\frac{\partial G}{\partial y}(y)$ is not full rank (e.g.
+more $y$ variables than $x$ variables) such a system can be expected
+to have non-unique $y$ solutions.  Applying the usual theory of
+constrained optimization (via Lagrange multipliers or what have you)
+we obtain the equations for local optimality,
+\beas
+(\nabla e) \cdot \frac{\partial G}{\partial y} = 0
+\enas
+which amounts to a number of orthogonality conditions equal to the
+number of $y$ variables, expressing the basic idea that
+$(\nabla e) \cdot \delta x = 0$ for all
+$\delta x = \frac{\partial G}{\partial y} \delta y$ for any $\delta y$.
+
+In OEP problems, $P$ has the role of $x$ and $v_x$ the role of $y$,
+while $E[P]$ be the total energy functional and
+$G[v_x]$ is the density matrix,
+$P = \sum_{i=1}^{n_e} \phi_i \phi_i^\dagger$,
+corresponding to the first $n_e$ eigenvectors of
+\beas
+\hat{H}^{KS} \phi_i = \varepsilon_i \phi_i.
+\enas
+For a general operator perturbation, $\delta \hat{H}$ of $\hat{H}^{KS}$,
+the variation of $P$ is
+\beas
+\delta P =
+ \sum_{i,j} \omega_{ij} \phi_i
+ \inp{\phi_i \left|\delta \hat{H}\right| \phi_j}
+ \phi_j^\dagger
+\enas
+where $\omega_{ij}$ are the appropriate divided differences.
+and, hence, with some manipulation (and sign errors),
+\beas
+\frac{\partial E[P]}{\partial P} \bullet \delta P
+ &=&
+ \frac{\partial E[P]}{\partial P}
+ \bullet
+ \paren{
+ \sum_{i,j} 
+ \omega_{ij}\phi_i \inp{\phi_i \left|\delta \hat{H}\right| \phi_j}
+ \phi_j^\dagger
+ }\\
+ &=&
+ \hat{H}^{HF}
+ \bullet
+ \paren{
+ \sum_{i,j} 
+ \omega_{ij} \phi_i \inp{\phi_i \left|\delta \hat{H}\right| \phi_j}
+ \phi_j^\dagger
+ }\\
+ &=&
+ \sum_{i,j}
+ \omega_{ij}
+ \inp{\phi_j \left|\hat{H}^{HF}\right| \phi_i}
+ \inp{\phi_i \left|\delta \hat{H}\right| \phi_j}
+ \\
+ &=&
+ \sum_{i,j}
+ \omega_{ij}
+ \inp{\phi_j \left|\hat{K} - v_X\right| \phi_i}
+ \inp{\phi_i \left|\delta \hat{H}\right| \phi_j}.
+\enas
+\beas
+\min_{v_x} \norm{ \hat{K} - v_X }^2_{\omega}
+\enas
+where $\norm{ \hat{O} }^2_\omega =
+ \sum_{ij} \omega_{ij} 
+           \left| \inp{ \phi_i \left| \hat{O} \right| \phi_j} \right|^2$,
+$\phi_i$ are the eigenvectors of $\hat{H}^{KS}$, and
+$\omega_{ij}$ are appropriate divided differences.
+
+$v_x = \sum_{\nu=1}^{n_\nu} v_\nu b_\nu(x)$
+and $\delta \hat{H} = \delta v_X$, we have the optimality
+conditions
+\beas
+ \sum_{i,j}
+ \inp{\phi_j \left|\hat{K} - v_X\right| \phi_i}
+ \omega_{ij}
+ \inp{\phi_i \left|b_\nu \right| \phi_j}
+  &=& 0\\
+ \sum_{i,j,\nu^\prime}
+ v_{\nu^\prime}
+ \inp{\phi_j \left|b_{\nu^\prime}\right| \phi_i}
+ \omega_{ij}
+ \inp{\phi_i \left|b_\nu \right| \phi_j}
+ &=&
+ \sum_{i,j}
+ \inp{\phi_j \left|\hat{K}\right| \phi_i}
+ \omega_{ij}
+ \inp{\phi_i \left|b_\nu \right| \phi_j}
+\enas
+
+If $\delta \hat{H}$ is restricted to a linear combination of
+basic perturbations, $\delta \hat{H} = \sum_i c_i \hat{v}_i$
+
+for the lowest $n_e$ eigenvectors $\phi_i$.  This gives a density
+$P = \sum_{i=1}^{n_e} \phi_i \phi_i^\dagger$.  The claim is that
+
+{\bf OK, now I talk about bases}
+
+{\bf end of stab}
+
+
+
+In infinite dimensions, an operator is considered local when it
+commutes with the position operator, $\brparen{ \hat{O}, \hat{x} } = 0$.
+For a truncated basis, we believe this is equivalent to the
+condition that the matrices with
+elements $\inp{ a_{\mu} \left| \hat{x} \right| a_{\mu^\prime }}$
+must commute with
+$\inp{ a_{\mu} \left| \hat{v}_X \right| a_{\mu^\prime} }$.
+This is clearly something violated in the construction above
+is likely to violate.
+
+Under this ansatz, one way to automatically obtain a suitable basis,
+$b_\nu$ would be to take the eigenvectors $e^\nu_\mu$ of the matrix
+with elements $\inp{ a_{\mu} \left| \hat{x} \right| a_{\mu^\prime }}$
+and let
+$b_{\nu}(x_1,x_2)=
+\sum_\mu e^\nu_{\mu_1} e^\nu_{\mu_2} a_{\mu_1}(x_1) a_{\mu_2}(x_2)$,
+which looks, at first, like a non-local operator, but is, in fact,
+local for the given basis.
+
+In some cases, $b_\nu(x_1,x_2)$ can actually be localized.  For example,
+for a truncated plane-wave basis where $a_{\mu}(x) = \exp(i \mu \cdot x)$
+where $\mu \in K = \lambda^{-1} \integers^3 \cap \bparen{ \mu : |\mu| \le C }$
+for some length scale $\lambda$ and some cutoff $C$,
+we can just use the real form of the plane-wave basis:
+$b_{\nu}(x) = \bparen{\cos,\sin}(\nu \cdot x)$
+where $\nu \in K$, or
+$v_X(x) = \sum_{\nu \in K} v_{X \nu} \exp(i \nu \cdot x)$
+where $v_{X \nu} = \bar{v}_{X (-\nu)}$.
+
+{\bf I am now going to talk about cutoffs in a kind of rambling way
+to try out different ideas and explanations}
+
+In plane-wave computations is to take a cutoff of $2C$, twice the wave
+function cutoff, to represent scalar fields.  The reasoning behind this is
+that anything beyond $2C$ has a vanishing contribution to any matrix
+element.  Since
+$\inp{ a_{\mu} \left| \exp(i \nu \cdot x) \right| a_{\mu^\prime }}
+ = N \delta_{\nu (\mu - \mu^\prime)}$, the contribution to
+the matrix elements from $|\nu| > 2C$ vanishes.  However, we propose
+that the basis for $v_X$ be restricted to a cutoff of $C$ for
+purposes of practical computation.
+The gradient of $E$ with respect to $v_X$ is
+\beas
+  \sum_i \phi_i(x) \bar{\psi}_i(x) + \bar{\phi}_i(x) \psi_i(x).
+\enas
+The contributions to various frequencies in the sum formally
+range up to $2C$, but near convergence, if the coverged $\phi_i$ are
+well-represented by plane-waves with vanishing high frequency
+components, the gradient will receive vanishing contributions
+at some frequencies between $C$ and $2C$.  As a simplified example,
+if the converged $\phi_i$ have zero coefficients for all frequencies
+$|\mu|> k$, then the gradient of $v_X$ has exactly zero contribution
+at frequencies beyond $C+k$.  This will lead to very ill-conditioned
+problems in the minimization.
+
+A more physical way of motivating the more conservative cutoff on
+the plane-wave basis for potentials is by considering the effect of
+a single plave-wave potential perturbation on the eigensystem,
+\beas
+\paren{\hat{H} + \epsilon \exp(i \nu \cdot x) } (\phi + \epsilon \psi)
+ = (\varepsilon + \epsilon \chi) (\phi + \epsilon \psi)
+\enas
+for a single $\phi$, presumed to be one of the ground state
+eigenvectors of $\hat{H}$ with eigenvalue $\varepsilon$.  We will
+presume $\nu$ is large.  The
+orbital shift, $\psi$, can be obtained by solving
+\beas
+ \hat{H} \psi - \varepsilon \psi &=& \paren{ \mu - \exp(i \nu \cdot x) } \phi\\
+ \mu &=& \inp{ \phi \left| \exp(i \nu \cdot x) \right| \phi }\\
+ \inp{\psi,\phi} &=& 0.
+\enas
+The presence of $\mu$ in the first equation ensures consistency with
+the third equation.  For realistic ground states, we expect $\phi$
+to have a spectrum which is concentrated around the origin.  Multiplication
+shifts that spectrum from the origin to $\nu$.  For high frequency
+spectral components, $\hat{H} \sim -\half \nabla^2$, and we expect
+$\psi$ to have significant frequency contributions concentrated around $\nu$.
+If $\nu$ is larger than the wave function cutoff, $\psi$ cannot be
+adequately represented.  The perturbation has a negligible first
+order contribution in the wave function basis, artificially.
+
+Turning this around, we might also say that since $\psi$ physically
+represents the coupling of $\phi$ to unoccupied orbitals
+through the perturbing potential, if the wave function cutoff is
+too small to represent the bulk of these unoccupied orbitals, it
+had best not be considered in the potential basis, since its effects
+cannot be represented.  Certainly, if you cannot couple represent
+the coupling of $0$ frequency to $\nu$, you are in trouble.  This
+also suggests that setting the $v_X$ cutoff to the wave function
+cutoff is not overly conservative, but is, in fact, minimally
+conservative.  One may wish to make the $v_X$ cutoff even
+smaller to ensure better representability of the unoccupied couplings.
+
+Setting the $v_X$ cutoff to the wave function cutoff is one way to
+circumvent this problem.  Alternatively, one could use an arbitrarily
+large $v_X$ cutoff, so long as one represented the $\psi$ functions
+to that cutoff.  In most implementations, however, this requires much
+modification of existing code to carry out.
+
+
+
+\end{document}
+
+In order to assure this commutativity
+
+
+How well does the $v_X$ constructed above do that?
+
+
+
+
+Since $P$ is now entirely
+determined by $v_X$, the conditions for local optimality are
+can ve expressed in terms of $v_X$ and they are
+\beas
+  \sum_i \phi_i(x) \bar{\psi}_i(x) + \bar{\phi}_i(x) \psi_i(x) = 0
+\enas
+where $\psi_i(x)$ is the solution to the orbital shift equations,
+\beas
+  \hat{H}^{KS} \psi_i - \varepsilon_i \psi_i &=& -\hat{K} \phi_i\\
+  \inp{  \phi_i , \psi_i } &=& 0.
+\enas
+such that 
+
+
+
+In terms of $P$, the equations for local optimality for HF are
+Hermitian
+positive semi-definite functions
+
+
+$P(x_1,x_2) = \sum_{i=1}^\infty \omega_i \phi_i(x_1) \bar{\phi}_i(x_2)$
+where $\{\phi_i\}$ is a complete basis and
+$\omega_i \ge 0$ and $\sum_i \omega_i = n_e$.  In other words,
+the operator $\hat{P}$ given by
+$\hat{P} \phi(x) = \int P(x,x^\prime) \phi(x^\prime) dx^\prime$
+is Hermitian, positive semi-definite, with $\trace\{ \hat{P} \} = n_e$.
+The total energy, in 
+
+%$P(x_1,x_2) = \sum_{k=1}^{n_e} \phi_k(x_1) \bar{\phi}_k(x_2)$
+%where $\phi_i(x)$ are the lowest evergy eigenfunctions of either the
+%Fock operator, $\hat{F} = \hat{H}_0 + \hat{K}$ or the
+%exchange-only Kohn-Sham Hamiltonian $\hat{H} = \hat{H_0} + \hat{v}$
+%where the operators are defined by
+%\beas
+%\hat{H}_0 \phi(x) &=& -\half \nabla^2 f + v_{\mbox{ext}}(x)\phi(x) + v_J(x) \phi(x)\\
+%\hat{v}   \phi(x) &=& v(x) \phi(x)\\
+%\hat{K}   \phi(x) &=& \int \frac{\delta E_X}{\delta \phi(x)
+\end{document}

@@ -1,0 +1,226 @@
+\documentclass[letterpaper]{article}
+
+\title{Socorro: High Level Functionality}
+\author{Stephen Foiles}
+
+\begin{document}
+
+\section{Structural Optimization:}
+
+Fixed volume optimization of the atomic positions. All atoms are
+moved - there is currently no method for constraining specific
+atoms. This is called by the statement "if
+(optimize\_lattice(cfg)) call diary(cfg)" in socorro.f90.
+optimize\_lattice returns a logical that indicates whether any
+modifications to cfg have occurred.  The cfg that is returned
+corresponds to the optimized positions.
+
+The relevant options in argvf are as follows
+
+\begin{list}{}{}
+\item[relax\_method:] Specify the relaxation method to be used.
+
+\begin{list}{}{}
+
+\item[NONE] default Do not perform a structural optimization
+\item[STEEPEST\_DESCENTS, SD]  'steepest descents' (I have seen
+different definitions of 'steepest descents'.) What is implemented
+here is the simple approach of changing the coordinates by  where
+F is the current force and relax\_prefactor is a parameter that
+you can set (see below).  This is usually NOT the best way to get
+to a minimum.  It was included because it was the obvious first
+thing to code and is a standard 'brute force' approach to
+optimization.
+\item[CONJUGATE\_GRADIENT, CG]  'conjugate
+gradients' Implements a conjugate gradient search for the minimum
+energy structure.  (See Press, et.al, 'Numerical Recipes' for a
+description of this algorithm.)  This is typically the best way to
+go when the initial positions are close to the minimum.
+\item[QUENCHED\_MINIMIZATION, QM] 'quenched MD'  This implements an
+algorithm described in Della Valle and Andersen, J. Chem. Phys.
+97, 2682 (1992).  It performs a molecular dynamics simulation
+using the 'velocity Verlet' algorithm with the following
+modifications.  At each time step and for each particle, the
+velocity is reset as follows.  For ($ \vec{f} \cdot \vec{v} > 0
+$), the velocity is replaced by the projection of the velocity
+along the direction of the force.  For ($ \vec{f} \cdot \vec{v} <
+0$), the velocity is set to zero. This will quench the dynamics to
+the minimum. This approach seems to be best suited for getting
+close to the minimum when the initial guess may be poor.
+\end{list}
+
+\item[relax\_force\_tol:]  This is the stopping criteria for all methods.  The code stops
+when the root mean square value of the force components is less
+than this value.  default: 1.d-3.
+
+\item[relax\_steps:]  This sets a maximum number of force calls that can be made to
+attempt to find the minimum.  Note that in some cases, the actual
+number of calls may exceed this slightly since it will always try
+to finish the line minimizations in the conjugate gradient
+approach.  default: 100
+
+\item[relax\_prefactor:] This is the constant used in relax\_method=1 (see above).  Note
+that the efficiency and stability of this method depends on this
+choice.  If the value is too large, the optimization will become
+unstable.  If it is too small, a large number of force calls is
+required to get to the minimum.  default: 1.0
+
+\item[relax\_time\_step:] This is used in relax\_method=3.  It sets the fixed time step for
+the MD simulation.  default: 1.0 (probably too small for most
+cases.)
+
+\item[atom\_mass\_xxx] This is the mass of the atom in amu used for quench\_minimization.  Here
+xxx is replaced by the tag used in the crystal file.  There should
+be one line like this for each type.  The default is to assume a
+mass of 1 amu.
+
+\end{list}
+
+\section{Molecular Dynamics}
+
+The code can currently perform either a NVE (constant number,
+volume and energy) micro-canonical simulation or a NVT (constant
+number, volume and temperature) simulation.  For the later case, a
+variety of standard thermostat methods are implemented.  The
+initial velocities can be either read from the file
+"data/initial\_velocity" or are set randomly based on an input
+temperature.  The integration is performed via the 'velocity
+Verlet' algorithm (see any book on MD simulations) with a fixed
+time step.  Intermediate atomic positions are output to the file
+'md\_output' at every time step.  The masses are set with the arg
+parameter atom\_mass\_xxx (see below).
+
+This is called by the statement "if (run\_moldyn(cfg)) call
+diary(cfg)" in socorro.f90.  run\_moldyn returns a logical that
+indicates whether any modifications to cfg have occurred.  If an
+MD simulation is performed, the cfg returned is that for the final
+time step.
+
+The relevant parameters are
+
+\begin{list}{}{}
+
+\item[md\_method:] Specify the molecular dynamics method to be
+used.
+
+\begin{list}{}{}
+\item[NONE:] (default) - do no MD.
+\item[NVE:] perform a NVE simulation using a fixed time-step velocity
+Verlet algorithm.
+\item[NVT\_RESCALE:] perform a NVT (isochoric,
+isothermal) simulation using a fixed time-step.  The temperature
+control is through periodic rescaling of the velocities to achieve
+the desired temperature.
+\item[NVT\_ANDERSON:] perform a NVT
+(isochoric, isothermal) simulation using a fixed time-step.  The
+temperature is controlled via a stochastic method due to Anderson
+(see H C Anderson, J. Chem. Phys. 72, 2384 (1980)).  At each time
+step and for each atom, a random velocity from a Maxwell-Boltzman
+distribution replaces the velocity with a probability give by
+1/temp\_freq.
+\item[NVT\_HOOVER:] perform a NVT (isochoric,
+isothermal) simulation using a fixed time-step.  The temperature
+is controlled using the Hoover implementation of the Nosé
+thermostat. (See, for example, "Understanding Molecular
+Simulations" by Frenkel and Smit).  The rate of energy flow
+between the ions and the heat bath is controlled by
+md\_hoover\_mass.
+\end{list}
+
+\item[md\_time\_step] Time step used for the MD. See note below regarding units. default: 100.
+
+\item[md\_steps] Number of time steps to integrate the equation of motion. default:
+0
+
+\item[md\_skip\_steps]  Number of time steps to ignore before starting to compute averages
+- in other words (skip\_steps)*(time\_step) is an equilibration time.  default: 0
+
+\item[md\_init\_temp]  Temperature used to define the initial velocity distributions.
+The velocities are selected from a Maxwell-Boltzman distribution.
+Then they are adjusted to give zero total momentum and rescaled to give the exact temperature requested. default: 0
+
+\item[md\_desired\_temp] Target temperature for the isothermal simulation methods. default: md\_init\_temp
+
+\item[md\_temp\_freq] Parameter that determines the frequency of velocity modifications for the
+isothermal simulation methods.
+For NVT\_RESCALE, the velocity is rescaled every md\_temp\_freq time steps.
+For NVT\_ANDERSON, it give the inverse of the probability that an atom will get a random velocity in a given time step.
+
+\item[atom\_mass\_xxx] This is the mass of the atom in amu.  Here
+xxx is replaced by the tag used in the crystal file.  There should
+be one line like this for each type.  The default is to assume a
+mass of 1 amu.
+
+\item[md\_hoover\_mass] Used by NVT\_HOOVER.
+It is the effective mass associated with the additional coordinate added to control the temperature.
+It may need to be adjusted by trial and error.  default: 1000.
+
+\item[md\_gen\_velocities]  Specify the method for initializing
+velocities
+\begin{list}{}{}
+\item[YES] Determine the initial velocities based on md\_init\_temp.
+(default)
+\item[NO:] Read the initial velocities from the file
+'initial\_velocity' in the run directory.  This file contains a
+line with the x, y, and z velocity for each atom on a separate
+line.  The order of the atoms is assumed to be the same as in the
+crystal file.
+\end{list}
+
+\end{list}
+
+\section{Transition State Finding}
+
+Currently, there is only one transition state finding method implemented, the 'dimer method'.  This is described in detail in Henkelman and Jónsson, J. Chem. Phys. 111, 7010 (1999).  This method attempts to find saddle points with one unstable mode (ie a single negative value of the Hessian matrix.)  The trick is to avoid computing the second derivatives of the energy.  To do this, two configurations that differ by a fixed distance are considered.  (This is the 'dimer'.)  The dimer is alternately rotated such that the separation is along the direction of minimum curvature and then translated in the direction of the saddle point.  The current implementation does not incorporate all of the sophisticated algorithms for optimization discussed in the paper. Also, there is currently no way to initialize the first orientation of the dimer other than choosing a direction at random.  (Waiting on the new I/O routines before implementing this.) This takes a large number of forces calls, especially to get the first estimate of the dimer orientation.
+
+This is called by the statement "if (transition\_state(cfg)) call
+diary(cfg)" in socorro.f90.  transition\_state returns a logical
+that indicates whether any modifications to cfg have occurred.  On
+return after a transition state search, cfg corresponds to the
+transition state.
+
+The relevant parameters are the following
+
+\begin{list}{}{}
+
+\item[ts\_method]  Specify the transition state method
+
+\begin{list}{}{}
+\item[0] (default) do nothing
+\item[1] implement the dimer method
+\end{list}
+
+\item[dimer\_separation] The magnitude of the real space separation between the two configurations of the dimer.  The algorithms are based on the assumption that this is small.  Of course, if it is too small, numerical errors can become unacceptable because many of the calculations are based on differences between the calculations for each of the two configurations.  default: 0.10
+
+\item[dimer\_force\_tol] Stopping criteria which is based on the rms forces on the 'dimer'.  Ideally, this will correspond to the net forces at the saddle point.  default: 1.d-3
+
+\item[dimer\_max\_steps] Maximum number of calculations of the dimer properties before the algorithm stops.  Note that each calculation of a dimer property requires 2 electronic structure calculations.  In some cases, it may make somewhat more calculations in order to stop at a sensible place.  default: 100
+\end{list}
+
+\section{Notes on units:}
+
+The convention in the code is that energies are in Rydbergs and that distances are in Bohrs.
+I have made the choice to have the code work with the nuclear masses in units of the electron mass -
+i.e. keep in the spirit of atomic units.
+For convenience, when masses are entered, they are assumed to be in amu (atomic mass units)
+and are converted in the code to electron masses.
+Having made this choice for the mass unit, the choice of the time unit is now fixed.  The unit of time is .
+Since a typical MD time step is on the order of a few femtoseconds (fs), the typical time steps
+will be on the order of 100 in the units used here.
+
+There is a subtlety in the determination of the temperature.  In
+classical thermodynamics (MD is classical in the treatment of the
+ionic motion), each degree of freedom has a kinetic energy of .
+The issue is related to the number of degrees of freedom.  If the
+MD method used conserves the total momentum, then the number of
+degrees of freedom is 3(N-1).  If the total momentum is not
+conserved, the number of degrees of freedom is 3N.  The NVE and
+NVT\_RESCALE methods conserve the total momentum.  (Actually, for
+NVT\_RESCALE the total momentum remains zero if it starts out
+zero. The initial velocities are generated in the code to have
+zero total momentum.)  For these methods, the code uses 3(N-1)
+degrees of freedom to determine the temperature.  For
+NVT\_ANDERSON, the total momentum is not conserved, so the code
+uses 3N degrees of freedom to compute the temperature.
+
+\end{document}

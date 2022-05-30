@@ -1,0 +1,5 @@
+#!/usr/bin/perl
+
+foreach $fname (@ARGV) {
+`grep '!doc\\\$' $fname | sed -e 's/!doc\\\$/     /' > $fname.doc`;
+}

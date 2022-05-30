@@ -1,0 +1,689 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+
+\newcommand{\beas}{\begin{eqnarray*}}
+\newcommand{\enas}{\end{eqnarray*}}
+\newcommand{\bea}{\begin{eqnarray}} \newcommand{\ena}{\end{eqnarray}}
+\newcommand{\q}{k} \newcommand{\proof}{ {\bf Proof:} }
+\def\squarebox#1{\hbox to #1{\hfill\vbox to #1{\vfill}}}
+\newcommand{\qed}{\hfill\hfill\vbox{\hrule\hbox{\vrule\squarebox
+{.667em}\vrule}\hrule}\smallskip} \newcommand{\level}{\mbox{$\theta$}}
+\newcommand{\vspan}{\mbox{span}} \newcommand{\supp}{\mbox{supp}}
+\newcommand{\trace}{\mbox{tr}} \newcommand{\real}{\mathcal Re}
+\newcommand{\imag}{\mathcal Im} \newcommand{\diag}{\mbox{diag}}
+\newcommand{\offd}{\mbox{off}} \newcommand{\low}{\mbox{low}}
+\newcommand{\half}{{\frac{1}{2}}} \newcommand{\quarter}{{\frac{1}{4}}}
+\newcommand{\eighth}{{\frac{1}{8}}} \newcommand{\Det}{\mbox{det}}
+%\newcommand{\dim}{\mbox{dim}}
+\newcommand{\scp}{\mbox{scp}}
+\newcommand{\rank}{\mbox{rank}}
+\newcommand{\eig}{\mbox{{\bf eig}}}
+\newcommand{\vect}{\mbox{vec}}
+\newcommand{\integers}{\mathbb{Z}}
+\newcommand{\field}{\mathbb{F}}
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\complexes}{\mathbb{C}}
+\newcommand{\nullspace}{Null}
+
+\newcommand{\Vscp}{V}
+\newcommand{\Rl}{\mathbb{R}}
+\newcommand{\Nl}{\mathbb{N}}
+\newcommand{\Ir}{\mathbb{Z}}
+\newcommand{\Cx}{\mathbb{C}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mbox{ad}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Proj}{{\rm Proj}}
+\newcommand{\Span}{{\rm span}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil{#1}\right\rceil}
+\newcommand{\ket}[1]{\lvert#1\rangle}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\begin{document}
+
+This is a short description of some of the observations we have
+made on the finite temperature OEP method which may or may not be relevant
+for the next publication.
+
+To review, we have a ``bare'' Hamiltonian $H_B = K + V_{I}$ representing
+the sum of kinetic energy and ionic (or otherwise external) potentials.
+We consider two energy functions
+\beas
+E_{KS} &=& H_B \bullet \rho + \Vscp \bullet \rho + \frac{1}{\beta}
+           \left( \log\rho \bullet \rho + \log(I-\rho) \bullet (I-\rho) \right)\\
+E &=& H_B \bullet \rho + E_{HXC}(\rho) + \frac{1}{\beta}
+           \left( \log\rho \bullet \rho + \log(I-\rho) \bullet (I-\rho) \right)\\
+  &=& E_{KS} + E_{HXC}(\rho) - \Vscp \bullet \rho.
+\enas
+In OEP, we consider $\rho$ to be a function of $\Vscp$ subject to the condition
+that $I \bullet \rho = n$ and $E_{KS}$ is minimized, which is equivalent
+to the condition that $\frac{\partial E_{KS}}{\partial \rho} = \mu I$, for
+some Lagrange multiplier $\mu$.  This is acheived by
+setting
+$\rho(\Vscp) = (I + e^{\beta (H_B + \Vscp - \mu I)})^{-1}$, where $\mu$ is the
+Lagrange multiplier selected to ensure $I\bullet \rho = n$.  We then
+seek to minimize $E(\rho)$ as a function of $\Vscp$.
+
+In translating derivatives in $\rho$ to derivatives in $\Vscp$ we make use of
+the identity
+\beas
+  \frac{\partial F( f(X) )}{\partial X}
+  = \frac{\Delta f}{\Delta x}\left[ \frac{\partial F(Y)}{\partial Y} \right]
+\enas
+where the action of $\frac{\Delta f}{\Delta x}\left[\cdot\right]$, in an
+$X$ diagonal basis (let $x_i = x_{ii}$), is given by
+\beas
+\left(\frac{\Delta f}{\Delta x}\left[ Z \right]\right)_{ij}
+  = \frac{f(x_{i}) - f(x_{j})}{x_{i}-x_{j}} Z_{ij}
+\enas
+where $ \frac{f(x_{i}) - f(x_{j})}{x_{i}-x_{j}}$ is interpreted
+as a divided difference (taking derivatives when $x_{i} = x_{j}$).
+
+The gradient of $E$ as a function of $\Vscp$ is
+\beas
+  \frac{\partial E}{\partial \Vscp}
+  &=& \frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E}{\partial \rho} + \nu I \right]\\
+  &=& \frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \nu I \right].
+\enas
+where $\nu$ is selected so that 
+$I\bullet \frac{\partial E}{\partial \Vscp} = 0$.  In some applications, such as
+OEP, $\Vscp$ is a local operator, and the gradient is
+\beas
+  \frac{\partial E}{\partial \Vscp}
+  &=& \diag\left[\frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \nu I \right]\right].
+\enas
+
+\section{OEP Helman-Feynman correction}
+
+As Normand explained, the Helman-Feynman equation is the basis for
+doing perturbative analysis of LDA approximations or Hartree-Fock to
+obtain variations in the energy as a result of a varying Hamiltonian.
+It says that if the bare Hamiltonian is a linear functon
+$H_B(s) = H_0 + s H_1$,
+and $E_{min}(s)$ is the minimum $E$ (as a function of $\Vscp$) for the given $s$,
+then the minimizer, $\Vscp$, of $E(s,\rho(s,\Vscp))$
+\beas
+\frac{d E_{min}}{d s} = H_1\bullet \rho
+\enas
+giving a linearization of the energy which is independent of
+any first derivatives at the minimum.
+
+We have found things to be slightly different in the OEP case
+both at finite and zero temperature.
+\beas
+\delta E &=& \frac{\partial E}{\partial s} \delta s +
+         \frac{\partial E}{\partial H} \bullet H_1\\
+         &=& \trace\{\rho H_1\}
+      +\frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I \right]
+      \bullet H_1.
+\enas
+The second term vanishes if
+\begin{itemize}
+\item $H_1$ is local (since 
+$\frac{\Delta \omega}{\Delta \varepsilon}
+      \left[ \frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I \right]$
+has vanishing diagonal)
+\item LDA: $\frac{\partial E_{HXC}}{\partial \rho}$ is local
+(since $\frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I$ vanishes)
+\item Hartree-Fock: $\Vscp$ is not restricted to be local
+(since $\frac{\partial E_{HXC}}{\partial \rho} - \Vscp + \mu I$ vanishes)
+\end{itemize}
+Thus, this correction is not present in the usual methods of
+LDA and Hartree-Fock.  Corrections to higher order derivatives are
+thus also expected to appear.
+
+\section{Higher derivatives}
+
+Higher order variations on $f(X)$ can be given by divided differences
+which generalize the first variation formula
+\beas
+\left(\frac{\partial f(X)}{\partial X}\left[Z\right]\right)_{ij}
+ &=&
+  \frac{f(x_{i}) - f(x_{j})}{x_{i}-x_{j}} Z_{ij}\\
+\left(\frac{\partial^2 f(X)}{\partial X^2}\left[Z^{(1)},Z^{(2)}\right]\right)_{ij}
+ &=&
+  \sum_k \frac{
+  \frac{f(x_{i}) - f(x_{k})}{x_{i}-x_{k}}
+  -\frac{f(x_{j}) - f(x_{k})}{x_{j}-x_{k}}
+  }
+       {x_{i}-x_{j}}
+ \left(Z^{(1)}_{ik} Z^{(2)}_{kj}+Z^{(2)}_{ik} Z^{(1)}_{kj}\right)\\
+\left(\frac{\partial^n f(X)}{\partial X^n}\left[Z^{(1)},\ldots,Z^{(n)}\right]\right)_{ij}
+ &=&
+ \sum_{k_1,\ldots,k_{n-1}} f[x_{i},x_{k_1},\ldots,x_{k_{n-1}}
+                                 x_{j}]
+ \sum_{\sigma \in S_n} 
+  Z^{(\sigma_1)}_{ik_1} Z^{(\sigma_2)}_{k_1k_2} \cdots Z^{(\sigma_{n-1})}_{k_{n-2}k_{n-1}} Z^{(\sigma_n)}_{k_{n-1}j}
+\enas
+
+\section{Approximations to higher order OEP quantities via planewaves}
+
+In order to obtain some insight into the relation of the various
+OEP derived quantities we have been exploring we can take a look at a
+system of plane waves.  In fact, we will simplify things further by
+considering non-interacting plane waves at zero temperature.  Perhaps
+we can lift some of these restrictions.
+
+Since the system is non-interacting, the $E_{HXC}$ term vanishes
+and $\Vscp = 0$ is optimal.  The gradient is
+\beas
+  \frac{\partial E}{\partial \Vscp} = 
+\diag\left(\frac{\Delta \omega}{\Delta \varepsilon}\left[ 0 \right]\right)
+\enas
+which can be varied by $\Vscp \rightarrow 0 + \delta V$ to obtain
+the variation of the gradient,
+\beas
+\delta \frac{\partial E}{\partial \Vscp} &=& 
+\diag\left(\frac{\Delta \omega}{\Delta \varepsilon}\left[ -\delta V \right]\right)
++\diag\left(\left(\delta \frac{\Delta \omega}{\Delta \varepsilon}\right)\left[ 0 \right]\right)
+\\
+&=&
+-\diag\left(\frac{\Delta \omega}{\Delta \varepsilon}\left[ \delta V \right]\right)
+\enas
+Thus we see that the Hessian is given by the action of the Jacobian
+restricted to local operators $\delta V$.  There being no possibility
+of confusion, we will drop the $\delta$ and use $V$ for a variation of
+the vanishing optimized effective potential.
+
+Let us suppose that we have a discrete set of wave numbers $K \subset
+\reals^3$, which we will use to represent the occupied orbitals of an
+idealized system.  In this case, the density operator is
+\beas
+\rho(\bar{x},\bar{x}^\prime)
+= \sum_{\bar{k} \in K} |\bar{k}><\bar{k}|
+= \frac{1}{N} \sum_{\bar{k}\in K} e^{-i\bar{k} \cdot(\bar{x}-\bar{x}^\prime)}.
+\enas
+with $\rho(\bar{x},\bar{x}) = n_e/N$ where $n_e = |K|$ is the number of
+electrons and $N$ is the unit volume.
+
+%It can be shown that for any zero temperature system, the local part
+%of the Jacobian acting on a local potential $V(\bar{x})$ is given by
+%\beas
+%   V(\bar{x}) &\rightarrow&
+%    2 \sum_{\bar{k} \in K, \bar{k}^\prime \notin K}
+%    |\bar{k}><\bar{k}| V |\bar{k}^\prime><\bar{k}^\prime|\\
+%  &=&
+% 2 \int d\bar{x}^\prime 
+%  \left(\rho(\bar{x},\bar{x})\delta(\bar{x}-\bar{x}^\prime) -
+%        |\rho(\bar{x},\bar{x}^\prime)|^2\right) V(\bar{x}^\prime)\\
+%   &=& 2 \rho(\bar{x},\bar{x}) V(\bar{x}) - 
+%        2 \int d\bar{x}^\prime |\rho(\bar{x},\bar{x}^\prime)|^2
+%         V(\bar{x}^\prime)
+%\enas
+%which, for plane waves, becomes,
+%\beas
+% V(\bar{x}) &\rightarrow&
+%   \frac{2 n_e}{N} V(\bar{x}) - 
+%   \frac{2}{N^2} \sum_{\bar{k},\bar{k}^\prime\in K}
+%        \int d\bar{x}^\prime
+%e^{-i (\bar{k}-\bar{k}^\prime)\cdot(\bar{x}-\bar{x}^\prime) }
+%         V(\bar{x}^\prime).
+%\enas
+%The eigenmodes for this action are likewise planewaves,
+%$e^{-i \bar{\alpha} \cdot \bar{x}}$ with eigenvalues
+%$\frac{2}{N} \left( n_e - n_{\bar{\alpha}} \right)$
+%where $n_{\bar{\alpha}} = |\{ (\bar{k},\bar{k}^\prime) \in K^2 | \bar{k} - \bar{k}^\prime = \bar{\alpha}\}|$,
+%i.e. the number of occupied orbitals whose wave numbers differ by
+%$\bar{\alpha}$.
+%Note: $\bar{\alpha} = 0$ is the only zero mode, corresponding to constant
+%shifts in the local operators.
+%Thus, the effective condition number of the Jacobian restricted to
+%local operators is
+%$\frac{\max\{n_e - n_{\bar{\alpha}}\}}{\min\{n_e - n_{\bar{\alpha}}\}}$
+%where the minimum is taken over $\bar{\alpha}\ne 0$.
+
+%If $K = \{ \bar{k} \in \integers^3 | ||\bar{k}|| \le k_{\max}\}$, then we
+%would expect the condition number to be $\sim \frac{2}{3} k_{\max}
+%\sim \sqrt[3]{\frac{2}{9} n_e}$.
+
+We can carry out a general derivation for planewaves in finite
+temperature, by taking $D_{\bar{k}\bar{k}^\prime}(\beta) =
+ \frac{f_\beta(\varepsilon_{\bar{k}})-f_\beta(\varepsilon_{\bar{k}^\prime})}
+      {\varepsilon_{\bar{k}}-\varepsilon_{\bar{k}^\prime}}$
+and thus the localized Jacobian is given by
+\beas
+  V(\bar{x}) &\rightarrow&
+    \sum_{\bar{k},\bar{k}^\prime} D_{\bar{k}\bar{k}^\prime}(\beta)
+    |\bar{k}><\bar{k}| V |\bar{k}^\prime><\bar{k}^\prime|\\
+  &=&
+  \sum_{\bar{k}\bar{k}^\prime}
+  e^{-i\bar{k}\cdot \bar{x}}  e^{i\bar{k}^\prime \cdot \bar{x}}
+  D_{\bar{k}\bar{k}^\prime}(\beta)
+  \int d^3 \bar{x}^\prime
+  e^{ i\bar{k}\cdot \bar{x}^\prime}  e^{-i\bar{k}^\prime \cdot \bar{x}^\prime}
+  V(\bar{x}^\prime)\\
+  &=&
+  \sum_{\bar{k}\bar{k}^\prime}
+  D_{\bar{k}\bar{k}^\prime}(\beta)
+  \int d^3 \bar{x}^\prime
+  e^{-i (\bar{k}-\bar{k}^\prime) \cdot (\bar{x}-\bar{x}^\prime)}
+  V(\bar{x}^\prime)\\
+  &=&
+  \sum_{\bar{\alpha}}
+  d_{\bar{\alpha}}(\beta)
+  \int d^3 \bar{x}^\prime
+  e^{-i \bar{\alpha} \cdot (\bar{x}-\bar{x}^\prime)}
+  V(\bar{x}^\prime)\\
+  &=&
+  \sum_{\bar{\alpha}}
+  d_{\bar{\alpha}}(\beta)
+  |\bar{\alpha}><\bar{\alpha}|
+  V
+\enas
+where $d_{\bar{\alpha}}(\beta) =
+  \sum_{\bar{k}-\bar{k}^\prime = \bar{\alpha}}
+  D_{\bar{k}\bar{k}^\prime}(\beta)$.  We notes that if
+$\int d^3 \bar{x} V(\bar{x})$ vanishes, then so does the 
+integral of the RHS, thus $\nu = 0$, and the sum over $\bar{\alpha}$
+can be restricted to $\bar{\alpha} \ne \bar{0}$.
+
+We may consider a more specific metallic case where
+the possible states are all $\reals^3$ with
+\beas
+\varepsilon_{\bar{k}} &=& ||\bar{k}||^2\\
+f_\beta(\bar{k}) &=& \frac{1}{1 + e^{\beta(||\bar{k}||^2 - \mu)}}
+\enas
+where $\mu$ is selected by
+$
+\int \frac{4 \pi k^2 dk}{1 + e^{\beta(k^2 - \mu)}} = n,
+$
+for some constant $n$.
+
+Passing from sums to integrals we find (taking $\alpha = ||\bar{\alpha}||$),
+\beas
+d_{\alpha}(\beta) &=&
+\sum_{\bar{k}} D_{(\bar{k}+\half\bar{\alpha})(\bar{k}-\half\bar{\alpha})}\\
+&=&
+\int \frac{
+f_\beta(\bar{k}+\half \bar{\alpha}) - f_\beta(\bar{k}-\half \bar{\alpha})
+}{
+ 2 \bar{k} \cdot \bar{\alpha}
+}
+d^3\bar{k}\\
+d_{\alpha}(\beta) &=&
+\int \frac{
+\frac{1}{1+e^{\beta( (x+\half\alpha)^2 + y^2 + z^2 - \mu)}}
+- \frac{1}{1+e^{\beta( (x-\half\alpha)^2 + y^2 + z^2 - \mu)}}
+}{
+ 2 x \alpha
+}
+dx dy dz\\
+&=&
+\int_{r \in \reals_+} \int_{x\in \reals}
+\pi r \frac{
+\frac{1}{1+e^{\beta( (x+\half\alpha)^2 + r^2 - \mu)}}
+- \frac{1}{1+e^{\beta( (x-\half\alpha)^2 + r^2 - \mu)}}
+}{
+ x \alpha
+}
+dx dr\\
+&=&
+\int_{x\in \reals}
+\pi \frac{
+\left.
+\log
+\frac{1+e^{\beta( (x-\half\alpha)^2 + r^2 - \mu)}}
+     {1+e^{\beta( (x+\half\alpha)^2 + r^2 - \mu)}}
+\right|_{r=0}^\infty
+}{
+ 2 \beta x \alpha
+}
+dx\\
+&=&
+\int_{x\in \reals}
+\pi \frac{
+\log
+\frac{e^{\beta( (x-\half\alpha)^2 - \mu)}}
+     {e^{\beta( (x+\half\alpha)^2 - \mu)}}
+-
+\log
+\frac{1+e^{\beta( (x-\half\alpha)^2 - \mu)}}
+     {1+e^{\beta( (x+\half\alpha)^2 - \mu)}}
+}{
+ 2 \beta x \alpha
+}
+dx\\
+&=&
+\int_{x\in \reals}
+\frac{\pi}{2x\alpha} \frac{1}{\beta}
+\log
+\frac{e^{-\beta( (x+\half\alpha)^2 - \mu)}+1}
+     {e^{-\beta( (x-\half\alpha)^2 - \mu)}+1}
+dx.
+\enas
+Taking the limit as $\beta \rightarrow \infty$, noting that
+$\lim_{\beta \rightarrow \infty} \frac{1}{\beta} \log(e^{\beta c}+1)
+=\max\{c,0\}$ for all $c$,
+\beas
+d_{\alpha}(\infty)
+ &=&
+\int_{x\in \reals}
+\frac{\pi}{2 x \alpha}
+\left(\max\left\{\mu - (x+\half\alpha)^2,0\right\}
+-\max\left\{\mu - (x-\half\alpha)^2,0\right\}\right)
+dx\\
+ &=&
+ \int_{x=\half \alpha - \sqrt{\mu}}^{\half \alpha + \sqrt{\mu}}
+\frac{\pi}{x \alpha}
+\left((x-\half\alpha)^2-\mu\right)
+dx\\
+ &=&
+\int_{x=\half \alpha - \sqrt{\mu}}^{\half \alpha + \sqrt{\mu}}
+\pi
+\left(\frac{x}{\alpha} -1 + \frac{\frac{1}{4} \alpha^2-\mu}{x \alpha}\right)
+dx\\
+ &=&
+\left.
+\pi
+\left(\frac{x^2}{2\alpha}-x + \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}\log|x|\right)
+\right|_{x=\half \alpha - \sqrt{\mu}}^{\half \alpha + \sqrt{\mu}}\\
+ &=&
+-\pi
+\left(\sqrt{\mu} - \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}
+\log\frac{\half \alpha + \sqrt{\mu}}{\left|\half \alpha - \sqrt{\mu}\right|}
+\right).
+\enas
+
+We now note some of the features of $d_\alpha(\infty)$.  It is continuous
+everywhere, taking the value $-\pi\sqrt{\mu}$ at $\alpha = 2\sqrt{\mu}$.
+It is differentiable for all $\alpha \ne 2\sqrt{\mu}$
+(where it is infinite),
+which is associated with the Friedel oscillations in metals.
+
+For large $\alpha$,
+\beas
+d_\alpha(\infty)
+ &=&
+-\pi
+\left(\sqrt{\mu} - \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}
+\log\frac{1+\frac{2\sqrt{\mu}}{\alpha}}{1-\frac{2\sqrt{\mu}}{\alpha}}\right)
+\\
+ &=&
+-\pi
+\left(\sqrt{\mu} - \left(\frac{1}{4} \alpha-\frac{\mu}{\alpha}\right)
+2 \left(\frac{2\sqrt{\mu}}{\alpha} + \frac{1}{3}\left(\frac{2\sqrt{\mu}}{\alpha}\right)^3 + \cdots\right)\right)
+\\
+&=&
+-\pi
+\left(\frac{4 \mu^{3/2}}{\alpha^2}
+-\left(\frac{1}{2} \alpha-\frac{2\mu}{\alpha}\right)
+\left(\frac{1}{3}\left(\frac{2\sqrt{\mu}}{\alpha}\right)^3 + \cdots\right)
+\right)
+\\
+&\sim&
+-\pi
+\frac{8 \mu^{3/2}}{3 \alpha^2}.
+\enas
+
+For small $\alpha$,
+\beas
+d_\alpha(\infty)
+ &=&
+-\pi
+\left(\sqrt{\mu} - \frac{\frac{1}{4} \alpha^2-\mu}{\alpha}
+\log\frac{1+\frac{\alpha}{2\sqrt{\mu}}}{1-\frac{\alpha}2\sqrt{\mu}}\right)
+\\
+&=&
+-\pi
+\left(\sqrt{\mu} - \left(\frac{1}{4} \alpha-\frac{\mu}{\alpha}\right)
+2 \left(\frac{\alpha}{2\sqrt{\mu}} + \frac{1}{3}\left(\frac{\alpha}{2\sqrt{\mu}}\right)^3 + \cdots\right)\right)
+\\
+&\sim&
+-\pi
+\left(2\sqrt{\mu}
+-\frac{\alpha^2}{6\sqrt{\mu}}
+\right).
+\enas
+
+A bit of empirical curve fitting and screwing around then shows that
+\beas
+C \sqrt{\mu} \le
+d_{\alpha}(\infty) \cdot
+\left(
+\frac{1}{1+\frac{\alpha^2}{\mu}}
++\frac{3\alpha^2}{4 \mu}\right) \le 2 C \sqrt{\mu}
+\enas
+for some C, which implies that
+\beas
+\frac{1}{1-\frac{\nabla^2}{\mu}}
+-\frac{3\nabla^2}{4 \mu}
+\quad\mbox{or}\quad
+1 - \frac{3}{4\mu} \nabla^2
+\enas
+should be a good preconditioner in the low temperature regime.
+
+
+\section{Accelerating convergence}
+
+Since line minimization is expensive and the Hessian in this
+case is difficult to apply, we explore a {\em fixed step}
+approach such as Richardson iteration.
+
+The basic relaxation step is of the form
+\beas
+  x_{i+1} = x_i - \gamma g_i,
+\enas
+where $g_i = \nabla f(x_i)$, which linearizes to
+\beas
+  x_{i+1} = x_i + \gamma (b - A x_i).
+\enas
+The iteration on the error $e_i = x_i - x_*$ is given by
+\beas
+  e_{i+1} &=& (I - \gamma A) e_i\\
+  e_{i} &=& (I - \gamma A)^i e_0
+\enas
+from which we see that $e_i \rightarrow 0$ only if
+$-1 \le 1 - \gamma \lambda \le 1$ for all eigenvalues $\lambda$ of $A$.
+
+If the eigenvalues of $A$ occur in $(0,1)$ then convergence
+occurs when $\gamma \le 2$ and $\gamma = 2$ is the largest convergent
+step size.
+In practice, we do not start with the spectrum of $A$ in $(0,1)$,
+but we scale all gradients by an empirically determined factor to place
+the eigenvalues of $A$ between $(0,1)$ in a more-or-less centered
+fashion.
+
+With $\gamma = 2$, if $\lambda_{\min} = \epsilon$ or
+$\lambda_{\max} = 1-\epsilon$,
+the error in the extreme modes will be $|1 - 2 \epsilon|^i$
+Thus, convergence is eventually dominated
+by the value of $\kappa = \frac{1}{\epsilon}$,
+which is approximately equal to the condition number of $A$.
+
+An alternative is to find other cheap gradient iterations
+to obtain better convergence in all the error modes.  One way
+is to vary the step length, $\gamma$:
+\beas
+  x_{i+1} = x_i - \gamma_i g_i,
+\enas
+where $g_i = \nabla f(x_i)$, which linearizes to
+\beas
+  x_{i+1} = x_i + \gamma_i (b - A x_i).
+\enas
+The iteration on the error $e_i = x_i - x_*$ is given by
+\beas
+  e_{i+1} &=& (I - \gamma_i A) e_i\\
+  e_{i} &=& \prod_j (I - \gamma_j A) e_0
+\enas
+from which we see that the error at eigenvalue $\lambda$
+is essentially multiplied by a degree $i$ polynomial of the form
+$P_i(\lambda) = \prod_j (1 - \gamma_j \lambda)$, with roots
+$\frac{1}{\gamma_i}$ normalized to $P(0) = 1$.
+
+Clearly, if $\gamma_i$ can be selected so that $P_i(\lambda)$
+is {\em small} in $(0,1)$,
+then convergence will be accelerated.
+
+We might adopt the traditional {\em Chebyshev acceleration}.
+In that case, one uses a single Chebyshev polynomial affinely
+translated so that $(-1,1)\rightarrow (\epsilon,1)$ where the
+eigenvalues of the Hessian occur in $(\epsilon,1)$, and $e_i =
+\frac{1}{T_i(\beta)} T_i(\beta - \alpha A) e_0$ where $\alpha =
+\frac{2}{1-\epsilon}$ and $\beta = \frac{1+\epsilon}{1-\epsilon}$,
+and $T_j(y)$ are the Chebyshev polynomials, given by
+\beas
+  T_0(y) &=& 1\\
+  T_1(y) &=& y\\
+  T_{i+1}(y) &=& 2 y T_{i}(y) - T_{i-1}(y).
+\enas
+The error will decrease roughly as
+$\frac{1}{T_i(\beta)}
+\sim \left(\frac{1-\sqrt{\epsilon}}{1+\sqrt{\epsilon}}\right)^{-i}$
+with a need for periodic resets except to correct non-linearities
+(which should be reasonable to perform after $1/\sqrt{\epsilon}$ steps).
+
+The recurrences for Chebyshev polynomials can be re-arranged a bit to
+give
+\beas
+\tau_0 &=& 1\\
+\tau_1 &=& 1\\
+\tau_{i+1} &=& 2 \tau_i - \beta \tau_{i-1}\\
+x_1 &=& x_0 - \alpha g_0\\
+x_{i+1} &=& x_{i} +
+\frac{1}{\tau_{i+1}}\left( -2 \tau_i \alpha g_i+\tau_{i-1} \beta (x_i-x_{i-1})\right)
+\enas
+
+Another good candidate for such a polynomial is based on
+the expansion of a $\delta$-function in terms of Chebyshev polynomials.
+Let
+\beas
+P_i(\lambda) = S_i(1 - 2 \lambda) =
+\frac{1}{i+1} \sum_{j\le i} T_j (1-2\lambda).
+\enas
+We can use the recurrences for the $T_i$ to
+obtain a recurrence for $P_i(\lambda)$ directly
+\beas
+P_0(\lambda) &=& 1\\
+P_1(\lambda) &=& 1-\lambda\\
+P_{i+1}(\lambda)
+ &=& \frac{2}{i+2} \lambda + 
+(1-2\lambda) \left(1+\frac{i}{i+2}\right) P_{i}(\lambda)
+- \frac{i}{i+2} P_{i-1}(\lambda)\\
+ &=&
+(1-2\lambda) P_{i}(\lambda)
++ \frac{2}{i+2} \lambda (1 - i P_{i}(\lambda))
++ \frac{i}{i+2} (P_{i}(\lambda)- P_{i-1}(\lambda))
+\enas
+A few plots ought to convince you that $P_i(\lambda)$ has the
+properties we seek.
+
+Suppose one had the roots $s_j$ of $S_i(y)$ then
+\beas
+P_i(\lambda) &=& C \prod_j \left( 1 - 2 \lambda - s_j\right)\\
+             &=& C^\prime \prod_j \left( 1 - \frac{2}{1-s_j} \lambda \right)
+\enas
+and thus the steps $\gamma_j = \frac{2}{1-s_j}$, if applied consecutively
+yield $P_i(\lambda)$ on the error after $i$ steps.  One
+can tabulate the $s_j$ for a particular $P_i$ offline and
+periodically cycle step lengths in this way to acheive the effect of
+multiplying the error by $P_i(A)$ every $i$ iterations, thus
+\beas
+  e_{ki} = P_i(A)^k e_0.
+\enas
+
+How effective is this over fixed step iteration?  To get some idea of
+this, one might consider a comparison between
+$\frac{2}{1-\left|P_i(\lambda_*)\right|^{1/i}}$ and $\frac{1}{\epsilon}$
+where $P_i(\lambda_*)$ is the maximum over
+$\lambda_* \in (\epsilon,1)$.  This maximum asymptotically is
+$P_i(\lambda_*) = P_i(\epsilon)$ for small $\epsilon$, but if the
+polynomial has strong enough oscillations, it can occur elsewhere.
+Essentially, this compares the amortized results of a degree $d$
+Chebyshev step with the result of a fixed step iteration as a function
+from the condition number of $A$ to an {\em effective condition number}.
+\begin{figure}
+\begin{center}
+\epsfxsize=5.0 in \epsfbox{cond_number_plot.eps}
+\end{center}
+\end{figure}
+What this plot tells us is that if the input condition
+number is $600$, then with $P_{30}$ it will effectively be about $45$,
+with $P_{25}$ it will effectively be $60$ and so on.  It also shows that
+for a condition number of $200$, one is better off using the
+$P_{20}$ polynomial than any $P_i$ for $i>20$, the intuition being
+that as the degree of the polynomial approximation grows, Gibbs
+phenomena appear which are a detriment to convergence.
+
+It will be useful to ascertain the asymptotic linear functions we
+observe.  For small $\epsilon$, let
+$P_i(\epsilon) = 1+D_i \epsilon + O(\epsilon^2)$
+(i.e. $D_i = P^\prime_i(0)$), then
+\beas
+(i+2)(1 + D_{i+1} \epsilon)
+&=&
+2 \epsilon +
+2(i+1) (1-2\epsilon + D_{i} \epsilon)
+- i (1+D_{i-1} \epsilon)\\
+(i+2) D_{i+1}
+&=&
+2+2 (i+1) (-2 + D_{i})-i D_{i-1}\\
+&=&
+-(4i+2)
++2(i+1) D_{i}
+-i D_{i-1}\\
+(i+2) D_{i+1}
+-2(i+1) D_{i}
++i D_{i-1}
+&=&
+2+2 (i+1) (-2 + D_{i})-i D_{i-1}\\
+&=&
+-(4i+2)
+\enas
+which is solved by
+\beas
+(i+1) D_i &=& -\frac{1}{3}( 2 i^3 + 3 i^2 - i )\\
+ D_i &=& -\frac{1}{3}( 2 i^2 + i - 2 - \frac{2}{i+1}).
+\enas
+Therefore, for sufficiently small $\epsilon$,
+\beas
+\frac{2}{1 - (P_i(\epsilon))^{1/i}}
+&\sim&
+\frac{2}{1-(1-D_i/i)} = \frac{2i}{-D_i}\\
+&=&
+\frac{3i}{i^2 + i/2 - 1 - \frac{1}{i+1} }
+\sim \frac{3}{i}
+\enas
+from which we can explain the slopes in the plot (though there appears
+to be a positive $x$-intercept for each).
+Further analysis would show that
+the location of the {\em knee} for each plot above occurs at
+roughly $1/\sqrt{\epsilon}$.
+
+Instead of tabulating the step sizes for a fixed $P_i(\lambda)$, we can
+use the recurrence of $T_i$ to obtain a system which iteratively
+builds solutions such that the $i^{th}$ error is $P_i(A) e_0$ for all
+$i$.  This leads to the following scheme:
+\beas
+x_1 &=& x_0 - g_0\\
+x_{i+1}
+ &=& x_i - 2 g_i + \frac{2}{i+2}(g_0 - i g_i) + \frac{i}{2}(x_i - x_{i-1})
+\enas
+where $g_i = \nabla f(x_i)$.  Since this scheme will lose its
+advantages after $1/\sqrt{\epsilon}$ steps, one should restart the
+process periodically, depending on one's estimate of the condition number.
+This should also help the trouble caused by keeping $g_0$ saved,
+as it would be sensitive to non-linearities if it weren't updated.
+
+On examples run so far, the $\delta$-Chebyshev has better short term
+performance than the Chebyshev acceleration and requires very crude
+information about $\epsilon$.  Asymptotically, the
+Chebyshev is slightly better if you have a fairly good guess at
+$\epsilon$.
+
+
+\end{document}

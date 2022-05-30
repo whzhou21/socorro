@@ -1,0 +1,14 @@
+#!/usr/sbin/perl
+
+foreach $fname (@ARGV) {
+   open(INPUT,"< $fname") || die "Unable to open $fname\n";
+   open(OUTPUT,"> $fname.doc") || die "Unable to open $fname.doc\n";
+   $p = 0;
+   while (<INPUT>) {
+        if (/^(\!doc\$)\s*\S/) {s/^\!doc\$/     /; tr/[a-z]/[A-Z]/; $p=1;}
+        if (/^(\!cod\$)/) { $p=0;}
+        if ($p) {s/^\!/ /; print OUTPUT;}
+        if (/^(\!doc\$)/) {$p=1;}
+   }
+   close(INPUT); close(OUTPUT);
+}
