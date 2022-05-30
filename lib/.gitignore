@@ -1,0 +1,12 @@
+# Ignore everything
+
+fftmpi/*
+fftw3/*
+lapack/*
+libxc/*
+scalapack*
+
+# Except these files ...
+
+!README.md
+!Install.py
