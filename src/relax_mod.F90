@@ -75,7 +75,7 @@
       public :: glean
       public :: bequeath
       public :: assignment(=)
-      public :: optimize_crystal
+      public :: optimize_structure
       public :: optimize_positions
       public :: steepest_descent
       public :: conjugate_gradient
@@ -104,7 +104,7 @@
       interface assignment(=)
          module procedure assign_relax
       end interface
-      interface optimize_crystal
+      interface optimize_structure
          module procedure relax_structure, relax_structure_rx
       end interface
       interface optimize_positions
@@ -382,7 +382,7 @@
       end subroutine
 
       function relax_structure(cfg) result(changed)
-!doc$ function optimize_crystal(cfg) result(changed)
+!doc$ function optimize_structure(cfg) result(changed)
         type(config_sc_obj), intent(inout) :: cfg
         logical :: changed
 !       modifies: cfg
@@ -396,7 +396,7 @@
         call my(cfg)
         call my(relax(),rx) ; if (error()) goto 100
 
-        changed = optimize_crystal(cfg,rx)
+        changed = optimize_structure(cfg,rx)
 
 100     call glean(thy(cfg))
         call glean(thy(rx))
@@ -406,7 +406,7 @@
       end function
 
       function relax_structure_rx(cfg,rx) result(changed)
-!doc$ function optimize_crystal(cfg,rx) result(changed)
+!doc$ function optimize_structure(cfg,rx) result(changed)
         type(config_sc_obj), intent(inout) :: cfg
         type(relax_obj), intent(inout) :: rx
         logical :: changed

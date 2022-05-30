@@ -48,7 +48,7 @@
             if ( error() ) goto 100
             call diary(cfg_sc)
          end if
-         if ( optimize_crystal(cfg_sc) ) then
+         if ( optimize_structure(cfg_sc) ) then
             if ( error() ) goto 100
             call diary(cfg_sc)
          end if
