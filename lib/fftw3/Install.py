@@ -23,13 +23,17 @@ Examples:
 Syntax from lib dir: python Install.py -d
                  or: python Install.py -b
                  or: python Install.py -c
+
+Syntax from src dir: make lib-fftw3 args="-d"
+                 or: make lib-fftw3 args="-b"
+                 or: make lib-fftw3 args="-c"
 """
 
 # *** Input arguments ************************************************ #
 
 parser = ArgumentParser(prog = 'Install.py', description = "Helper script to download and build the FFTW3 library")
 
-parser.add_argument("-d", action = "store_true", help = "download the FFTW3 library to lib/fftw3/")
+parser.add_argument("-d", action = "store_true", help = "download the FFTW3 library to ../lib/fftw3")
 parser.add_argument("-b", action = "store_true", help = "build the FFTW3 library")
 parser.add_argument("-c", action = "store_true", help = "clean the FFTW3 build space")
 

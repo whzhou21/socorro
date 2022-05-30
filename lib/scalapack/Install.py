@@ -23,13 +23,17 @@ Examples:
 Syntax from lib dir: python Install.py -d
                  or: python Install.py -b
                  or: python Install.py -c
+
+Syntax from src dir: make lib-scalapack args="-d"
+                 or: make lib-scalapack args="-b"
+                 or: make lib-scalapack args="-c"
 """
 
 # *** Input arguments ************************************************ #
 
 parser = ArgumentParser(prog = 'Install.py', description = "Helper script to download and build the SCALAPACK library")
 
-parser.add_argument("-d", action = "store_true", help = "download the SCALAPACK library to lib/scalapack/") 
+parser.add_argument("-d", action = "store_true", help = "download the SCALAPACK library to ../lib/scalapack") 
 parser.add_argument("-b", action = "store_true", help = "build the SCALAPACK library")
 parser.add_argument("-c", action = "store_true", help = "clean the SCALAPACK build space")
 
