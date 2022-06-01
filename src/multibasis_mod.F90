@@ -20,6 +20,8 @@
       use ghost_mod
       use layout_mod
       use timing_mod
+      use remap2d_wrap
+      use,intrinsic :: iso_c_binding
 
 !cod$
       implicit none
@@ -44,7 +46,7 @@
       type, public :: sjp_remap_plan
         integer :: ilo_in, ihi_in, jlo_in, jhi_in
         integer :: ilo_out, ihi_out, jlo_out, jhi_out
-        real(double) :: f, r
+        type(c_ptr) :: f, r
       end type
 
       type, public :: multibasis_rep
@@ -1249,8 +1251,8 @@
 !doc$ subroutine band_remap(mb,grp,data_in,data_out)
         type(multibasis_obj) :: mb
         integer, intent(in) :: grp
-        complex(double), dimension(:,:), intent(in) :: data_in
-        complex(double), dimension(:), intent(out) :: data_out
+        complex(double), dimension(:,:), intent(in), target :: data_in
+        complex(double), dimension(:), intent(out), target :: data_out
 !       requires: data_in be dimensions (size(mb%o%gpt,1),mpi_nprocs(KGROUP)) and data_out be dimension (size(mb%o%gridmap,2)).
 !       effects: Copies data_in to data_out across processors.
 !       errors: Passes errors.
@@ -1271,9 +1273,9 @@
           end if
         case (SJP_REMAP)
           if (grp < size(mb%o%first_band)) then
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan1%f)
+            call remap2d_remap(mb%o%sjp_plan1%f,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           else
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan2%f)
+            call remap2d_remap(mb%o%sjp_plan2%f,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           end if
         end select
 
@@ -1289,8 +1291,8 @@
 !doc$ subroutine band_remap(mb,grp,data_in,data_out)
         type(multibasis_obj) :: mb
         integer, intent(in) :: grp
-        complex(double), dimension(:), intent(in) :: data_in
-        complex(double), dimension(:,:), intent(out) :: data_out
+        complex(double), dimension(:), intent(in), target :: data_in
+        complex(double), dimension(:,:), intent(out), target :: data_out
 !       requires: data_in be dimension (size(mb%o%gridmap,2)) and data_out be dimensions (size(mb%o%gpt,1),mpi_nprocs(KGROUP)).
 !       effects: Copies data_in to data_out across processors.
 !       errors: Passes errors.
@@ -1311,9 +1313,9 @@
           end if
         case (SJP_REMAP)
           if (grp < size(mb%o%first_band)) then
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan1%r)
+            call remap2d_remap(mb%o%sjp_plan1%r,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           else
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan2%r)
+            call remap2d_remap(mb%o%sjp_plan2%r,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           end if
         end select
 
@@ -1329,8 +1331,8 @@
 !doc$ subroutine spair_remap(mb,grp,data_in,data_out)
         type(multibasis_obj) :: mb
         integer, intent(in) :: grp
-        complex(double), dimension(:,:), intent(in) :: data_in
-        complex(double), dimension(:), intent(out) :: data_out
+        complex(double), dimension(:,:), intent(in), target :: data_in
+        complex(double), dimension(:), intent(out), target :: data_out
 !       requires: data_in be dimensions (size(mb%o%gpt,1),mpi_nprocs(KGROUP)) and data_out be dimension (size(mb%o%gridmap,2)).
 !       effects: Copies data_in to data_out across processors.
 !       errors: Passes errors.
@@ -1351,9 +1353,9 @@
           end if
         case (SJP_REMAP)
           if (grp < size(mb%o%first_spair)) then
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan1%f)
+            call remap2d_remap(mb%o%sjp_plan1%f,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           else
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan3%f)
+            call remap2d_remap(mb%o%sjp_plan3%f,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           end if
         end select
 
@@ -1369,8 +1371,8 @@
 !doc$ subroutine spair_remap(mb,grp,data_in,data_out)
         type(multibasis_obj) :: mb
         integer, intent(in) :: grp
-        complex(double), dimension(:), intent(in) :: data_in
-        complex(double), dimension(:,:), intent(out) :: data_out
+        complex(double), dimension(:), intent(in), target :: data_in
+        complex(double), dimension(:,:), intent(out), target :: data_out
 !       requires: data_in be dimension (size(mb%o%gridmap,2)) and data_out be dimensions (size(mb%o%gpt,1),mpi_nprocs(KGROUP)).
 !       effects: Copies data_in to data_out across processors.
 !       errors: Passes errors.
@@ -1391,9 +1393,9 @@
           end if
         case (SJP_REMAP)
           if (grp < size(mb%o%first_spair)) then
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan1%r)
+            call remap2d_remap(mb%o%sjp_plan1%r,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           else
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan3%r)
+            call remap2d_remap(mb%o%sjp_plan3%r,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           end if
         end select
 
@@ -1409,8 +1411,8 @@
 !doc$ subroutine lpair_remap(mb,grp,data_in,data_out)
         type(multibasis_obj) :: mb
         integer, intent(in) :: grp
-        complex(double), dimension(:,:), intent(in) :: data_in
-        complex(double), dimension(:), intent(out) :: data_out
+        complex(double), dimension(:,:), intent(in), target :: data_in
+        complex(double), dimension(:), intent(out), target :: data_out
 !       requires: data_in be dimensions (size(mb%o%gpt,1),mpi_nprocs(KGROUP)) and data_out be dimension (size(mb%o%gridmap,2)).
 !       effects: Copies data_in to data_out across processors.
 !       errors: Passes errors.
@@ -1431,9 +1433,9 @@
           end if
         case (SJP_REMAP)
           if (grp < size(mb%o%first_lpair)) then
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan1%f)
+            call remap2d_remap(mb%o%sjp_plan1%f,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           else
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan4%f)
+            call remap2d_remap(mb%o%sjp_plan4%f,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           end if
         end select
 
@@ -1449,8 +1451,8 @@
 !doc$ subroutine lpair_remap(mb,grp,data_in,data_out)
         type(multibasis_obj) :: mb
         integer, intent(in) :: grp
-        complex(double), dimension(:), intent(in) :: data_in
-        complex(double), dimension(:,:), intent(out) :: data_out
+        complex(double), dimension(:), intent(in), target :: data_in
+        complex(double), dimension(:,:), intent(out), target :: data_out
 !       requires: data_in be dimension (size(mb%o%gridmap,2)) and data_out be dimensions (size(mb%o%gpt,1),mpi_nprocs(KGROUP)).
 !       effects: Copies data_in to data_out across processors.
 !       errors: Passes errors.
@@ -1471,9 +1473,9 @@
           end if
         case (SJP_REMAP)
           if (grp < size(mb%o%first_lpair)) then
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan1%r)
+            call remap2d_remap(mb%o%sjp_plan1%r,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           else
-            call remap_2d(data_in,data_out,c,mb%o%sjp_plan4%r)
+            call remap2d_remap(mb%o%sjp_plan4%r,c_loc(data_in),c_loc(data_out),c_null_ptr,c_null_ptr)
           end if
         end select
 
@@ -1723,18 +1725,20 @@
       subroutine create_sjp_remap_plan_i(rm)
         type(sjp_remap_plan) :: rm
         integer, parameter :: nqty = 2, permute = 0, memory = 1, precision = 2
-        integer :: comm
+        integer :: comm, sendsize, recvsize
         comm = mpi_comm(KGROUP)
-        call remap_2d_create_plan(comm,rm%ilo_in,rm%ihi_in,rm%jlo_in,rm%jhi_in, &
-                                       rm%ilo_out,rm%ihi_out,rm%jlo_out,rm%jhi_out, nqty,permute,memory,precision,rm%f)
-        call remap_2d_create_plan(comm,rm%ilo_out,rm%ihi_out,rm%jlo_out,rm%jhi_out, &
-                                       rm%ilo_in,rm%ihi_in,rm%jlo_in,rm%jhi_in,nqty,permute,memory,precision,rm%r)
+        call remap2d_create(comm,rm%f)
+        call remap2d_setup(rm%f,rm%ilo_in,rm%ihi_in,rm%jlo_in,rm%jhi_in,&
+                                rm%ilo_out,rm%ihi_out,rm%jlo_out,rm%jhi_out,nqty,permute,memory,sendsize,recvsize)
+        call remap2d_create(comm,rm%r)
+        call remap2d_setup(rm%r,rm%ilo_out,rm%ihi_out,rm%jlo_out,rm%jhi_out,&
+                                rm%ilo_in,rm%ihi_in,rm%jlo_in,rm%jhi_in,nqty,permute,memory,sendsize,recvsize)
       end subroutine
 
       subroutine destroy_sjp_remap_plan_i(rm)
         type(sjp_remap_plan) :: rm
-        call remap_2d_destroy_plan(rm%f)
-        call remap_2d_destroy_plan(rm%r)
+        call remap2d_destroy(rm%f)
+        call remap2d_destroy(rm%r)
       end subroutine
 
       end module

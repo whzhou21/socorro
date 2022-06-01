@@ -3,13 +3,13 @@
 #* ---------------------------------------------------------------------
 
 FC		:= mpifort
-FC_FLAGS	:= -O3 -fopenmp -ffree-line-length-none -fallow-argument-mismatch
+FC_FLAGS	:= -g -O2 -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -O3 -Wno-error=implicit-function-declaration -DFFT_FFTW
+CC_FLAGS	:= -g -O2 -Wno-error=implicit-function-declaration -DFFT_FFTW
 
 CX		:= mpicxx
-CX_FLAGS	:= -O3
+CX_FLAGS	:= -g -O2
 
 #* ---------------------------------------------------------------------
 #  Linker and linker flags

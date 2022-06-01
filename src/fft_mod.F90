@@ -10,6 +10,8 @@
       use timing_mod
       use point_blas_mod
       use omp_lib
+      use fft3d_wrap
+      use,intrinsic :: iso_c_binding
 
 !     This module encapsulates fast-Fourier transform routines that utilize fftw3
 !     interfaces for transforms on serial data and fftw2 interfaces for transforms
