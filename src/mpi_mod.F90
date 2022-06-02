@@ -49,14 +49,16 @@
 !                  - Each process from a kgroup also belongs to the cross-kgroup communicator
 !                      (xkgroup_comm) with the corresponding processes from other kgroups, (*,3) for example.
 
-      use kind_mod
       use error_mod
+      use kind_mod
+      use mpi
+      use utils_mod
+#ifdef USE_OMP
+      use omp_lib
+#endif
 
 !cod$
-      implicit none
-      private
-
-      include 'mpif.h'
+      implicit none ; private
 
       integer, parameter :: WORLD   = 1
       integer, parameter :: CONFIG  = 2
@@ -110,6 +112,7 @@
         integer :: xkgroup_myproc   ! rank
                                  ! PROCESS VARIABLES
         integer :: error            ! error status
+        integer :: omp_nthreads     ! number of OMP threads
 
       end type
 
@@ -129,6 +132,7 @@
       public :: mpi_mysgroup
       public :: mpi_nkgroups
       public :: mpi_mykgroup
+      public :: x_nthreads
       public :: barrier
       public :: vote
       public :: broadcast_seh
@@ -241,88 +245,113 @@
 
       subroutine mpi__start()
 !doc$ subroutine mpi__start()
-!       effects: Starts the MPI system.
-!       errors: Problems starting MPI.
-!       notes: Error conditions trigger a program halt.
+!        effects: Starts the MPI system.
+!        errors: Problems starting MPI.
+!        notes: Error conditions trigger a program halt.
 
 !cod$
-        the_mpi%error = 0
+         integer :: provided
+         character(line_len) :: val
 
-        ! Initialize the WORLD communicator
+         ! Initialize the WORLD communicator
 
-        call MPI_INIT(the_mpi%error)
-        if (the_mpi%error /= 0) then
-          write(6,'("ERROR: problem with MPI_INIT")')
-          stop
-        end if
-        the_mpi%world_comm = MPI_COMM_WORLD
+         the_mpi%error = 0
 
-        call MPI_COMM_RANK(the_mpi%world_comm,the_mpi%world_myproc,the_mpi%error)
-        if (the_mpi%error /= 0) then
-          write(6,'("ERROR: problem with MPI_COMM_RANK")')
-          call mpi_stop() ; stop
-        end if
-        the_mpi%world_first = ( the_mpi%world_myproc == 0 )
+#ifdef   USE_OMP
+         call MPI_Init_thread(MPI_THREAD_FUNNELED,provided,the_mpi%error)
+#else
+         call MPI_Init(the_mpi%error)
+#endif
+         if ( the_mpi%error /= 0 ) then
+            write(6,'("ERROR: There was a problem with MPI_Init()")')
+            stop
+         end if
 
-        call MPI_COMM_SIZE(the_mpi%world_comm,the_mpi%world_nprocs,the_mpi%error)
-        if (the_mpi%error /= 0) then
-          if (the_mpi%world_first) write(6,'("ERROR: problem with MPI_COMM_SIZE")')
-          call mpi_stop() ; stop
-        end if
+         the_mpi%world_comm = MPI_COMM_WORLD
 
-        ! Initialize the CONFIG and XCONFIG variables
+         call MPI_Comm_rank(the_mpi%world_comm,the_mpi%world_myproc,the_mpi%error)
+         if ( the_mpi%error /= 0 ) then
+            write(6,'("ERROR: There was a problem with MPI_Comm_rank()")')
+            call mpi_stop() ; stop
+         end if
 
-        the_mpi%nconfigs = 1
-        the_mpi%myconfig = 1
+         the_mpi%world_first = ( the_mpi%world_myproc == 0 )
 
-        the_mpi%config_comm   = the_mpi%world_comm
-        the_mpi%config_first  = the_mpi%world_first
-        the_mpi%config_nprocs = the_mpi%world_nprocs
-        the_mpi%config_myproc = the_mpi%world_myproc
+         call MPI_Comm_size(the_mpi%world_comm,the_mpi%world_nprocs,the_mpi%error)
+         if ( the_mpi%error /= 0 ) then
+            if (the_mpi%world_first) write(6,'("ERROR: There was a problem with MPI_Comm_size()")')
+            call mpi_stop() ; stop
+         end if
 
-        the_mpi%xconfig_comm   = the_mpi%world_comm
-        the_mpi%xconfig_first  = the_mpi%world_first
-        the_mpi%xconfig_nprocs = 1
-        the_mpi%xconfig_myproc = 0
+         ! Initialize the CONFIG and XCONFIG variables
 
-        ! Initialize the SGROUP and XSGROUP variables
+         the_mpi%nconfigs = 1
+         the_mpi%myconfig = 1
 
-        the_mpi%nsgroups = 1
-        the_mpi%mysgroup = 1
+         the_mpi%config_comm   = the_mpi%world_comm
+         the_mpi%config_first  = the_mpi%world_first
+         the_mpi%config_nprocs = the_mpi%world_nprocs
+         the_mpi%config_myproc = the_mpi%world_myproc
 
-        the_mpi%sgroup_comm   = the_mpi%config_comm
-        the_mpi%sgroup_first  = the_mpi%config_first
-        the_mpi%sgroup_nprocs = the_mpi%config_nprocs
-        the_mpi%sgroup_myproc = the_mpi%config_myproc
+         the_mpi%xconfig_comm   = the_mpi%world_comm
+         the_mpi%xconfig_first  = the_mpi%world_first
+         the_mpi%xconfig_nprocs = 1
+         the_mpi%xconfig_myproc = 0
 
-        the_mpi%xsgroup_comm   = the_mpi%config_comm
-        the_mpi%xsgroup_first  = the_mpi%config_first
-        the_mpi%xsgroup_nprocs = 1
-        the_mpi%xsgroup_myproc = 0
+         ! Initialize the SGROUP and XSGROUP variables
 
-        ! Initialize the KGROUP and XKGROUP variables
+         the_mpi%nsgroups = 1
+         the_mpi%mysgroup = 1
 
-        the_mpi%nkgroups = 1
-        the_mpi%mykgroup = 1
+         the_mpi%sgroup_comm   = the_mpi%config_comm
+         the_mpi%sgroup_first  = the_mpi%config_first
+         the_mpi%sgroup_nprocs = the_mpi%config_nprocs
+         the_mpi%sgroup_myproc = the_mpi%config_myproc
 
-        the_mpi%kgroup_comm   = the_mpi%sgroup_comm
-        the_mpi%kgroup_first  = the_mpi%sgroup_first
-        the_mpi%kgroup_nprocs = the_mpi%sgroup_nprocs
-        the_mpi%kgroup_myproc = the_mpi%sgroup_myproc
+         the_mpi%xsgroup_comm   = the_mpi%config_comm
+         the_mpi%xsgroup_first  = the_mpi%config_first
+         the_mpi%xsgroup_nprocs = 1
+         the_mpi%xsgroup_myproc = 0
 
-        the_mpi%xkgroup_comm   = the_mpi%sgroup_comm
-        the_mpi%xkgroup_first  = the_mpi%sgroup_first
-        the_mpi%xkgroup_nprocs = 1
-        the_mpi%xkgroup_myproc = 0
+         ! Initialize the KGROUP and XKGROUP variables
+
+         the_mpi%nkgroups = 1
+         the_mpi%mykgroup = 1
+
+         the_mpi%kgroup_comm   = the_mpi%sgroup_comm
+         the_mpi%kgroup_first  = the_mpi%sgroup_first
+         the_mpi%kgroup_nprocs = the_mpi%sgroup_nprocs
+         the_mpi%kgroup_myproc = the_mpi%sgroup_myproc
+
+         the_mpi%xkgroup_comm   = the_mpi%sgroup_comm
+         the_mpi%xkgroup_first  = the_mpi%sgroup_first
+         the_mpi%xkgroup_nprocs = 1
+         the_mpi%xkgroup_myproc = 0
+
+         ! Initialize the use of OpenMP threads
+
+         the_mpi%omp_nthreads = 0
+
+#ifdef   USE_OMP
+         call get_environment_variable("OMP_NUM_THREADS",value=val)
+         select case ( trimstr( val ) )
+         case ( "" )
+            the_mpi%omp_nthreads = 1
+         case default
+            the_mpi%omp_nthreads = omp_get_max_threads()
+         end select
+         call MPI_Bcast(the_mpi%omp_nthreads,1,MPI_INTEGER,0,the_mpi%world_comm,the_mpi%error)
+         call omp_set_num_threads(the_mpi%omp_nthreads)
+#endif
 
       end subroutine
 
       subroutine mpi_stop()
 !doc$ subroutine mpi_stop()
-!       effects: Stops the MPI system.
+!        effects: Stops the MPI system.
 
 !cod$
-        call MPI_FINALIZE(the_mpi%error)
+         call MPI_Finalize(the_mpi%error)
       end subroutine
 
       subroutine mpi_config_split(nc)
@@ -724,6 +753,15 @@
 !cod$
         n = the_mpi%mykgroup
       end function 
+
+      function x_nthreads() result( nt )
+!doc$ function x_nthreads() result(n)
+        integer :: nt
+!       effects: Returns the_mpi%nthreads.
+
+!cod$
+         nt = the_mpi%omp_nthreads
+      end function x_nthreads
 
       subroutine barrier(sc)
 !doc$ subroutine barrier(sc)

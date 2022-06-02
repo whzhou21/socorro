@@ -18,13 +18,11 @@
       use kind_mod
       use path_mod
       use mpi_mod
-      use omp_lib
       use utils_mod
       use version_mod
 
 !cod$
-      implicit none
-      private
+      implicit none ; private
 
 ! Version numbers
 
@@ -131,7 +129,7 @@
          ss = trimstr(time(5:6))
 
          np = mpi_nprocs(WORLD)
-         nt = omp_get_max_threads()
+         nt = x_nthreads()
 
          nc = mpi_nconfigs()
          ncp = mpi_nprocs(CONFIG)
