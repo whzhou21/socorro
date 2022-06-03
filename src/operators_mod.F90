@@ -1,16 +1,13 @@
-! Copyright 2011 Sandia Corporation. 
+!* ------------------------------------------------------------------------------------------------------------------------------ *!
+!  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
+!  See the README file in the top-level directory.                                                                                 !
+!                                                                                                                                  !
+!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
+!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
+!  modified Berkeley Software Distribution (BSD) License.                                                                          !
+!* ------------------------------------------------------------------------------------------------------------------------------ *!
 
-! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-! "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-! LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-! A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-! OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-! SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-! TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-! PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-! LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-! NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-! SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#include "macros.h"
 
       module operators_mod
 !doc$ module operators_mod

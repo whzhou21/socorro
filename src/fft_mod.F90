@@ -1,5 +1,13 @@
-! Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms
-! of Contract DE-NA0003525 with NTESS, the U.S. Government retains certains rights to this software.
+!* ------------------------------------------------------------------------------------------------------------------------------ *!
+!  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
+!  See the README file in the top-level directory.                                                                                 !
+!                                                                                                                                  !
+!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
+!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
+!  modified Berkeley Software Distribution (BSD) License.                                                                          !
+!* ------------------------------------------------------------------------------------------------------------------------------ *!
+
+#include "macros.h"
 
       module fft_mod
 !doc$ module fft_mod
@@ -10,6 +18,7 @@
       use timing_mod
       use point_blas_mod
       use omp_lib
+      use mpi_mod
       use fft3d_wrap
       use,intrinsic :: iso_c_binding
 
@@ -18,7 +27,7 @@
 !     on distributed data.
 !
 !     FFT directions:  -1: r -> q  Forward transform
-!                      +1: q -> r  Backward tranform
+!                      +1: q -> r  Backward transform
 
 !cod$
       implicit none
@@ -49,6 +58,7 @@
         private
         real(double) :: plan
         real(double) :: norm
+        type(c_ptr) :: pl
       end type
 
 !cod$
@@ -550,7 +560,7 @@
         integer :: howmany
 
         howmany = 1
-        call create_nfplan_i(comm,dims,base,base+locdims-1,howmany,plan%plan)
+        call create_nfplan_i(comm,dims,base,base+locdims-1,howmany,plan)
         plan%norm = product(dims)
 
       end subroutine
@@ -560,13 +570,14 @@
         type(fft_distributed_plan) :: plan
         
 !cod$
+        !!call fft3d_destroy(plan%pl)
         call fft_3d_destroy_plan(plan%plan)
 
       end subroutine
 
       subroutine fft_distributed(data,dir,plan)
 !doc$ subroutine fft_distribured(data,dir,plan)
-        complex(double), dimension(:,:,:), intent(inout) :: data
+        complex(double), dimension(:,:,:), intent(inout), target :: data
         integer, intent(in) :: dir
         type(fft_distributed_plan) :: plan
 !       requires: dir = -1 or +1 and plan be compatible with the data.
@@ -580,10 +591,12 @@
 
         select case (dir)
         case (R_TO_Q)
+      !!    call fft3d_compute(plan%pl,c_loc(data),c_loc(data),Q_TO_R)
           call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
           scale = 1.0_double/plan%norm
           call point_mxs(data,scale)
         case (Q_TO_R)
+      !!    call fft3d_compute(plan%pl,c_loc(data),c_loc(data),R_TO_Q)
           call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
         end select
 
@@ -591,16 +604,15 @@
 
       end subroutine
 
-      subroutine create_nfplan_i(comm,nf,fnf,lnf,howmany,pl)
+      subroutine create_nfplan_i(comm,nf,fnf,lnf,howmany,plan)
         integer :: comm
         integer, dimension(3) :: nf, fnf, lnf
         integer :: howmany
-        real(double) :: pl
+        type(fft_distributed_plan) :: plan
 
-        integer, parameter :: scale = 0
-        integer, parameter :: permute = 0
+        integer, parameter :: precision = 2, permute = 0, scaled = 0
         integer :: nf1, nf2, nf3, fnf1, fnf2, fnf3, lnf1, lnf2, lnf3
-        integer :: nloc
+        integer :: nloc, fftsize, sendsize, recvsize
 
         nf1 = nf(1)
         nf2 = nf(2)
@@ -614,8 +626,14 @@
         lnf2 = lnf(2)
         lnf3 = lnf(3)
 
+        !call fft3d_create(comm,precision,plan%pl)
+        !call fft3d_set(plan%pl,"scale",scaled)
+        !call fft3d_set(plan%pl,"pack",0)
+        !call fft3d_setup(plan%pl,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,&
+        !                         fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,permute,fftsize,sendsize,recvsize)
+
         call fft_3d_create_plan(comm,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,fnf1, &
-                              & lnf1,fnf2,lnf2,fnf3,lnf3,howmany,scale,permute,nloc,pl)
+                              & lnf1,fnf2,lnf2,fnf3,lnf3,howmany,scaled,permute,nloc,plan%plan)
       end subroutine
 
       end module
