@@ -9,15 +9,15 @@
 
 /* Reflect C low-level binary I/O functions to Fortran */
 
-
-/*#include <sys/types.h>*/
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 
 #include "ctof_io.h"
 
-#ifdef NO_UNDERSCORE
+/* ------------------------------------------------------------------ */
+
+#ifdef   NO_UNDERSCORE
 # define FTN(x) x
 #elifdef DOUBLE_UNDERSCORE
 # define FTN(x) x##__
@@ -27,36 +27,43 @@
 
 FILE *gfd;
 
-
 void FTN(swapbytes)(char *baseptr, longint *dsize, longint *nelem);
 
-/*// ***************** open/close routines *************/
+/* ------------------------------------------------------------------ */
+
+// Routine to open a file
 
 FILE *FTN(openf)(char *name, char *mode)
 {
   FILE *fd;
-  
-    gfd = fopen(name,mode);
-fd = gfd;
-/*    printf("%d =fopen('%s','%s')\n",fd,name,mode); */
-    return(fd);
-  /*return(fopen(name, mode));*/
+
+  gfd = fopen(name,mode);
+  fd = gfd;
+
+  return(fd);
 }
+
+/* ------------------------------------------------------------------ */
+
+// Routine to close a file
 
 int FTN(closef)(FILE **fd)
 {
   return(fclose(*fd));
 }
 
+/* ------------------------------------------------------------------ */
 
-/**************** move/pos routines ************/
-
+// Routine to get the current file position
 
 void FTN(getposf)(FILE **fd, longlongint *pos)
 {
   *pos = ftell(*fd);
-
 }
+
+/* ------------------------------------------------------------------ */
+
+// Routine to set the current file position
 
 void FTN(setposf)(FILE **fd, longlongint *pos, longint *err)
 {
@@ -66,12 +73,18 @@ void FTN(setposf)(FILE **fd, longlongint *pos, longint *err)
   *err = fseek(*fd, fp, SEEK_SET);
 }
 
+/* ------------------------------------------------------------------ */
+
+// Routine to set the current file position to the beginning of the file
 
 void FTN(rewindf)(FILE **fd)
 {
   rewind(*fd);
 }
 
+/* ------------------------------------------------------------------ */
+
+// Routine get the size of the current file
 
 longlongint FTN(cfilesize)(const char *fname) 
 {
@@ -84,41 +97,46 @@ longlongint FTN(cfilesize)(const char *fname)
   return(fs);
 }
 
+/* ------------------------------------------------------------------ */
 
-
-/**************** read/write routines ************/
+// Routine to read the current file
 
 void FTN(readf)(void *ptr, longint *fsize, longint *fnmemb, FILE **fd, int *swap, longint *err)
 {
   size_t size, nmemb;
 
-  size = *fsize;  nmemb = *fnmemb;
+  size = *fsize;
+  nmemb = *fnmemb;
   *err = fread(ptr, size, nmemb, *fd);
 
   if ((*swap > 0) && (*fsize > 1)) FTN(swapbytes)(ptr, fsize, fnmemb);
 }
+
+/* ------------------------------------------------------------------ */
+
+// Routine to write to the current file
 
 void FTN(writef)(const void *ptr, longint *fsize, longint *fnmemb, FILE **fd, longint *err)
 {
   size_t size, nmemb;
 
   size = *fsize;  nmemb = *fnmemb;
-/*  printf("writef('%1s',%d, %d, %d)\n",ptr, size, nmemb, *fd);*/
   *err = fwrite(ptr, size, nmemb, *fd);
 }
 
-/************** Determine byte ordering *******/
+/* ------------------------------------------------------------------ */
 
-int FTN(machinebyteorder)() {
+// Routine to determine byte ordering
+
+int FTN(machinebyteorder)()
+{
   int UNKNOWN_ENDIAN = 0;
   int BIG_ENDIAN     = 1;
   int LITTLE_ENDIAN  = 2;
   int MIDDLE_ENDIAN  = 3;
-
+  int byteorder;
   longint num=0x12345678;
   unsigned char *cptr = (unsigned char *)&num;
-  
-  int byteorder;
 
   if ( *cptr==0x12     && *(cptr+1)==0x34 &&
        *(cptr+2)==0x56 && *(cptr+3)==0x78 )
@@ -134,33 +152,33 @@ int FTN(machinebyteorder)() {
 
   return(byteorder);
 }
-     
-/************** Swap bytes *******/
 
-void FTN(swapbytes)(char *baseptr, longint *dsize, longint *nelem) {
+/* ------------------------------------------------------------------ */
+
+// Routine to swap bytes     
+
+void FTN(swapbytes)(char *baseptr, longint *dsize, longint *nelem)
+{
   char tmp;
   char *ptr0, *ptr1, *ptr;
   int  i, j, half;
-  
+
   ptr = baseptr;
   half = *dsize/2;
-  for (i=0; i<*nelem; i++) {
-    
+  for (i=0; i<*nelem; i++)
+  {
     ptr0 = ptr;
     ptr1 = ptr + *dsize - 1;
-
-    for (j=0; j<half; j++) {
+    for (j=0; j<half; j++)
+    {
       tmp = *ptr0;
       *ptr0 = *ptr1;
       *ptr1 = tmp;
-
       ptr0++;
       ptr1--;
     }
-
     ptr = ptr + *dsize;
   }
-
 }
 
-/* --- */
+/* ------------------------------------------------------------------ */
