@@ -9,413 +9,615 @@
 
 #include "macros.h"
 
-!******************************************************************************
-!
-! File : timing_mod.f90
-!   by : Alan Tackett
-!   on : 07/12/01
-!  for : Socorro Timing routines
-!
-!  This module contains the stopwatch definitions and initializes them
-!
-!******************************************************************************
+module timing_mod
 
-Module timing_mod
+   use diary_mod
+   use error_mod
+   use io_mod
+   use kind_mod
+   use mpi_mod
+   use utils_mod
 
-Use btree_support_mod
-Use btree_mod
-use kind_mod
-Use mpi_mod
-Use error_mod
-Use io_mod
-Use diary_mod
-use utils_mod
+   implicit none ; private
 
-implicit NONE!!!!!!!!
-Private
+   !* Tags for tracking the state of a timer
 
-Type (BinaryTreeNode), Pointer :: Root            !* Btree root node
+   integer, parameter :: state_stopped = 0
+   integer, parameter :: state_running = 1
 
-!doc$
-Public :: Print_ALL_Timers, InitTimers, Kill_All_Timers
-Public :: Start_Timer, Stop_Timer, Pause_Timer, Resume_Timer, Reset_Timer
+   !* Derived type that encapsulates a timer
 
-!**** Timer states *****
-Integer, PRIVATE, PARAMETER :: STATE_STOPPED = 0
-Integer, PRIVATE, PARAMETER :: STATE_RUNNING = 1
-Integer, PRIVATE, PARAMETER :: STATE_PAUSED  = 2
+   type stopwatch_obj
 
-!cod$
+      private
 
-!******************************************************************************
-Contains
-!******************************************************************************
+      character(line_len) :: name
+      integer :: state
+      integer :: ncalls
+      real(double) :: start_time
+      real(double) :: elapsed_time
 
-!******************************************************************************
-! time_now - Returns the current time
-!******************************************************************************
+   end type stopwatch_obj
 
-Function time_now() result(now)
-  Real(double) :: now
-  Real(double), external :: MPI_WTime
-  
-  now = MPI_WTime()
-End Function
+   !* Derived type that encapsulates the binary tree data
 
-!******************************************************************************
-! timer_uppercase - Just converts the timer name to uppercase
-!******************************************************************************
+   type tree_data_obj
 
-Subroutine Timer_UpperCase(str)
-  Character*(*), Intent(INOUT) :: str
-  
-  integer, PARAMETER :: a = iachar('a')
-  Integer, PARAMETER :: z = iachar('z')
-  Integer, PARAMETER :: shift = (iachar('A') - iachar('a'))
-  
-  integer i, lstr, c
-  
-  lstr = len(TRIM(str))
-  
-  do i = 1,lstr
-     c = iachar(str(i:i))
-     if ((a <= c) .and. (c <= z)) then
-        str(i:i) = ACHAR(c + shift)
-    else if (c == iachar('-')) then
-       str(i:i) = "^"
-    End If
-  end do
-  
-end subroutine 
-  
-!******************************************************************************
-!
-!  WriteTimer - Does the actual writing of the timer info to the screen
-!
-!    Timer - Timer to print
-!
-!******************************************************************************
+      private
 
-Subroutine WriteTimer(timer)
+      character(line_len)  :: name
+      type(stopwatch_obj), pointer :: timer
+      type(tree_data_obj), pointer :: level
 
-   type (timer_Type), Intent(IN) :: Timer
+   end type tree_data_obj
 
-   integer :: ncalls, j, ii
-   real(double) :: my_time, wall_time, cpu_time
-   character(line_len) :: name
-   character(line_len) :: fmt = '(a45,3x,i15,3x,2(f15.2,3x))'
+   !* Derived type that encapsulates the binary tree node
 
-   my_time = timer%elapsed
-   cpu_time = 0.0_double
-   call reduce(CONFIG,MPI_SUM, my_time, cpu_time)
+   type tree_node_obj
 
-   ncalls = 0
-   j = timer%N  !* Don't want to mess up potential timer call
-   call reduce(CONFIG,MPI_SUM, j, ncalls)
+      private
 
-   wall_time = cpu_time/real(mpi_nprocs(CONFIG),double)
+      integer  :: balance_factor
+      type(tree_data_obj), pointer :: info
+      type(tree_node_obj), pointer :: left_child
+      type(tree_node_obj), pointer :: right_child
 
-   if ( i_access( diaryfile() ) ) then
-      name = timer%name
-      do ii = 1, len(trimstr(name))
-         if ( name(ii:ii) == "-" ) name(ii:ii) = " "
+   end type tree_node_obj
+
+   !* Binary tree object containing the root node
+
+   type(tree_node_obj), pointer :: root
+
+   !* Publicly available parameters and procedures
+
+   public :: timer_ctor
+   public :: timer_dtor
+
+   public :: start_timer
+   public :: stop_timer
+   public :: write_timers
+
+   !* Interfaces for the publicly available procedures
+
+   interface timer_ctor
+      module procedure timer_ctor_
+   end interface timer_ctor
+
+   interface timer_dtor
+      module procedure timer_dtor_
+   end interface timer_dtor
+
+   interface start_timer
+      module procedure start_timer_
+   end interface start_timer
+
+   interface stop_timer
+      module procedure stop_timer_
+   end interface stop_timer
+
+   interface write_timers
+      module procedure write_timers_
+   end interface write_timers
+
+contains
+
+
+   !* Method to construct the timer system
+
+   subroutine timer_ctor_()
+
+      call binary_tree_ctor_(root)
+
+   end subroutine timer_ctor_
+
+
+   !* Method to destroy the timer system
+
+   subroutine timer_dtor_()
+
+      call binary_tree_dtor_(root,free_data=.true.)
+
+   end subroutine timer_dtor_
+
+
+   !* Method to start a given timer
+
+   subroutine start_timer_( name )
+
+      character(*) :: name
+
+      logical :: test
+      type(stopwatch_obj), pointer :: timer
+
+      timer => get_timer_(name,.true.)
+
+      test = ( timer%state /= state_stopped )
+      if ( error(test,"The timer '"//trimstr(name)//"' was not stopped before starting") ) goto 90
+
+      timer%state = state_running
+      timer%start_time = current_time_()
+
+90    if ( error("Exiting timer_mod::start_timer_()") ) continue
+
+   end subroutine start_timer_
+
+
+   !* Method to stop a given timer
+
+   subroutine stop_timer_( name )
+
+      character(*) :: name
+
+      logical :: test
+      type(stopwatch_obj), pointer :: timer
+
+      timer => get_timer_(name)
+
+      test = ( .not.associated( timer ) )
+      if ( error(test,"Unknown timer "//trimstr(name)) ) goto 90
+
+      test = ( timer%state /= state_running )
+      if ( error(test,"The timer '"//trimstr(name)//"' was not running before stopping") ) goto 90
+
+      timer%state = state_stopped
+      timer%ncalls = timer%ncalls + 1
+      timer%elapsed_time = timer%elapsed_time - timer%start_time + current_time_()
+
+90    if ( error("Exiting timer_mod::stop_timer_()") ) continue
+
+   end subroutine stop_timer_
+
+
+   !* Method to write all timer information to the diary file
+
+   subroutine write_timers_()
+
+      integer :: unit
+      character(line_len) :: fmt = '(a45,3(3x,a15))'
+
+      if ( i_access( diaryfile() ) ) then
+         unit = x_unit(diaryfile())
+         write(unit,'(/)')
+         write(unit,fmt) "Timer Breakdown                              ",          "Calls",   "CPU Time (s)",  "Wall Time (s)"
+         write(unit,fmt) "---------------------------------------------","---------------","---------------","---------------"
+      end if
+
+      call write_timer_tree_(root)
+      call flush(unit)
+
+   end subroutine write_timers_
+
+
+   !* Method to retrieve a timer from the timer tree
+
+   function get_timer_( name , create_timer ) result( timer )
+
+      character(*), intent(in) :: name
+      logical, intent(in), optional :: create_timer
+      type(stopwatch_obj), pointer :: timer
+
+      logical :: success, create
+      type(tree_data_obj) :: item
+      type(tree_node_obj), pointer :: result
+
+      item%name = name
+      call binary_tree_search_(root,item,result,success)
+
+      if ( success ) then
+         timer => result%info%timer
+      else
+         create = .false.
+         if ( present( create_timer ) ) create = create_timer
+         if ( .not.create ) then
+            nullify( timer )
+         else
+            timer => add_timer_(name)
+         end if
+      end if
+
+90    if ( error("Exiting timer_mod::get_timer_()") ) continue
+
+   end function get_timer_
+
+
+   !* Method to add a timer to the timer tree
+
+   function add_timer_( name ) result( timer )
+
+      character(*), intent(in) :: name
+      type(stopwatch_obj), pointer :: timer
+
+      logical :: success
+      type(tree_data_obj), pointer :: item
+
+      allocate( timer )
+
+      timer%name = name
+      timer%state = state_stopped
+      timer%ncalls = 0
+      timer%start_time = 0.0d0
+      timer%elapsed_time = 0.0d0
+
+      allocate( item )
+
+      item%name = name
+      item%timer => timer
+
+      call binary_tree_insert_(root,item,success)
+
+      if ( error((.not.success),"There was a problem inserting the '"//trimstr(name)//"' timer") ) continue
+90    if ( error("Exiting timer_mod::add_timer_()") ) continue
+
+   end function add_timer_
+
+
+   !* Method to retrieve the current elapsed time
+
+   function current_time_() result( now )
+
+      real(double) :: now
+
+      real(double) :: mpi_wtime
+
+      now = mpi_wtime()
+
+   end function current_time_
+
+
+   !* Method to construct the binary tree
+
+   subroutine binary_tree_ctor_( node )
+
+      type(tree_node_obj), pointer :: node
+
+      nullify( node )
+
+   end subroutine binary_tree_ctor_
+
+
+   !* Method to destroy the binary tree
+
+   recursive subroutine binary_tree_dtor_( node , free_data )
+
+      type(tree_node_obj), pointer :: node
+      logical, intent(in) :: free_data
+
+      if ( associated( node ) ) then
+         call binary_tree_dtor_(node%left_child,free_data)
+         call binary_tree_dtor_(node%right_child,free_data)
+         if ( free_data ) then
+            deallocate( node%info%timer )
+            deallocate( node%info )
+         end if
+         deallocate( node )
+      end if
+
+   end subroutine binary_tree_dtor_
+
+
+   !*
+
+   subroutine binary_tree_search_( node , item , result , success )
+
+      type(tree_node_obj), pointer :: node
+      type(tree_data_obj), target :: item
+      type(tree_node_obj), pointer :: result
+      logical, intent(out) :: success
+
+      integer :: comparison
+
+      success = .false.
+
+      if ( .not.associated( node ) ) then
+         nullify( result )
+         return
+      end if
+
+      result => node
+
+      do while ( .not.success .and. associated( result ) )
+         comparison = compare_tree_data_(item,result%info)
+         select case ( comparison )
+            case ( -1 )
+               result => result%left_child
+            case (  0 )
+               success = .true.
+            case (  1 )
+               result => result%right_child
+         end select
       end do
-      write(x_unit(diaryfile()),fmt) name,ncalls,cpu_time,wall_time
-   end if
-
-End Subroutine
-
-!******************************************************************************
-!
-!  PrintTimerInfo - Performs an in order traversal of the binary tree to print
-!               the timer info
-!
-!     Root     - Binary tree root
-!
-!******************************************************************************
-
-Recursive Subroutine PrintTimerInfo(Root)
-  Type (BinaryTreeNode), Pointer  :: Root
-
-  If (Associated(Root)) then
-     Call PrintTimerInfo(Root%LeftChild)
-
-     Call Writetimer(Root%Info%Timer)     
-
-     Call PrintTimerInfo(Root%RightChild)
-  EndIf
-
-  Return
-End Subroutine
-
-
-!******************************************************************************
-!
-!  Print_ALL_timers - Prints the timing inforation to the specified unit
-!      
-!******************************************************************************
-
-Subroutine Print_ALL_Timers()
-
-   integer :: unit
-   character(line_len) :: fmt = '(a45,3(3x,a15))'
-
-   if ( i_access( diaryfile() ) ) then
-      unit = x_unit(diaryfile())
-      write(unit,'(/)')
-      write(unit,fmt) "Timer Breakdown                              ",          "Calls",   "CPU Time (s)",  "Wall Time (s)"
-      write(unit,fmt) "---------------------------------------------","---------------","---------------","---------------"
-   end if
-
-   call PrintTimerInfo(Root)
-   call flush(unit)
-
-End Subroutine
-
-!******************************************************************************
-!
-!  Add_Timer - Adds a new timer to the list and expands it if needed.
-!              The new timer index is returned.
-!
-!     Name - Name of new timer
-!
-!******************************************************************************
-
-Function Add_timer(Name)  Result(Timer)
-  Character*(*),     Intent(IN) :: Name
-  Type (timer_type), Pointer    :: Timer
-
-  Type (BinaryTreeData), Pointer     :: Item
-  Logical                            :: Success
-
-
-  Allocate(Timer)
-  Call Create_timer(timer, Name)
-
-  Allocate(Item)
-  Item%Name = Name
-  Call Timer_UpperCase(Item%name)  !*Ignore case in compares
-  Item%timer => Timer
-  Call InsertNode(Root, Item, Success)
 
-  If (.NOT. Success) then
-    Write(*,*) 'Add_timer: Error!!!!!!!!!!!!!!!!!!!!!!!!!'
-    !* Should complain and exit here
-  end If
-
-  Return
-End Function
-
-!******************************************************************************
-!
-! Get_Timer - Finds the timer and optionally creates it if needed.
-!             Returning the index in timers or -1 if not found or created.
-!
-!    Name -Name of the timer
-!    CreateIfNeeded - Allows the timer to be created if it doesn't exist!
-!        this is an optional parameter and is FALSE by default.
-!
-!******************************************************************************
-
-Function Get_timer(Name, CreateIfNeeded)
-  Character*(*),     Intent(IN) :: Name
-  Logical, OPTIONAL, Intent(IN) :: CreateIfNeeded
-  Type (timer_type), Pointer :: Get_Timer
-
-  Type (BinaryTreeData) :: item
-  Type (BinaryTreeNode), Pointer :: Result
-  Logical :: success, DoCreate
-
-  Item%Name = name
-  Call Timer_UpperCase(Item%Name)
-  Call SearchBTree(Root, Item, Result, Success)
-
-  If (Success) then
-     Get_Timer => Result%Info%Timer
-  else
-     DoCreate = .FALSE.
-     If (Present(CreateIfNeeded)) DoCreate = CreateIfNeeded
-
-     If (.NOT. Docreate) then
-        Nullify(Get_timer)  !** Exit early since I'm not allowed to create it
-        RETURN
-     else               !** Create a new timer
-         Get_Timer => Add_timer(Name)
-     End If     
-  End If
-
-  Return
-End Function
-
-!******************************************************************************
-!  Start_Timer - Starts the timer
-!******************************************************************************
-
-Subroutine Start_Timer(name)
-  character*(*), Intent(IN) :: Name
-
-  Type (timer_type), Pointer :: Timer
-  Logical :: test
-  
-  timer => Get_timer(name, .TRUE.)
-  
-  test = timer%state /= STATE_STOPPED
-  if (error(test, "timing::start_timer: ERROR: Timer NOT stopped! timer:" // TRIM(name))) goto 9
-
-  timer%state = STATE_RUNNING
-  timer%start_time = time_now()
-
-9 continue
-
-  Return
-End Subroutine
-
-!******************************************************************************
-!  Stop_Timer - Stops the timer
-!******************************************************************************
-
-Subroutine Stop_Timer(name)
-  character*(*), Intent(IN) :: Name
-
-  Type (timer_type), Pointer :: Timer
-  Logical :: test
-
-  timer => Get_timer(name)
-
-  test = .NOT. Associated(timer)
-  if (error(test,"ERROR: unknown timer "//trim(name))) goto 9
-  test = timer%state /= STATE_RUNNING
-  if (error(test, "timing::stop_timer: ERROR: Timer not running! timer:" // TRIM(name))) goto 9
-
-  timer%state = STATE_STOPPED
-  timer%elapsed = timer%elapsed + time_now() - timer%start_time 
-  timer%n = timer%n + 1
-
-9 continue
-
-  Return
-End Subroutine
-
-
-!******************************************************************************
-!  Pause_Timer - Pauses the timer
-!******************************************************************************
-
-Subroutine Pause_Timer(Name)
-  character*(*), Intent(IN) :: Name
-
-  Type (timer_type), Pointer :: Timer
-  Logical :: test
-
-  timer => Get_timer(name)
-   
-  test = .NOT. Associated(timer)
-  if (error(test,"ERROR: Unknown Timer "//TRIM(Name))) goto 9
-  test = timer%state /= STATE_RUNNING
-  if (error(test, "timing::pause_timer: ERROR: Timer not PAUSED! timer:" // TRIM(name))) goto 9
-
-  timer%state = STATE_PAUSED
-  timer%elapsed = timer%elapsed + time_now() - timer%start_time 
-
-9 continue
-
-  Return
-End Subroutine
-
-!******************************************************************************
-!  Resume_Timer - Resumes the timer after a pause
-!******************************************************************************
-
-Subroutine Resume_Timer(Name)
-  character*(*), Intent(IN) :: Name
-
-  Type (timer_type), Pointer :: Timer
-  logical :: not_associated
-  logical :: not_paused
-  
-  timer => Get_timer(name)
-   
-  not_associated = .NOT. Associated(timer)
-  if (error(not_associated,"timing::resume_timer: ERROR: Unknown Timer "//TRIM(Name))) goto 9
-  not_paused = (timer%state == STATE_PAUSED) != STATE_PAUSED
-  if (error(not_paused, "timing::resume_timer: ERROR: Timer not PAUSED! timer:" // TRIM(name))) goto 9
-
-  timer%state = STATE_RUNNING
-  timer%start_time = time_now()
-
-9 continue
-
-  Return
-End Subroutine
-
-!******************************************************************************
-!  Reset_Timer - Resets the timer
-!******************************************************************************
-
-Subroutine Reset_Timer(Name)
-  character*(*), Intent(IN) :: Name
-
-  Type (timer_type), Pointer :: Timer
-  Logical :: NotFound
-  
-  timer => Get_timer(name, .FALSE.)
-   
-  NotFound = .NOT. Associated(timer)
-  if (error(NotFound,"ERROR: Unknown Timer "//TRIM(Name))) goto 9
-
-  timer%N = 0
-  timer%start_time = 0.0_double
-  timer%state = STATE_STOPPED
-  timer%elapsed = 0.0_double
-
-9 if (error("Exit timing::Reset_Timer")) continue
-
-  Return
-End Subroutine
-
-!******************************************************************************
-!  Create_Timer - Create the timer
-!******************************************************************************
-
-Subroutine Create_Timer(Timer, timer_name)
-  Type (Timer_Type), Intent(INOUT) :: Timer
-  Character(len=*),  Intent(IN)    :: timer_name
-
-  timer%Name = Timer_Name
-  timer%N = 0
-  timer%start_time = 0.0_double
-  timer%state = STATE_STOPPED
-  timer%elapsed = 0.0_double
-
-  Return
-End Subroutine
-
-!******************************************************************************
-!
-!  InitTimers - Initializes all the timers for use.
-!
-!******************************************************************************
-
-Subroutine InitTimers()
-
-  Call CreateBtree(Root)
-
-  Return
-End Subroutine
-
-
-!******************************************************************************
-!
-!  Kill_All_Timers - recursively deletes all the timers in the tree.
-!
-!******************************************************************************
-
-Subroutine Kill_All_Timers()
-
-  Call FreeTree(Root,.true.)
-
-  Return
-End Subroutine
-
-
-End Module
+   end subroutine binary_tree_search_
+
+
+   !*
+
+   subroutine binary_tree_insert_( node , item , success )
+
+      type(tree_node_obj), pointer :: node
+      type(tree_data_obj), pointer :: item
+      logical, intent(out) :: success
+
+      integer  :: error
+      type(tree_node_obj), pointer :: p, piv, piv_parent, in_p, in_parent, q
+
+      success = .true.
+
+      allocate( p )
+
+      p%info => item
+      p%balance_factor = 0
+
+      nullify( p%left_child )
+      nullify( p%right_child )
+
+      if ( .not.associated( node ) ) then
+         node => p
+         return
+      end if
+
+      in_p => node
+      piv => node
+
+      nullify( in_parent )
+      nullify( piv_parent )
+
+      ! Search for an insertion point and pivot
+
+      do while ( associated( in_p ) )
+         if ( in_p%balance_factor /= 0 ) then
+            piv => in_p
+            piv_parent => in_parent
+         end if
+         in_parent => in_p
+         if ( compare_tree_data_(item,in_p%info) == -1 ) then
+            in_p => in_p%left_child
+         else
+            in_p => in_p%right_child
+         end if
+      end do
+
+      ! Insert the node as a child of in_parent
+
+      if ( compare_tree_data_(item,in_parent%info) == -1 ) then
+         in_parent%left_child => p
+      else
+         in_parent%right_child => p
+      end if
+
+      ! Compute the balance factors between piv and in_parent
+
+      q => piv
+
+      if ( compare_tree_data_(item,q%info) == -1 ) then
+         q%balance_factor = q%balance_factor + 1
+         q => q%left_child
+      else
+         q%balance_factor = q%balance_factor - 1
+         q => q%right_child
+      end if
+
+      do while ( .not.associated( q , p) )
+         if ( compare_tree_data_(item, q%info) == -1 ) then
+            q%balance_factor = q%balance_factor + 1
+            q => q%left_child
+         else
+            q%balance_factor = q%balance_factor - 1
+            q => q%right_child
+         end if
+      end do
+
+      ! Determine of AVL rotations are needed
+
+      if ( (piv%balance_factor < -1) .or. (piv%balance_factor > 1) ) then
+         if ( compare_tree_data_(item,piv%info) == -1 ) then
+            if ( compare_tree_data_(item, piv%left_child%info) == -1 ) then
+               if ( associated( piv , node ) ) then
+                  call left_of_left(node)
+               else if ( associated(piv, piv_parent%left_child) ) then
+                  call left_of_left(piv_parent%left_child)
+               else
+                  call left_of_left(piv_parent%right_child)
+               end if
+            else if ( associated(piv, node) ) then
+               call right_of_left(node)
+            else if ( associated(piv, piv_parent%left_child) ) then
+               call right_of_left(piv_parent%left_child)
+            else
+               call right_of_left(piv_parent%right_child)
+            end if
+         else if ( compare_tree_data_(item, piv%right_child%info) /= -1 ) then
+            if ( associated(node, piv) ) then
+               call right_of_right(node)
+            else if ( associated(piv, piv_parent%left_child) ) then
+               call right_of_right(piv_parent%left_child)
+            else
+               call right_of_right(piv_parent%right_child)
+            end if
+         else if ( associated(piv, node) ) then
+            call left_of_right(node)
+         else if ( associated(piv, piv_parent%left_child) ) then
+            call left_of_right(piv_parent%left_child)
+         else
+            call left_of_right(piv_parent%right_child)
+         end if
+      end if
+
+   end subroutine binary_tree_insert_
+
+
+   !*
+
+   subroutine left_of_left(pivot)
+
+      type(tree_node_obj), pointer :: pivot
+      
+      type(tree_node_obj), pointer :: p, q
+      
+      p => pivot%left_child
+      q => p%right_child
+      
+      p%right_child => pivot
+      pivot%left_child => q
+      pivot => p
+      
+      pivot%balance_factor = 0
+      pivot%right_child%balance_factor = 0
+      
+   end subroutine left_of_left
+
+
+   !*
+
+   subroutine right_of_right(pivot)
+      
+      type(tree_node_obj), pointer :: pivot
+      
+      type(tree_node_obj), pointer :: p, q
+      
+      p => pivot%right_child
+      q => p%left_child
+      
+      p%left_child => pivot
+      pivot%right_child => q
+      pivot => p
+      
+      pivot%balance_factor = 0
+      pivot%left_child%balance_factor = 0
+      
+   end subroutine right_of_right
+
+
+   !*
+
+   subroutine left_of_right(pivot)
+      
+      type(tree_node_obj), pointer :: pivot
+      
+      type(tree_node_obj), pointer :: x, y
+      
+      x => pivot%right_child
+      y => x%left_child
+      
+      pivot%right_child => y%left_child
+      x%left_child => y%right_child
+      y%right_child => x
+      y%left_child => pivot
+      pivot => y
+      
+      select case ( pivot%balance_factor )
+         case ( -1 )
+            pivot%balance_factor = 0
+            pivot%left_child%balance_factor = 1
+            pivot%right_child%balance_factor = 0
+         case (  0 )
+            pivot%left_child%balance_factor = 0
+            pivot%right_child%balance_factor = 0
+         case default
+            pivot%balance_factor = 0
+            pivot%left_child%balance_factor = 0
+            pivot%right_child%balance_factor = -1
+      end select
+      
+   end subroutine left_of_right
+
+
+   !*
+
+   subroutine right_of_left(pivot)
+
+      type(tree_node_obj), pointer :: pivot
+
+      type(tree_node_obj), pointer :: x, y
+
+      x => pivot%left_child
+      y => x%right_child
+
+      pivot%left_child => y%right_child
+      x%right_child => y%left_child
+      y%left_child => x
+      y%right_child => pivot
+      pivot => y
+
+      select case ( pivot%balance_factor )
+         case ( 0 )
+            pivot%left_child%balance_factor = 0
+            pivot%right_child%balance_factor = 0
+         case ( 1 )
+            pivot%balance_factor = 0
+            pivot%left_child%balance_factor = 0
+            pivot%right_child%balance_factor = -1
+         case default
+            pivot%balance_factor = 0
+            pivot%left_child%balance_factor = 1
+            pivot%right_child%balance_factor = 0
+      end select
+
+   end subroutine right_of_left
+
+
+   !* 
+
+   function compare_tree_data_( td1 , td2 ) result( val )
+
+      type(tree_data_obj) :: td1, td2
+      integer :: val
+
+      if ( td1%name < td2%name ) then
+         val = -1
+      else if ( td1%name == td2%name ) then
+         val = 0
+      else
+         val = 1
+      end if
+
+   end function compare_tree_data_
+
+
+   !* Method to write the timer tree to the diary file
+
+   recursive subroutine write_timer_tree_( node )
+
+      type (tree_node_obj), pointer :: node
+
+      if ( associated( node ) ) then
+         call write_timer_tree_(node%right_child)
+         call write_timer_data_(node%info%timer)
+         call write_timer_tree_(node%left_child)
+      end if
+
+   end subroutine write_timer_tree_
+
+
+   !* Method to write the timer data to the diary file
+
+   subroutine write_timer_data_( timer )
+
+      type(stopwatch_obj), intent(in) :: timer
+
+      integer :: ii, ncalls
+      real(double) :: cpu_time, wall_time
+      character(line_len) :: name
+      character(line_len) :: fmt = '(a45,3x,i15,3x,2(f15.2,3x))'
+
+      ncalls = 0
+      call reduce(CONFIG,MPI_SUM, timer%ncalls, ncalls)
+
+      cpu_time = 0.0d0
+      call reduce(CONFIG,MPI_SUM, timer%elapsed_time, cpu_time)
+
+      ncalls = ( ncalls / mpi_nprocs(config) )
+      wall_time = ( cpu_time / real(mpi_nprocs(config), double) )
+
+      if ( i_access( diaryfile() ) ) then
+         name = timer%name
+         do ii = 1, len(trimstr(name))
+            if ( name(ii:ii) == "-" ) name(ii:ii) = " "
+         end do
+         write(x_unit(diaryfile()),fmt) name,ncalls,cpu_time,wall_time
+      end if
+
+   end subroutine write_timer_data_
+
+
+end module timing_mod
