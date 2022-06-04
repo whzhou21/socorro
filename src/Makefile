@@ -38,7 +38,7 @@ lib-%   :
 # ----- Socorro compilation ------------------------------------------ #
 
 f90mods	:
-	@ rm -rf Makefile.depends ; ../tools/bin/f90makedep.pl $(SRC)
+	@ rm -rf Makefile.depends ; MAKE/TOOLS/f90makedep.pl $(SRC)
 
 depends	:
 	@ echo 'Creating the module dependency list ...' ; sleep 0.5s

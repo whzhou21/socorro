@@ -53,7 +53,6 @@
 
       use error_mod
       use kind_mod
-      use mpi
       use utils_mod
 #ifdef USE_OMP
       use omp_lib
@@ -61,6 +60,8 @@
 
 !cod$
       implicit none ; private
+
+      include 'mpif.h'
 
       integer, parameter :: WORLD   = 1
       integer, parameter :: CONFIG  = 2

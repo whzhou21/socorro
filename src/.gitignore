@@ -8,4 +8,6 @@
 !.gitignore
 !Makefile
 !*.F90
+!*.c
+!*.h
 !/MAKE/

@@ -213,7 +213,7 @@
         call fft_start()
 
         call init_machine_constants()
-        call inittimers()
+        call timer_ctor()
 
         ! zero timers (or risk getting incorrect timing)
 
@@ -326,7 +326,7 @@
 !cod$
          if ( .not.error() ) then
             call stop_timer("Socorro: total time")
-            call print_all_timers()
+            call write_timers()
          end if
 
          call interrupt()
@@ -334,7 +334,7 @@
          call io_stop()
          call error_stop()
          call arg_stop()
-	 call kill_all_timers()
+         call timer_dtor()
          call mpi_stop()
 
       end subroutine system_stop_

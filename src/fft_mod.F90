@@ -570,7 +570,7 @@
         type(fft_distributed_plan) :: plan
         
 !cod$
-        !!call fft3d_destroy(plan%pl)
+        !call fft3d_destroy(plan%pl)
         call fft_3d_destroy_plan(plan%plan)
 
       end subroutine
@@ -591,12 +591,12 @@
 
         select case (dir)
         case (R_TO_Q)
-      !!    call fft3d_compute(plan%pl,c_loc(data),c_loc(data),Q_TO_R)
+        !  call fft3d_compute(plan%pl,c_loc(data),c_loc(data),Q_TO_R)
           call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
           scale = 1.0_double/plan%norm
           call point_mxs(data,scale)
         case (Q_TO_R)
-      !!    call fft3d_compute(plan%pl,c_loc(data),c_loc(data),R_TO_Q)
+        !  call fft3d_compute(plan%pl,c_loc(data),c_loc(data),R_TO_Q)
           call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
         end select
 
