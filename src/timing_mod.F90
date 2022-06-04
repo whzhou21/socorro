@@ -24,6 +24,7 @@ module timing_mod
 
    integer, parameter :: state_stopped = 0
    integer, parameter :: state_running = 1
+   integer, parameter :: state_paused = 2
 
    !* Derived type that encapsulates a timer
 
@@ -75,29 +76,44 @@ module timing_mod
 
    public :: start_timer
    public :: stop_timer
+   public :: pause_timer
+   public :: resume_timer
+   public :: reset_timer
    public :: write_timers
 
    !* Interfaces for the publicly available procedures
 
    interface timer_ctor
       module procedure timer_ctor_
-   end interface timer_ctor
+   end interface
 
    interface timer_dtor
       module procedure timer_dtor_
-   end interface timer_dtor
+   end interface
 
    interface start_timer
       module procedure start_timer_
-   end interface start_timer
+   end interface
 
    interface stop_timer
       module procedure stop_timer_
-   end interface stop_timer
+   end interface
+
+   interface pause_timer
+      module procedure pause_timer_
+   end interface
+
+   interface resume_timer
+      module procedure resume_timer_
+   end interface
+
+   interface reset_timer
+      module procedure reset_timer_
+   end interface
 
    interface write_timers
       module procedure write_timers_
-   end interface write_timers
+   end interface
 
 contains
 
@@ -129,7 +145,7 @@ contains
       logical :: test
       type(stopwatch_obj), pointer :: timer
 
-      timer => get_timer_(name,.true.)
+      timer => get_timer_(name, create_timer = .true.)
 
       test = ( timer%state /= state_stopped )
       if ( error(test,"The timer '"//trimstr(name)//"' was not stopped before starting") ) goto 90
@@ -137,7 +153,7 @@ contains
       timer%state = state_running
       timer%start_time = current_time_()
 
-90    if ( error("Exiting timer_mod::start_timer_()") ) continue
+90    if ( error("Exiting timing_mod::start_timer_()") ) continue
 
    end subroutine start_timer_
 
@@ -151,7 +167,7 @@ contains
       logical :: test
       type(stopwatch_obj), pointer :: timer
 
-      timer => get_timer_(name)
+      timer => get_timer_(name, create_timer = .false.)
 
       test = ( .not.associated( timer ) )
       if ( error(test,"Unknown timer "//trimstr(name)) ) goto 90
@@ -163,9 +179,83 @@ contains
       timer%ncalls = timer%ncalls + 1
       timer%elapsed_time = timer%elapsed_time - timer%start_time + current_time_()
 
-90    if ( error("Exiting timer_mod::stop_timer_()") ) continue
+90    if ( error("Exiting timing_mod::stop_timer_()") ) continue
 
    end subroutine stop_timer_
+
+
+   !* Method to pause a given timer
+
+   subroutine pause_timer_( name )
+
+      character*(*), intent(in) :: name
+
+      logical :: test
+      type(stopwatch_obj), pointer :: timer
+
+      timer => get_timer_(name, create_timer = .false.)
+
+      test = ( .not.associated( timer ) )
+      if ( error(test,"Unknown timer "//trimstr(name)) ) goto 90
+
+      test = ( timer%state /= state_running )
+      if ( error(test,"The timer '"//trimstr(name)//"' was not running before being paused") ) goto 90
+
+      timer%state = state_paused
+      timer%elapsed_time = timer%elapsed_time - timer%start_time + current_time_()
+
+90    if ( error("Exiting timing_mod::pause_timer_()") ) continue
+
+   end subroutine
+
+
+   !* Method to resume a given timer
+
+   subroutine resume_timer_( name )
+
+      character*(*), intent(in) :: name
+
+      logical :: test
+      type(stopwatch_obj), pointer :: timer
+
+      timer => get_timer_(name, create_timer = .false.)
+
+      test = ( .not.associated( timer ) )
+      if ( error(test,"Unknown timer "//trimstr(name)) ) goto 90
+
+      test = ( timer%state /= state_paused )
+      if ( error(test,"The timer '"//trimstr(name)//"' was not paused before resuming") ) goto 90
+
+      timer%state = state_running
+      timer%elapsed_time = current_time_()
+
+90    if ( error("Exiting timing_mod::resume_timer_()") ) continue
+
+   end subroutine
+
+
+   !* Method to reset a given timer
+
+   subroutine reset_timer_( name )
+
+      character*(*), intent(in) :: name
+
+      logical :: test
+      type(stopwatch_obj), pointer :: timer
+
+      timer => get_timer_(name, create_timer = .false.)
+
+      test = ( .not.associated( timer ) )
+      if ( error(test,"Unknown timer "//trimstr(name)) ) goto 90
+
+      timer%state = state_stopped
+      timer%ncalls = 0
+      timer%start_time = 0.0d0
+      timer%elapsed_time = 0.0d0
+
+90    if ( error("Exiting timing_mod::reset_timer_()") ) continue
+
+   end subroutine
 
 
    !* Method to write all timer information to the diary file
@@ -215,7 +305,7 @@ contains
          end if
       end if
 
-90    if ( error("Exiting timer_mod::get_timer_()") ) continue
+90    if ( error("Exiting timing_mod::get_timer_()") ) continue
 
    end function get_timer_
 
@@ -246,7 +336,7 @@ contains
       call binary_tree_insert_(root,item,success)
 
       if ( error((.not.success),"There was a problem inserting the '"//trimstr(name)//"' timer") ) continue
-90    if ( error("Exiting timer_mod::add_timer_()") ) continue
+90    if ( error("Exiting timing_mod::add_timer_()") ) continue
 
    end function add_timer_
 
