@@ -1,0 +1,335 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   4 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Norm-Conserving Pseudopotential method
+
+   Primitive lattice vectors:
+
+     a1:     5.3000000000     0.0000000000     5.3000000000
+     a2:     0.0000000000     5.3000000000     5.3000000000
+     a3:     5.3000000000     5.3000000000     0.0000000000
+
+     b1:     0.5927533309    -0.5927533309     0.5927533309
+     b2:    -0.5927533309     0.5927533309     0.5927533309
+     b3:     0.5927533309     0.5927533309    -0.5927533309
+
+     cell volume = 297.75400
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Al3          0.00000    0.00000    0.00000         0.00000    0.00000    0.00000
+         2      As3          2.86200    2.86200    2.86200         0.27000    0.27000    0.27000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 4.48     2: 4.48     2: 4.48     2: 4.96
+         2       1: 4.48     1: 4.48     1: 4.48     1: 4.96
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (automatic with tolerance = 1.0E-08):
+
+     The space group has 6 operations with point group C_3v
+
+   Mesh:
+
+     dimension 1 =  30  =  2^1 * 3^1 * 5^1 * 7^0
+     dimension 2 =  30  =  2^1 * 3^1 * 5^1 * 7^0
+     dimension 3 =  30  =  2^1 * 3^1 * 5^1 * 7^0
+
+     Number of mesh points = 27000
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 2 groups with 7 planes per group
+                    2 groups with 8 planes per group
+
+     Plane wave cutoff energy = 120.00 Ryd
+
+       Number of plane waves = 6615
+
+   Density-dependent functional:
+
+     Exchange    (native): LDA
+     Correlation (native): PZ
+
+     Analytical expressions for the functional derivatives
+
+Fields object construction:
+
+   Guess-density initialization
+
+   Self-consistency achieved using density mixing:
+
+   Pulay mixing:
+
+     history = 5
+
+     weight = 0.800
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 30.00 Ryd
+
+   Number of bands = 8
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 4 --> 4
+       q2: 4 --> 4
+       q3: 4 --> 4
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.125000 +0.125000 +0.125000      +0.074094 +0.074094 +0.074094      0.031250
+           2      +0.375000 +0.375000 +0.375000      +0.222282 +0.222282 +0.222282      0.031250
+           3      +0.125000 +0.125000 +0.375000      +0.222282 +0.222282 -0.074094      0.093750
+           4      +0.125000 +0.125000 -0.375000      -0.222282 -0.222282 +0.370471      0.093750
+           5      +0.125000 +0.125000 -0.125000      -0.074094 -0.074094 +0.222282      0.093750
+           6      +0.375000 +0.375000 +0.625000      +0.370471 +0.370471 +0.074094      0.093750
+           7      +0.125000 -0.375000 -0.375000      +0.074094 -0.518659 +0.074094      0.093750
+           8      +0.125000 +0.375000 +0.375000      +0.074094 +0.370471 +0.074094      0.093750
+           9      +0.125000 +0.375000 -0.125000      -0.222282 +0.074094 +0.370471      0.187500
+          10      +0.125000 +0.375000 +0.625000      +0.222282 +0.518659 -0.074094      0.187500
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1             845
+         2             826
+         3             831
+         4             825
+         5             836
+         6             828
+         7             819
+         8             829
+         9             826
+        10             824
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Reciprocal-space projectors
+     using pdots blocksize = 8
+
+   MPI remap
+
+   Block Davidson solver:
+
+     maximum directions = 3
+
+     residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 1.5176E-02,  cell energy = -16.936048983
+   Self-consistent step  2:  density residual = 4.4330E-03,  cell energy = -17.013854120
+   Self-consistent step  3:  density residual = 1.7593E-03,  cell energy = -17.025678240
+   Self-consistent step  4:  density residual = 1.4861E-04,  cell energy = -17.028143212
+   Self-consistent step  5:  density residual = 1.5821E-05,  cell energy = -17.028161943
+   Self-consistent step  6:  density residual = 3.3606E-06,  cell energy = -17.028162004
+   Self-consistent step  7:  density residual = 8.8365E-07,  cell energy = -17.028162007
+   Self-consistent step  8:  density residual = 2.5894E-07,  cell energy = -17.028162008
+   Self-consistent step  9:  density residual = 6.0726E-08,  cell energy = -17.028162008
+   Self-consistent step 10:  density residual = 1.1991E-08,  cell energy = -17.028162008
+   Self-consistent step 11:  density residual = 2.9149E-09,  cell energy = -17.028162008
+
+   Fermi level =   0.4046017771 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.5188742557           2.0000
+                        2           0.2820760822           2.0000
+                        3           0.3235256192           2.0000
+                        4           0.3235256192           2.0000
+                        5           0.5549960063           0.0000
+                        6           0.6961285303           0.0000
+                        7           0.6961285303           0.0000
+                        8           0.7108553198           0.0000
+
+     Special k-point #2:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4505131880           2.0000
+                        2           0.0196206158           2.0000
+                        3           0.2877727234           2.0000
+                        4           0.2877727234           2.0000
+                        5           0.5090873325           0.0000
+                        6           0.6938611976           0.0000
+                        7           0.6938611976           0.0000
+                        8           0.9133313573           0.0000
+
+     Special k-point #3:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4638536281           2.0000
+                        2           0.0571405048           2.0000
+                        3           0.2500553953           2.0000
+                        4           0.2962801168           2.0000
+                        5           0.6035611277           0.0000
+                        6           0.7051520828           0.0000
+                        7           0.7635979304           0.0000
+                        8           0.8168959909           0.0000
+
+     Special k-point #4:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4147970124           2.0000
+                        2          -0.0612048301           2.0000
+                        3           0.2524752062           2.0000
+                        4           0.2604606043           2.0000
+                        5           0.5664386407           0.0000
+                        6           0.6715306709           0.0000
+                        7           0.7866577678           0.0000
+                        8           0.9416959379           0.0000
+
+     Special k-point #5:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4880860397           2.0000
+                        2           0.1227266513           2.0000
+                        3           0.2703314509           2.0000
+                        4           0.3339151057           2.0000
+                        5           0.5963356354           0.0000
+                        6           0.6544602159           0.0000
+                        7           0.7839475231           0.0000
+                        8           0.8016960627           0.0000
+
+     Special k-point #6:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4054375282           2.0000
+                        2           0.0043992310           2.0000
+                        3           0.1066143778           2.0000
+                        4           0.2406148619           2.0000
+                        5           0.5479185008           0.0000
+                        6           0.7770569919           0.0000
+                        7           0.8287546200           0.0000
+                        8           0.9137141916           0.0000
+
+     Special k-point #7:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3880812014           2.0000
+                        2          -0.0384178881           2.0000
+                        3           0.1799315624           2.0000
+                        4           0.1905715558           2.0000
+                        5           0.4748889806           0.0000
+                        6           0.5884547227           0.0000
+                        7           1.0150714299           0.0000
+                        8           1.0476658011           0.0000
+
+     Special k-point #8:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4399483432           2.0000
+                        2           0.0587940697           2.0000
+                        3           0.2027469961           2.0000
+                        4           0.2219726147           2.0000
+                        5           0.5278157178           0.0000
+                        6           0.6424570163           0.0000
+                        7           0.8351170282           0.0000
+                        8           0.8787823628           0.0000
+
+     Special k-point #9:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.4193684382           2.0000
+                        2          -0.0135069669           2.0000
+                        3           0.1500727115           2.0000
+                        4           0.2830209654           2.0000
+                        5           0.6209409465           0.0000
+                        6           0.7065378541           0.0000
+                        7           0.7759372480           0.0000
+                        8           0.8396560110           0.0000
+
+     Special k-point #10:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3858114209           2.0000
+                        2          -0.0276365173           2.0000
+                        3           0.1091961715           2.0000
+                        4           0.1967201560           2.0000
+                        5           0.5989755513           0.0000
+                        6           0.7202181314           0.0000
+                        7           0.7891994305           0.0000
+                        8           0.9581412213           0.0000
+
+   Energy components (Ryd):
+     kinetic               =   6.253384013
+     Hartree               =   1.595821197
+     exchange-correlation  =  -4.807531240
+     local pseudopotential =  -6.857607965
+     atomic                = -13.212228012
+     ---------------------------------------
+     cell energy           = -17.028162008
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.027722     +0.027722     +0.027722   Ryd/Bohr
+                      2        -0.027722     -0.027722     -0.027722
+
+   Residual force (removed) =      -0.000000     -0.000000     -0.000000
+
+   Stress Tensor:
+            -2.2304     30.6522     30.6522   kbar
+            30.6522     -2.2304     30.6522
+            30.6522     30.6522     -2.2304
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                4           5.99           1.50
+config_sc: decompose                                  4           0.07           0.02
+config_sc: forces_i                                   4           0.01           0.00
+config_sc: stress_tensor_i                            4           1.99           0.50
+eigensolver: diagonalize_gen                       1196           0.31           0.08
+electrons_sc: constructor                             4           1.83           0.46
+electrons_sc: update                                 40           2.35           0.59
+fft: distributed                                    292           0.14           0.03
+fft: serial                                        7472           1.27           0.32
+fields_sc: constructor                                4           0.22           0.05
+fields_sc: update                                    44           0.19           0.05
+multibasis: band_remap                             7428           0.09           0.02
+multivector: gather_wf                                4           0.00           0.00
+multivector: scatter_wf                             884           0.06           0.01
+multivector: zgemm                                10456           0.17           0.04
+operators: apply_hamiltonian                       1640           1.51           0.38
+operators: zgemm                                   4156           0.09           0.02
+Socorro: total time                                   4           8.07           2.02

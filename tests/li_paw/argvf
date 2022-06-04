@@ -1,0 +1,32 @@
+kgroups  1
+
+atomic_representation  paw
+theta_points_Li  8
+phi_points_Li    4
+
+functional    lda
+correlation   pw
+
+wf_cutoff     49.0d0
+den_cutoff   196.0d0  
+
+config_type         self-consistent
+config_steps        20
+config_convergence  density
+density_tolerance   2.0d-5
+
+nbands   6
+
+kpoints    gmp
+mpparams   1 1 1 
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+mix_type     density
+mix_method   pulay
+mix_weight   0.80d0
+mix_history  5

@@ -1,0 +1,4 @@
+This test is for an H2O molecule in a cubic cell. The bond lengths and
+angles are relaxed using a conjugate-gradients algorithm.
+
+diaryf_8 <-- crystal, argv, 8 processors

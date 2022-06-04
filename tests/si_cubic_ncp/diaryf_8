@@ -1,0 +1,222 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   8 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Norm-Conserving Pseudopotential method
+
+   Primitive lattice vectors:
+
+     a1:    10.2000000000     0.0000000000     0.0000000000
+     a2:     0.0000000000    10.2000000000     0.0000000000
+     a3:     0.0000000000     0.0000000000    10.2000000000
+
+     b1:     0.6159985595     0.0000000000     0.0000000000
+     b2:     0.0000000000     0.6159985595     0.0000000000
+     b3:     0.0000000000     0.0000000000     0.6159985595
+
+     cell volume = 1061.20800
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00000    0.00000    0.00000         0.00000    0.00000    0.00000
+         2      Si1          5.10000    5.10000    0.00000         0.50000    0.50000    0.00000
+         3      Si1          5.10000    0.00000    5.10000         0.50000    0.00000    0.50000
+         4      Si1          0.00000    5.10000    5.10000         0.00000    0.50000    0.50000
+         5      Si1          2.55000    2.55000    2.55000         0.25000    0.25000    0.25000
+         6      Si1          7.65000    7.65000    2.55000         0.75000    0.75000    0.25000
+         7      Si1          7.65000    2.55000    7.65000         0.75000    0.25000    0.75000
+         8      Si1          2.55000    7.65000    7.65000         0.25000    0.75000    0.75000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         2       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         3       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         4       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         5       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         6       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         7       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         8       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (automatic with tolerance = 1.0E-08):
+
+     The space group has 192 operations with point group O_h
+
+   Mesh:
+
+     dimension 1 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+     dimension 2 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+     dimension 3 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+
+     Number of mesh points = 32768
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 8 groups with 4 planes per group
+
+     Plane wave cutoff energy = 80.00 Ryd
+
+       Number of plane waves = 12893
+
+   Density-dependent functional:
+
+     Exchange    (native): LDA
+     Correlation (native): PZ
+
+     Analytical expressions for the functional derivatives
+
+Fields object construction:
+
+   Guess-density initialization
+
+   Self-consistency achieved using density mixing:
+
+   Simple mixing:
+
+     weight = 0.800
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 20.00 Ryd
+
+   Number of bands = 24
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 2 --> 2
+       q2: 2 --> 2
+       q3: 2 --> 2
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.250000 +0.250000 +0.250000      +0.154000 +0.154000 +0.154000      1.000000
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1            1607
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Reciprocal-space projectors
+     using pdots blocksize = 24
+
+   MPI remap
+
+   Conjugate gradient solver:
+
+     maximum directions = 3
+
+     residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 1.1870E-02,  cell energy = -51.505336907
+   Self-consistent step  2:  density residual = 4.9750E-03,  cell energy = -61.885465842
+   Self-consistent step  3:  density residual = 4.3127E-03,  cell energy = -63.331080874
+   Self-consistent step  4:  density residual = 4.9055E-04,  cell energy = -63.451202413
+   Self-consistent step  5:  density residual = 1.1192E-04,  cell energy = -63.454268458
+   Self-consistent step  6:  density residual = 2.4676E-05,  cell energy = -63.454288207
+   Self-consistent step  7:  density residual = 5.2281E-06,  cell energy = -63.454288832
+   Self-consistent step  8:  density residual = 1.1713E-06,  cell energy = -63.454288857
+   Self-consistent step  9:  density residual = 2.5715E-07,  cell energy = -63.454288857
+
+   Fermi level =   0.4812743654 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694365185           2.0000
+                        2          -0.2255998658           2.0000
+                        3          -0.2255998658           2.0000
+                        4          -0.2255998658           2.0000
+                        5          -0.0142655502           2.0000
+                        6          -0.0142655502           2.0000
+                        7          -0.0142655502           2.0000
+                        8           0.1665315346           2.0000
+                        9           0.1928763973           2.0000
+                       10           0.1928763973           2.0000
+                       11           0.1928763973           2.0000
+                       12           0.2937365050           2.0000
+                       13           0.2937365050           2.0000
+                       14           0.2937365050           2.0000
+                       15           0.4018976264           2.0000
+                       16           0.4018976264           2.0000
+                       17           0.5626797288           0.0000
+                       18           0.5626797288           0.0000
+                       19           0.5626797288           0.0000
+                       20           0.6047376737           0.0000
+                       21           0.7153280460           0.0000
+                       22           0.7153316752           0.0000
+                       23           0.7808060543           0.0000
+                       24           0.7808061136           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  24.806930072
+     Hartree               =   4.401555308
+     exchange-correlation  = -19.290710132
+     local pseudopotential = -19.411924799
+     atomic                = -53.960139306
+     ---------------------------------------
+     cell energy           = -63.454288857
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.000000     +0.000000     -0.000000   Ryd/Bohr
+                      2        +0.000000     +0.000000     -0.000000
+                      3        +0.000000     +0.000000     -0.000000
+                      4        +0.000000     +0.000000     -0.000000
+                      5        -0.000000     -0.000000     +0.000000
+                      6        -0.000000     -0.000000     +0.000000
+                      7        -0.000000     -0.000000     +0.000000
+                      8        -0.000000     -0.000000     +0.000000
+
+   Residual force (removed) =      -0.000000     +0.000000     -0.000000
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                8           1.96           0.25
+config_sc: forces_i                                   8           0.04           0.00
+eigensolver: diagonalize                             72           0.02           0.00
+electrons_sc: constructor                             8           0.19           0.02
+electrons_sc: update                                 64           1.13           0.14
+fft: distributed                                    472           0.10           0.01
+fft: serial                                        2024           0.49           0.06
+fields_sc: constructor                                8           0.06           0.01
+fields_sc: update                                    72           0.24           0.03
+multibasis: band_remap                             1952           0.07           0.01
+multivector: gather_wf                                8           0.00           0.00
+multivector: scatter_wf                             224           0.01           0.00
+multivector: zgemm                                  736           0.05           0.01
+operators: apply_hamiltonian                        296           0.64           0.08
+operators: zgemm                                    688           0.07           0.01
+Socorro: total time                                   8           2.01           0.25

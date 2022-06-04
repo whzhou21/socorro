@@ -1,0 +1,33 @@
+sgroups  2
+polarization_method  variable
+starting_spin_polarization  1.0d0
+
+atomic_representation  ncp
+
+functional   lsda
+correlation  pw
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0  
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   1.0e-7
+
+nbands    8
+
+kgroups   1
+kpoints   gmp
+mpparams  2 2 2
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+restart         off
+write_restart   off
+
+write_band_occupations  on

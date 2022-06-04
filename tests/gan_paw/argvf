@@ -1,0 +1,33 @@
+kgroups   2
+
+atomic_representation  paw
+atomic_occupations_Ga  2.0d0 0.0d0 0.0d0 0.0d0 10.0d0 0.0d0
+atomic_occupations_N   2.0d0 0.0d0 4.0d0 0.0d0
+
+functional   pbe
+
+wf_cutoff     35.0d0  
+den_cutoff   140.0d0  
+
+config_type         self-consistent
+config_steps        30
+config_convergence  density
+density_tolerance   1.0d-5
+
+nbands    18
+
+kpoints     gmp
+mpparams    4 4 4
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  2
+solver_tolerance   1.0d-4
+
+mix_type    density
+mix_method  pulay
+mix_weight  0.90d0
+
+restart         off
+write_restart   off

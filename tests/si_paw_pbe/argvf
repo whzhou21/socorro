@@ -1,0 +1,30 @@
+kgroups  1
+
+atomic_representation  paw
+atomic_occupations_Si  1.0000  3.0000  0.0000
+theta_points_Si   16
+phi_points_Si     10
+
+functional  pbe
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0  
+ 
+config_type         sc
+config_steps        20
+config_convergence  density
+density_tolerance   2.0d-5
+ 
+nbands   8
+
+kpoints    gmp
+mpparams   2 2 2 
+
+kt   1.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+restart        off
+write_restart  off

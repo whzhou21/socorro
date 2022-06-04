@@ -1,0 +1,2 @@
+export OMP_NUM_THREADS=1
+mpirun --n 2 ../../src/socorro -in argvf

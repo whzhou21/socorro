@@ -1,0 +1,35 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional   lda
+
+projector_type  reciprocal
+
+wf_cutoff   20.0d0  
+den_cutoff  80.0d0  
+
+config_type         self-consistent
+config_steps        25
+config_convergence  density
+density_tolerance   2.0d-7
+
+nbands  24
+
+kpoints    gmp
+mpparams   2 2 2
+
+kt   5.0d-3
+
+solver_method      cg
+solver_directions  3
+solver_tolerance   1.0d-4
+
+mix_type     density
+mix_method   pulay
+mix_weight   0.60d0
+mix_history  4
+
+relax_method   cg
+relax_steps    25
+relax_tol      1.0d-5

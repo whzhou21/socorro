@@ -1,0 +1,200 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   4 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Projector-Augmented Wave method
+
+   Primitive lattice vectors:
+
+     a1:     5.0900000000     5.0900000000     0.0000000000
+     a2:     0.0000000000     5.0900000000     5.0900000000
+     a3:     5.0900000000     0.0000000000     5.0900000000
+
+     b1:     0.6172087728     0.6172087728    -0.6172087728
+     b2:    -0.6172087728     0.6172087728     0.6172087728
+     b3:     0.6172087728    -0.6172087728     0.6172087728
+
+     cell volume = 263.74446
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si           1.27250    1.27250    1.27250         0.12500    0.12500    0.12500
+         2      Si           8.90750    8.90750    8.90750         0.87500    0.87500    0.87500
+
+   Atom matching radii:
+
+          Si:   2.010
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 4.41     2: 4.41     2: 4.41     2: 4.41
+         2       1: 4.41     1: 4.41     1: 4.41     1: 4.41
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (automatic with tolerance = 1.0E-08):
+
+     The space group has 48 operations with point group O_h
+
+   Mesh:
+
+     dimension 1 =  24  =  2^3 * 3^1 * 5^0 * 7^0
+     dimension 2 =  24  =  2^3 * 3^1 * 5^0 * 7^0
+     dimension 3 =  24  =  2^3 * 3^1 * 5^0 * 7^0
+
+     Number of mesh points = 13824
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 4 groups with 6 planes per group
+
+     Plane wave cutoff energy = 80.00 Ryd
+
+       Number of plane waves = 3143
+
+   Density-dependent functional:
+
+     Exchange    (native): LDA
+     Correlation (native): PW
+
+     Analytical expressions for the functional derivatives
+
+Fields object construction:
+
+   Restart-file initialization
+
+   Angular mesh for atomic exchange and correlation:
+
+     Si:
+       8 points along theta
+       4 points along phi
+
+   Self-consistency achieved using density mixing:
+
+   Pulay mixing:
+
+     history = 5
+
+     weight = 0.800
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 20.00 Ryd
+
+   Number of bands = 5
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 2 --> 2
+       q2: 2 --> 2
+       q3: 2 --> 2
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.250000 +0.250000 +0.250000      +0.154302 +0.154302 +0.154302      0.250000
+           2      +0.250000 +0.250000 -0.250000      -0.154302 +0.462907 -0.154302      0.750000
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1             392
+         2             399
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Reciprocal-space projectors
+     using pdots blocksize = 5
+
+   MPI remap
+
+   Block Davidson solver:
+
+     first iteration:
+       maximum directions = 20
+     subsequent iterations:
+       maximum directions = 3
+
+     first iteration:
+       residual tolerance = 1.00E-05
+     subsequent iterations:
+       residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 1.8571E-05,  cell energy = -89.080959064
+   Self-consistent step  2:  density residual = 1.5479E-05,  cell energy = -89.080959077
+   Self-consistent step  3:  density residual = 9.2216E-06,  cell energy = -89.080959077
+
+   Fermi level =   0.3435261581 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.5093564723           2.0000
+                        2           0.0286007580           2.0000
+                        3           0.2638027301           2.0000
+                        4           0.2638027302           2.0000
+                        5           0.4695488687           0.0000
+
+     Special k-point #2:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3640166237           2.0000
+                        2          -0.1521116307           2.0000
+                        3           0.0532841233           2.0000
+                        4           0.1544574565           2.0000
+                        5           0.4252730933           0.0000
+
+   Energy components (Ryd):
+     kinetic               =   6.449382212
+     Hartree               =   9.332635950
+     exchange-correlation  =  -5.420906026
+     local pseudopotential =  -2.505430622
+     atomic                = -96.936640592
+     ---------------------------------------
+     cell energy           = -89.080959077
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                4           1.81           0.45
+eigensolver: diagonalize_gen                        192           0.01           0.00
+electrons_sc: constructor                             4           0.17           0.04
+electrons_sc: update                                  8           0.06           0.01
+fft: distributed                                    148           0.37           0.09
+fft: serial                                         586           0.05           0.01
+fields_sc: constructor                                4           0.04           0.01
+fields_sc: update                                    12           0.07           0.02
+multibasis: band_remap                              916           0.04           0.01
+multivector: gather_wf                                4           0.00           0.00
+multivector: scatter_wf                              34           0.00           0.00
+multivector: zgemm                                 1964           0.01           0.00
+operators: apply_hamiltonian                        220           0.10           0.02
+operators: zgemm                                    908           0.01           0.00
+Socorro: total time                                   4           1.81           0.45

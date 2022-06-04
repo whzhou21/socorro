@@ -1,0 +1,32 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional  lda
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   1.0d-9
+
+nbands   8
+
+kpoints    gmp
+mpparams   2 2 2
+
+kt    5.0d-3
+
+solver_method          bd
+solver_directions      3
+solver_tolerance       1.0d-4
+solver_rf_mode         on
+solver_rfm_directions  20
+
+forces     on
+pressure   on
+
+restart         f
+write_restart   off

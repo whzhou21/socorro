@@ -1,0 +1,42 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional  lda
+
+symmetry  off
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0  
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   1.0d-8
+
+nbands  45
+
+kpoints   gmp
+mpparams  2 2 2
+
+kt  5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+mix_type          density
+mix_method        pulay
+mix_weight        0.80d0
+mix_damping_type  kerker
+mix_damping_gc    0.80d0
+
+configurations    2
+ts_method         dimer
+dimer_force_tol   2.0d-4
+dimer_torque_tol  1.0d-4
+dimer_optimizer   sd
+dimer_sd_alpha    3.5d0
+
+restart         off
+write_restart   off

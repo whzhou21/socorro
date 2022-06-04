@@ -1,0 +1,42 @@
+kroups  2
+polarization_method  fixed
+spin_polarization    0.0d0
+
+atomic_representation  paw
+atomic_occupations_sg1_Si  0.5d0  1.5d0
+atomic_occupations_sg2_Si  0.5d0  1.5d0
+theta_points_Si  8
+phi_points_Si    4
+
+xctype_dependence   density
+xctype_ddf_source   libxc
+
+xctype_exchange      1  ! LDA_X
+xctype_correlation  13  ! LDA_C_PW_MOD
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0  
+
+config_type         self-consistent
+config_steps        20
+config_convergence  density
+density_tolerance   1.0d-5
+
+nbands   6
+
+kgroups  1
+kpoints    gmp
+mpparams   2 2 2 
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+mix_type     density
+mix_method   pulay
+mix_weight   0.75d0
+mix_history  4
+
+write_band_occupations  on

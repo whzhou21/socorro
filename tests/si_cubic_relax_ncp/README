@@ -1,0 +1,5 @@
+This test is relaxation of a 8-atom cube supercell of Si in the diamond structure.
+The test is done using either reciprocal- or real-space projectors.
+
+diaryf_8 <-- crystal, argv, 8 processors
+diaryf_rs_8 <-- crystal, argv_rs, 8 processors

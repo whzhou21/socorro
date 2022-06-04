@@ -1,0 +1,39 @@
+kgroups   1
+
+atomic_representation  ncp
+
+functional  lda
+
+wf_cutoff      30.0d0
+den_cutoff    120.0d0
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   1.0d-8
+
+nbands   8
+
+kpoints   gmp
+mpparams  4 4 4
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+forces         on
+stress_tensor  on
+
+mix_type    density
+mix_method  pulay
+mix_weight  0.80d0
+
+decomposition     on
+dcomp_mode        l
+dcomp_radius_Al3  2.5d0
+dcomp_radius_As3  3.5d0
+
+restart         off
+write_restart   off

@@ -1,0 +1,5 @@
+This test is for an 8-atom cube supercell of Si in the diamond structure.
+The test can be done using either reciprocal- or real-space projectors.
+
+diaryf_8 <-- crystal, argvf, 8 processors
+diaryf_rs_8 <-- crystal, argvf_rs, 8 processors

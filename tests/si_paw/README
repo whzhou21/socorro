@@ -1,0 +1,17 @@
+This test is for a primitive cell of Si in the diamond structure.
+The test can be done reading the restart file (restartf) with the
+restart tag set to either f or fe.
+
+diaryf_4 <-- crystal, argvf, 4 processors
+
+diaryf_4_restart_f     <-- crystal, argvf_restart_f,     4 processors
+diaryf_4_restart_fe    <-- crystal, argvf_restart_fe,    4 processors
+diaryf_4_restart_fe_cc <-- crystal, argvf_restart_fe_cc, 4 processors
+
+diaryf_8_vspin <-- crystal, argvf_vspin, 8 processors
+
+diaryf_8_spin_restart_fe <-- crystal, argvf_spin_restart_fe, 8 processors
+
+diaryf_4_libxc <-- crystal, argvf_libxc, 4 processors
+
+diaryf_8_libxc_spin <-- crystal argvf_libxc_spin, 8 processors

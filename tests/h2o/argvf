@@ -1,0 +1,37 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional    pbe
+derivatives   numerical
+
+wf_cutoff     60.0d0
+den_cutoff   240.0d0
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   2.0d-7
+
+nbands   8
+
+kpoints    gmp
+mpparams   1 1 1
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  6
+solver_tolerance   1.0d-4
+
+mix_type      density
+mix_method    pulay
+mix_weight    0.80d0
+mix_history   5
+
+relax_method  cg
+relax_steps   10
+relax_tol     1.0d-4
+
+restart        off
+write_restart  off

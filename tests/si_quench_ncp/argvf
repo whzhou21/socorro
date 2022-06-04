@@ -1,0 +1,32 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional   lda
+
+symmetry  auto
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0  
+
+config_type         self-consistent
+config_steps        40
+config_convergence  energy
+energy_tolerance   1.0d-7
+
+nbands   8
+
+kpoints     gmp
+mpparams    4 4 4
+
+kt   5.0d-3
+
+solver_method      cg
+solver_directions  3
+solver_tolerance   1.0d-4
+
+relax_method     quench_minimization
+relax_tol        5.0d-6
+relax_steps      50
+atom_mass_Si1    30.0d0
+relax_time_step  200.0d0

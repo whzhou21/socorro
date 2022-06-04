@@ -1,0 +1,3 @@
+This test is calculations of a primitive cell of AlAs in the zinc-blende structure.
+
+diaryf_4, dcompf_4 <-- crystal, argvf, 4 processors

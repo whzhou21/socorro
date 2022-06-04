@@ -1,0 +1,1978 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   8 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Norm-Conserving Pseudopotential method
+
+   Primitive lattice vectors:
+
+     a1:    10.2000000000     0.0000000000     0.0000000000
+     a2:     0.0000000000    10.2000000000     0.0000000000
+     a3:     0.0000000000     0.0000000000    10.2000000000
+
+     b1:     0.6159985595     0.0000000000     0.0000000000
+     b2:     0.0000000000     0.6159985595     0.0000000000
+     b3:     0.0000000000     0.0000000000     0.6159985595
+
+     cell volume = 1061.20800
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00000    0.00000    0.00000         0.00000    0.00000    0.00000
+         2      Si1          5.10000    5.10000    0.00000         0.50000    0.50000    0.00000
+         3      Si1          5.10000    0.00000    5.10000         0.50000    0.00000    0.50000
+         4      Si1          0.00000    5.10000    5.10000         0.00000    0.50000    0.50000
+         5      Si1          2.55000    2.55000    2.55000         0.25000    0.25000    0.25000
+         6      Si1          7.65000    7.65000    2.55000         0.75000    0.75000    0.25000
+         7      Si1          7.65000    2.55000    7.65000         0.75000    0.25000    0.75000
+         8      Si1          2.55000    7.65000    7.65000         0.25000    0.75000    0.75000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         2       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         3       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         4       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         5       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         6       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         7       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         8       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (off):
+
+     The space group has 1 operation with point group C_1
+
+   Mesh:
+
+     dimension 1 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+     dimension 2 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+     dimension 3 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+
+     Number of mesh points = 32768
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 8 groups with 4 planes per group
+
+     Plane wave cutoff energy = 80.00 Ryd
+
+       Number of plane waves = 12893
+
+   Density-dependent functional:
+
+     Exchange    (native): LDA
+     Correlation (native): PZ
+
+     Analytical expressions for the functional derivatives
+
+Fields object construction:
+
+   Guess-density initialization
+
+   Self-consistency achieved using density mixing:
+
+   Pulay mixing:
+
+     history = 5
+
+     weight = 0.700
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 20.00 Ryd
+
+   Number of bands = 24
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 2 --> 2
+       q2: 2 --> 2
+       q3: 2 --> 2
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.250000 +0.250000 +0.250000      +0.154000 +0.154000 +0.154000      0.250000
+           2      +0.250000 +0.250000 -0.250000      +0.154000 +0.154000 -0.154000      0.250000
+           3      +0.250000 -0.250000 +0.250000      +0.154000 -0.154000 +0.154000      0.250000
+           4      +0.250000 -0.250000 -0.250000      +0.154000 -0.154000 -0.154000      0.250000
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1            1607
+         2            1607
+         3            1607
+         4            1607
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Reciprocal-space projectors
+     using pdots blocksize = 24
+
+   MPI remap
+
+   Conjugate gradient solver:
+
+     maximum directions = 3
+
+     residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 1.2215E-02,  cell energy = -51.483542882
+   Self-consistent step  2:  density residual = 5.2943E-03,  cell energy = -61.805843158
+   Self-consistent step  3:  density residual = 5.8218E-03,  cell energy = -63.318119449
+   Self-consistent step  4:  density residual = 4.1713E-03,  cell energy = -63.437948434
+   Self-consistent step  5:  density residual = 1.6048E-03,  cell energy = -63.446314371
+   Self-consistent step  6:  density residual = 8.8139E-04,  cell energy = -63.452866441
+   Self-consistent step  7:  density residual = 2.2594E-04,  cell energy = -63.453607964
+   Self-consistent step  8:  density residual = 4.8592E-05,  cell energy = -63.454221568
+   Self-consistent step  9:  density residual = 4.3913E-05,  cell energy = -63.454279102
+   Self-consistent step 10:  density residual = 1.5491E-05,  cell energy = -63.454284051
+   Self-consistent step 11:  density residual = 7.3900E-06,  cell energy = -63.454288093
+   Self-consistent step 12:  density residual = 4.3606E-06,  cell energy = -63.454288509
+   Self-consistent step 13:  density residual = 6.8258E-07,  cell energy = -63.454288819
+   Self-consistent step 14:  density residual = 6.0789E-07,  cell energy = -63.454288849
+   Self-consistent step 15:  density residual = 3.5503E-07,  cell energy = -63.454288855
+   Self-consistent step 16:  density residual = 1.5356E-07,  cell energy = -63.454288857
+
+   Fermi level =   0.4812751240 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694357945           2.0000
+                        2          -0.2255996313           2.0000
+                        3          -0.2255989281           2.0000
+                        4          -0.2255986279           2.0000
+                        5          -0.0142650209           2.0000
+                        6          -0.0142648369           2.0000
+                        7          -0.0142646103           2.0000
+                        8           0.1665324171           2.0000
+                        9           0.1928766345           2.0000
+                       10           0.1928773226           2.0000
+                       11           0.1928775922           2.0000
+                       12           0.2937368667           2.0000
+                       13           0.2937371947           2.0000
+                       14           0.2937376206           2.0000
+                       15           0.4018984137           2.0000
+                       16           0.4018984843           2.0000
+                       17           0.5626800473           0.0000
+                       18           0.5626801915           0.0000
+                       19           0.5626803123           0.0000
+                       20           0.6047383384           0.0000
+                       21           0.7153285526           0.0000
+                       22           0.7153285684           0.0000
+                       23           0.7808066568           0.0000
+                       24           0.7808068755           0.0000
+
+     Special k-point #2:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694357841           2.0000
+                        2          -0.2255993787           2.0000
+                        3          -0.2255991553           2.0000
+                        4          -0.2255987093           2.0000
+                        5          -0.0142649715           2.0000
+                        6          -0.0142648001           2.0000
+                        7          -0.0142644927           2.0000
+                        8           0.1665323079           2.0000
+                        9           0.1928768747           2.0000
+                       10           0.1928769608           2.0000
+                       11           0.1928773966           2.0000
+                       12           0.2937369512           2.0000
+                       13           0.2937373765           2.0000
+                       14           0.2937375061           2.0000
+                       15           0.4018983973           2.0000
+                       16           0.4018986084           2.0000
+                       17           0.5626799617           0.0000
+                       18           0.5626802617           0.0000
+                       19           0.5626804910           0.0000
+                       20           0.6047383876           0.0000
+                       21           0.7153285448           0.0000
+                       22           0.7153286443           0.0000
+                       23           0.7808064820           0.0000
+                       24           0.7808068844           0.0000
+
+     Special k-point #3:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694357791           2.0000
+                        2          -0.2255995251           2.0000
+                        3          -0.2255990884           2.0000
+                        4          -0.2255986570           2.0000
+                        5          -0.0142650323           2.0000
+                        6          -0.0142646808           2.0000
+                        7          -0.0142644520           2.0000
+                        8           0.1665322555           2.0000
+                        9           0.1928765293           2.0000
+                       10           0.1928770955           2.0000
+                       11           0.1928774458           2.0000
+                       12           0.2937369828           2.0000
+                       13           0.2937372045           2.0000
+                       14           0.2937377315           2.0000
+                       15           0.4018984468           2.0000
+                       16           0.4018986158           2.0000
+                       17           0.5626799547           0.0000
+                       18           0.5626802665           0.0000
+                       19           0.5626805653           0.0000
+                       20           0.6047383871           0.0000
+                       21           0.7153285748           0.0000
+                       22           0.7153286686           0.0000
+                       23           0.7808062982           0.0000
+                       24           0.7808067241           0.0000
+
+     Special k-point #4:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694357811           2.0000
+                        2          -0.2255992852           2.0000
+                        3          -0.2255991950           2.0000
+                        4          -0.2255987794           2.0000
+                        5          -0.0142648293           2.0000
+                        6          -0.0142647551           2.0000
+                        7          -0.0142646218           2.0000
+                        8           0.1665322794           2.0000
+                        9           0.1928768667           2.0000
+                       10           0.1928769569           2.0000
+                       11           0.1928773137           2.0000
+                       12           0.2937371058           2.0000
+                       13           0.2937373314           2.0000
+                       14           0.2937374461           2.0000
+                       15           0.4018984175           2.0000
+                       16           0.4018986169           2.0000
+                       17           0.5626801850           0.0000
+                       18           0.5626802618           0.0000
+                       19           0.5626803167           0.0000
+                       20           0.6047383776           0.0000
+                       21           0.7153285692           0.0000
+                       22           0.7153286656           0.0000
+                       23           0.7808066139           0.0000
+                       24           0.7808066816           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  24.806925174
+     Hartree               =   4.401546338
+     exchange-correlation  = -19.290707153
+     local pseudopotential = -19.411893557
+     atomic                = -53.960159660
+     ---------------------------------------
+     cell energy           = -63.454288857
+
+   Mass for atom     1 =    25599.        28.086    
+
+ Atom information for step #0:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00000    0.00000    0.00000         0.00000    0.00000    0.00000
+         2      Si1          5.10000    5.10000    0.00000         0.50000    0.50000    0.00000
+         3      Si1          5.10000    0.00000    5.10000         0.50000    0.00000    0.50000
+         4      Si1          0.00000    5.10000    5.10000         0.00000    0.50000    0.50000
+         5      Si1          2.55000    2.55000    2.55000         0.25000    0.25000    0.25000
+         6      Si1          7.65000    7.65000    2.55000         0.75000    0.75000    0.25000
+         7      Si1          7.65000    2.55000    7.65000         0.75000    0.25000    0.75000
+         8      Si1          2.55000    7.65000    7.65000         0.25000    0.75000    0.75000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         2       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         3       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         4       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         5       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         6       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         7       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+         8       1: 4.42     2: 4.42     3: 4.42     4: 4.42
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.000001     -0.000001     -0.000002   Ryd/Bohr
+                      2        -0.000000     +0.000001     -0.000002
+                      3        +0.000001     -0.000000     +0.000001
+                      4        -0.000001     -0.000000     +0.000001
+                      5        +0.000003     -0.000004     -0.000002
+                      6        -0.000003     +0.000005     -0.000002
+                      7        -0.000003     -0.000005     +0.000002
+                      8        +0.000003     +0.000005     +0.000003
+
+   Residual force (removed) =      +0.000000     -0.000001     -0.000001
+
+   Cell energy = -63.454288857 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 8.2602E-04,  cell energy = -63.449521771
+   Self-consistent step  2:  density residual = 2.9824E-04,  cell energy = -63.450733762
+   Self-consistent step  3:  density residual = 1.4607E-04,  cell energy = -63.450719783
+   Self-consistent step  4:  density residual = 3.9872E-05,  cell energy = -63.451040868
+   Self-consistent step  5:  density residual = 1.3819E-05,  cell energy = -63.451070497
+   Self-consistent step  6:  density residual = 6.0445E-06,  cell energy = -63.451074695
+   Self-consistent step  7:  density residual = 3.8188E-06,  cell energy = -63.451074890
+   Self-consistent step  8:  density residual = 1.5877E-06,  cell energy = -63.451074944
+   Self-consistent step  9:  density residual = 5.6296E-07,  cell energy = -63.451074957
+   Self-consistent step 10:  density residual = 3.2286E-07,  cell energy = -63.451074961
+   Self-consistent step 11:  density residual = 1.2957E-07,  cell energy = -63.451074962
+
+MD time:     50.000000    
+
+Temperature     :     1633.0504    
+
+Kinetic   Energy:    0.10859728    
+
+Potential Energy:    -63.451075    
+
+Total     Energy:    -63.342478    
+
+ Atom information for step #1:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.01945   10.18821    0.05884         0.00191    0.99884    0.00577
+         2      Si1          5.13871    5.10795    0.06024         0.50379    0.50078    0.00591
+         3      Si1          5.08028    0.01140    5.06455         0.49807    0.00112    0.49652
+         4      Si1         10.17146    5.13107    5.07549         0.99720    0.50305    0.49760
+         5      Si1          2.53240    2.53500    2.52352         0.24827    0.24853    0.24740
+         6      Si1          7.63529    7.68814    2.53240         0.74856    0.75374    0.24827
+         7      Si1          7.64905    2.48230    7.63998         0.74991    0.24336    0.74902
+         8      Si1          2.57336    7.65594    7.64496         0.25229    0.75058    0.74951
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.34     6: 4.36     7: 4.44     8: 4.45
+         2       6: 4.36     5: 4.41     8: 4.46     7: 4.48
+         3       6: 4.39     5: 4.40     7: 4.40     8: 4.41
+         4       6: 4.41     8: 4.44     5: 4.45     7: 4.47
+         5       1: 4.34     3: 4.40     2: 4.41     4: 4.45
+         6       2: 4.36     1: 4.36     3: 4.39     4: 4.41
+         7       3: 4.40     1: 4.44     4: 4.47     2: 4.48
+         8       3: 4.41     4: 4.44     1: 4.45     2: 4.46
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.001625     -0.002330     -0.024938   Ryd/Bohr
+                      2        -0.006813     -0.009045     -0.023786
+                      3        -0.001576     -0.001906     +0.006769
+                      4        +0.003595     -0.009195     +0.008442
+                      5        +0.002324     +0.016519     +0.011630
+                      6        +0.003310     -0.004890     +0.010639
+                      7        +0.003514     +0.017167     +0.005801
+                      8        -0.002728     -0.006321     +0.005442
+
+   Residual force (removed) =      -0.000000     -0.000001     +0.000000
+
+   Cell energy = -63.451074962 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 7.9990E-04,  cell energy = -63.440548095
+   Self-consistent step  2:  density residual = 2.8178E-04,  cell energy = -63.441611133
+   Self-consistent step  3:  density residual = 1.3756E-04,  cell energy = -63.441565180
+   Self-consistent step  4:  density residual = 3.8134E-05,  cell energy = -63.441855748
+   Self-consistent step  5:  density residual = 1.3565E-05,  cell energy = -63.441883382
+   Self-consistent step  6:  density residual = 6.0793E-06,  cell energy = -63.441887153
+   Self-consistent step  7:  density residual = 2.3948E-06,  cell energy = -63.441887357
+   Self-consistent step  8:  density residual = 1.3778E-06,  cell energy = -63.441887401
+   Self-consistent step  9:  density residual = 5.8433E-07,  cell energy = -63.441887409
+   Self-consistent step 10:  density residual = 2.0769E-07,  cell energy = -63.441887410
+   Self-consistent step 11:  density residual = 5.7867E-08,  cell energy = -63.441887411
+
+MD time:     100.00000    
+
+Temperature     :     1496.2542    
+
+Kinetic   Energy:    0.99500379E-01
+
+Potential Energy:    -63.441887    
+
+Total     Energy:    -63.342387    
+
+ Atom information for step #2:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.03874   10.17619    0.11524         0.00380    0.99767    0.01130
+         2      Si1          5.17675    5.11501    0.11816         0.50752    0.50147    0.01158
+         3      Si1          5.06041    0.02262    5.02975         0.49612    0.00222    0.49311
+         4      Si1         10.14326    5.16124    5.05181         0.99444    0.50600    0.49528
+         5      Si1          2.51502    2.52161    2.49817         0.24657    0.24722    0.24492
+         6      Si1          7.62091    7.72581    2.51583         0.74715    0.75743    0.24665
+         7      Si1          7.64844    2.41628    7.63054         0.74985    0.23689    0.74809
+         8      Si1          2.59646    7.66127    7.64046         0.25455    0.75110    0.74906
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.28     6: 4.32     7: 4.46     8: 4.47
+         2       6: 4.31     5: 4.41     8: 4.51     7: 4.54
+         3       6: 4.37     5: 4.37     7: 4.38     8: 4.41
+         4       6: 4.40     8: 4.47     5: 4.48     7: 4.52
+         5       1: 4.28     3: 4.37     2: 4.41     4: 4.48
+         6       2: 4.31     1: 4.32     3: 4.37     4: 4.40
+         7       3: 4.38     1: 4.46     4: 4.52     2: 4.54
+         8       3: 4.41     4: 4.47     1: 4.47     2: 4.51
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.003765     -0.005329     -0.049752   Ryd/Bohr
+                      2        -0.014314     -0.018502     -0.045932
+                      3        -0.003068     -0.003584     +0.013729
+                      4        +0.007231     -0.017745     +0.016479
+                      5        +0.005812     +0.033597     +0.022996
+                      6        +0.006363     -0.009298     +0.021245
+                      7        +0.007247     +0.032889     +0.011081
+                      8        -0.005506     -0.012028     +0.010153
+
+   Residual force (removed) =      +0.000000     -0.000001     +0.000002
+
+   Cell energy = -63.441887411 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 7.5334E-04,  cell energy = -63.427003645
+   Self-consistent step  2:  density residual = 2.5986E-04,  cell energy = -63.427919285
+   Self-consistent step  3:  density residual = 1.2534E-04,  cell energy = -63.427867618
+   Self-consistent step  4:  density residual = 3.6520E-05,  cell energy = -63.428107942
+   Self-consistent step  5:  density residual = 1.2346E-05,  cell energy = -63.428132936
+   Self-consistent step  6:  density residual = 5.1023E-06,  cell energy = -63.428136209
+   Self-consistent step  7:  density residual = 3.3438E-06,  cell energy = -63.428136380
+   Self-consistent step  8:  density residual = 1.5736E-06,  cell energy = -63.428136424
+   Self-consistent step  9:  density residual = 6.6161E-07,  cell energy = -63.428136441
+   Self-consistent step 10:  density residual = 3.0968E-07,  cell energy = -63.428136447
+   Self-consistent step 11:  density residual = 1.8782E-07,  cell energy = -63.428136448
+
+MD time:     150.00000    
+
+Temperature     :     1291.5863    
+
+Kinetic   Energy:    0.85890039E-01
+
+Potential Energy:    -63.428136    
+
+Total     Energy:    -63.342246    
+
+ Atom information for step #3:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.05766   10.16365    0.16678         0.00565    0.99644    0.01635
+         2      Si1          5.21339    5.12027    0.17160         0.51112    0.50199    0.01682
+         3      Si1          5.04024    0.03349    4.99630         0.49414    0.00328    0.48983
+         4      Si1         10.11578    5.18967    5.02973         0.99174    0.50879    0.49311
+         5      Si1          2.49821    2.51151    2.47507         0.24492    0.24623    0.24265
+         6      Si1          7.60714    7.76256    2.50134         0.74580    0.76104    0.24523
+         7      Si1          7.64854    2.35347    7.62217         0.74986    0.23073    0.74727
+         8      Si1          2.61902    7.66542    7.63695         0.25677    0.75151    0.74872
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.22     6: 4.27     7: 4.48     8: 4.50
+         2       6: 4.26     5: 4.41     8: 4.55     7: 4.60
+         3       6: 4.35     5: 4.35     7: 4.37     8: 4.41
+         4       6: 4.39     8: 4.50     5: 4.51     7: 4.57
+         5       1: 4.22     3: 4.35     2: 4.41     4: 4.51
+         6       2: 4.26     1: 4.27     3: 4.35     4: 4.39
+         7       3: 4.37     1: 4.48     4: 4.57     2: 4.60
+         8       3: 4.41     4: 4.50     1: 4.50     2: 4.55
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.006045     -0.008690     -0.072896   Ryd/Bohr
+                      2        -0.021796     -0.027627     -0.065404
+                      3        -0.004331     -0.004853     +0.020775
+                      4        +0.010822     -0.025273     +0.023906
+                      5        +0.009939     +0.050193     +0.033370
+                      6        +0.008881     -0.013260     +0.030964
+                      7        +0.010750     +0.046556     +0.015426
+                      8        -0.008219     -0.017047     +0.013859
+
+   Residual force (removed) =      +0.000000     -0.000002     +0.000004
+
+   Cell energy = -63.428136448 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.8834E-04,  cell energy = -63.411120133
+   Self-consistent step  2:  density residual = 2.3030E-04,  cell energy = -63.411836924
+   Self-consistent step  3:  density residual = 1.0918E-04,  cell energy = -63.411786370
+   Self-consistent step  4:  density residual = 3.3302E-05,  cell energy = -63.411968288
+   Self-consistent step  5:  density residual = 1.0836E-05,  cell energy = -63.411988780
+   Self-consistent step  6:  density residual = 4.5282E-06,  cell energy = -63.411991388
+   Self-consistent step  7:  density residual = 3.0205E-06,  cell energy = -63.411991533
+   Self-consistent step  8:  density residual = 1.5534E-06,  cell energy = -63.411991571
+   Self-consistent step  9:  density residual = 3.9122E-07,  cell energy = -63.411991594
+   Self-consistent step 10:  density residual = 3.4309E-07,  cell energy = -63.411991597
+   Self-consistent step 11:  density residual = 1.3908E-07,  cell energy = -63.411991598
+
+MD time:     200.00000    
+
+Temperature     :     1051.2861    
+
+Kinetic   Energy:    0.69910157E-01
+
+Potential Energy:    -63.411992    
+
+Total     Energy:    -63.342081    
+
+ Atom information for step #4:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.07600   10.15026    0.21121         0.00745    0.99512    0.02071
+         2      Si1          5.24791    5.12283    0.21864         0.51450    0.50224    0.02144
+         3      Si1          5.01965    0.04388    4.96488         0.49212    0.00430    0.48675
+         4      Si1         10.08935    5.21564    5.00999         0.98915    0.51134    0.49118
+         5      Si1          2.48238    2.50630    2.45523         0.24337    0.24572    0.24071
+         6      Si1          7.59425    7.79802    2.48988         0.74453    0.76451    0.24411
+         7      Si1          7.64969    2.29521    7.61531         0.74997    0.22502    0.74660
+         8      Si1          2.64077    7.66790    7.63479         0.25890    0.75176    0.74851
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.17     6: 4.23     7: 4.50     8: 4.52
+         2       6: 4.22     5: 4.42     8: 4.59     7: 4.65
+         3       6: 4.33     5: 4.34     7: 4.36     8: 4.41
+         4       6: 4.39     8: 4.52     5: 4.54     7: 4.61
+         5       1: 4.17     3: 4.34     2: 4.42     4: 4.54
+         6       2: 4.22     1: 4.23     3: 4.33     4: 4.39
+         7       3: 4.36     1: 4.50     4: 4.61     2: 4.65
+         8       3: 4.41     1: 4.52     4: 4.52     2: 4.59
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.007940     -0.011858     -0.092914   Ryd/Bohr
+                      2        -0.028427     -0.035595     -0.081486
+                      3        -0.005216     -0.005575     +0.027856
+                      4        +0.014263     -0.031524     +0.030636
+                      5        +0.013855     +0.065080     +0.042010
+                      6        +0.010643     -0.016978     +0.038996
+                      7        +0.013617     +0.057828     +0.018523
+                      8        -0.010795     -0.021378     +0.016379
+
+   Residual force (removed) =      +0.000001     -0.000001     +0.000005
+
+   Cell energy = -63.411991598 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.1125E-04,  cell energy = -63.395375938
+   Self-consistent step  2:  density residual = 1.9585E-04,  cell energy = -63.395877318
+   Self-consistent step  3:  density residual = 9.0423E-05,  cell energy = -63.395834376
+   Self-consistent step  4:  density residual = 2.8685E-05,  cell energy = -63.395958774
+   Self-consistent step  5:  density residual = 9.0429E-06,  cell energy = -63.395973825
+   Self-consistent step  6:  density residual = 3.8911E-06,  cell energy = -63.395975688
+   Self-consistent step  7:  density residual = 2.4567E-06,  cell energy = -63.395975803
+   Self-consistent step  8:  density residual = 1.4375E-06,  cell energy = -63.395975831
+   Self-consistent step  9:  density residual = 2.6948E-07,  cell energy = -63.395975856
+   Self-consistent step 10:  density residual = 2.7386E-07,  cell energy = -63.395975858
+   Self-consistent step 11:  density residual = 1.1348E-07,  cell energy = -63.395975858
+
+MD time:     250.00000    
+
+Temperature     :     812.77992    
+
+Kinetic   Energy:    0.54049580E-01
+
+Potential Energy:    -63.395976    
+
+Total     Energy:    -63.341926    
+
+ Atom information for step #5:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.09356   10.13571    0.24656         0.00917    0.99370    0.02417
+         2      Si1          5.27965    5.12192    0.25773         0.51761    0.50215    0.02527
+         3      Si1          4.99854    0.05373    4.93617         0.49005    0.00527    0.48394
+         4      Si1         10.06431    5.23853    4.99325         0.98670    0.51358    0.48953
+         5      Si1          2.46789    2.50746    2.43949         0.24195    0.24583    0.23917
+         6      Si1          7.58239    7.83183    2.48222         0.74337    0.76783    0.24336
+         7      Si1          7.65217    2.24259    7.61026         0.75021    0.21986    0.74610
+         8      Si1          2.66147    7.66830    7.63423         0.26093    0.75179    0.74845
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.13     6: 4.20     7: 4.51     8: 4.54
+         2       6: 4.19     5: 4.42     8: 4.62     7: 4.69
+         3       6: 4.31     5: 4.32     7: 4.36     8: 4.41
+         4       6: 4.38     8: 4.55     5: 4.56     7: 4.65
+         5       1: 4.13     3: 4.32     2: 4.42     4: 4.56
+         6       2: 4.19     1: 4.20     3: 4.31     4: 4.38
+         7       3: 4.36     1: 4.51     4: 4.65     2: 4.69
+         8       3: 4.41     1: 4.54     4: 4.55     2: 4.62
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.008852     -0.014105     -0.108482   Ryd/Bohr
+                      2        -0.033465     -0.041604     -0.093689
+                      3        -0.005641     -0.005680     +0.034825
+                      4        +0.017469     -0.036362     +0.036572
+                      5        +0.016594     +0.076928     +0.048212
+                      6        +0.011512     -0.020722     +0.044671
+                      7        +0.015543     +0.066583     +0.020226
+                      8        -0.013160     -0.025038     +0.017665
+
+   Residual force (removed) =      +0.000001     +0.000000     +0.000004
+
+   Cell energy = -63.395975858 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.3128E-04,  cell energy = -63.382107300
+   Self-consistent step  2:  density residual = 1.6047E-04,  cell energy = -63.382413393
+   Self-consistent step  3:  density residual = 7.0756E-05,  cell energy = -63.382382155
+   Self-consistent step  4:  density residual = 2.3080E-05,  cell energy = -63.382457937
+   Self-consistent step  5:  density residual = 7.1961E-06,  cell energy = -63.382467654
+   Self-consistent step  6:  density residual = 3.1943E-06,  cell energy = -63.382468832
+   Self-consistent step  7:  density residual = 2.0035E-06,  cell energy = -63.382468912
+   Self-consistent step  8:  density residual = 1.2789E-06,  cell energy = -63.382468930
+   Self-consistent step  9:  density residual = 2.0542E-07,  cell energy = -63.382468951
+   Self-consistent step 10:  density residual = 2.1925E-07,  cell energy = -63.382468952
+   Self-consistent step 11:  density residual = 9.9094E-08,  cell energy = -63.382468953
+
+MD time:     300.00000    
+
+Temperature     :     611.40717    
+
+Kinetic   Energy:    0.40658363E-01
+
+Potential Energy:    -63.382469    
+
+Total     Energy:    -63.341811    
+
+ Atom information for step #6:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.11025   10.11979    0.27131         0.01081    0.99214    0.02660
+         2      Si1          5.30812    5.11694    0.28767         0.52040    0.50166    0.02820
+         3      Si1          4.97689    0.06303    4.91087         0.48793    0.00618    0.48146
+         4      Si1         10.04098    5.25787    4.98007         0.98441    0.51548    0.48824
+         5      Si1          2.45503    2.51612    2.42846         0.24069    0.24668    0.23808
+         6      Si1          7.57166    7.86361    2.47893         0.74232    0.77094    0.24303
+         7      Si1          7.65617    2.19648    7.60718         0.75060    0.21534    0.74580
+         8      Si1          2.68089    7.66625    7.63539         0.26283    0.75159    0.74857
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.11     6: 4.18     7: 4.52     8: 4.55
+         2       6: 4.18     5: 4.41     8: 4.64     7: 4.73
+         3       6: 4.29     5: 4.31     7: 4.36     8: 4.41
+         4       6: 4.38     5: 4.57     8: 4.57     7: 4.69
+         5       1: 4.11     3: 4.31     2: 4.41     4: 4.57
+         6       1: 4.18     2: 4.18     3: 4.29     4: 4.38
+         7       3: 4.36     1: 4.52     4: 4.69     2: 4.73
+         8       3: 4.41     1: 4.55     4: 4.57     2: 4.64
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.008344     -0.014702     -0.118629   Ryd/Bohr
+                      2        -0.036391     -0.045011     -0.101823
+                      3        -0.005580     -0.005174     +0.041498
+                      4        +0.020347     -0.039734     +0.041658
+                      5        +0.017333     +0.084525     +0.051460
+                      6        +0.011518     -0.024731     +0.047560
+                      7        +0.016366     +0.072882     +0.020529
+                      8        -0.015249     -0.028054     +0.017747
+
+   Residual force (removed) =      +0.000002     +0.000001     +0.000003
+
+   Cell energy = -63.382468953 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 4.6054E-04,  cell energy = -63.373057359
+   Self-consistent step  2:  density residual = 1.2984E-04,  cell energy = -63.373220681
+   Self-consistent step  3:  density residual = 5.1234E-05,  cell energy = -63.373203073
+   Self-consistent step  4:  density residual = 1.7838E-05,  cell energy = -63.373241557
+   Self-consistent step  5:  density residual = 5.4218E-06,  cell energy = -63.373247319
+   Self-consistent step  6:  density residual = 2.5212E-06,  cell energy = -63.373247979
+   Self-consistent step  7:  density residual = 1.5044E-06,  cell energy = -63.373248026
+   Self-consistent step  8:  density residual = 1.0056E-06,  cell energy = -63.373248035
+   Self-consistent step  9:  density residual = 1.5121E-07,  cell energy = -63.373248048
+
+MD time:     350.00000    
+
+Temperature     :     473.60055    
+
+Kinetic   Energy:    0.31494271E-01
+
+Potential Energy:    -63.373248    
+
+Total     Energy:    -63.341754    
+
+ Atom information for step #7:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.12613   10.10243    0.28448         0.01237    0.99043    0.02789
+         2      Si1          5.33304    5.10756    0.30766         0.52285    0.50074    0.03016
+         3      Si1          4.95469    0.07182    4.88962         0.48575    0.00704    0.47937
+         4      Si1         10.01964    5.27333    4.97096         0.98232    0.51699    0.48735
+         5      Si1          2.44386    2.53304    2.42246         0.23959    0.24834    0.23750
+         6      Si1          7.56205    7.89297    2.48028         0.74138    0.77382    0.24316
+         7      Si1          7.66176    2.15748    7.60611         0.75115    0.21152    0.74570
+         8      Si1          2.69881    7.66147    7.63829         0.26459    0.75112    0.74885
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.11     6: 4.16     7: 4.52     8: 4.55
+         2       6: 4.18     5: 4.41     8: 4.66     7: 4.75
+         3       6: 4.27     5: 4.30     7: 4.37     8: 4.41
+         4       6: 4.37     5: 4.57     8: 4.59     7: 4.71
+         5       1: 4.11     3: 4.30     2: 4.41     4: 4.57
+         6       1: 4.16     2: 4.18     3: 4.27     4: 4.37
+         7       3: 4.37     1: 4.52     4: 4.71     2: 4.75
+         8       3: 4.41     1: 4.55     4: 4.59     2: 4.66
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.006341     -0.013139     -0.122843   Ryd/Bohr
+                      2        -0.037009     -0.045453     -0.105973
+                      3        -0.005070     -0.004119     +0.047656
+                      4        +0.022802     -0.041660     +0.045884
+                      5        +0.015658     +0.087025     +0.051540
+                      6        +0.010882     -0.029109     +0.047495
+                      7        +0.016071     +0.076917     +0.019537
+                      8        -0.016993     -0.030462     +0.016704
+
+   Residual force (removed) =      +0.000001     +0.000003     +0.000003
+
+   Cell energy = -63.373248048 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 4.1324E-04,  cell energy = -63.369088529
+   Self-consistent step  2:  density residual = 1.1103E-04,  cell energy = -63.369182902
+   Self-consistent step  3:  density residual = 3.0160E-05,  cell energy = -63.369179369
+   Self-consistent step  4:  density residual = 1.5180E-05,  cell energy = -63.369189143
+   Self-consistent step  5:  density residual = 3.4752E-06,  cell energy = -63.369193098
+   Self-consistent step  6:  density residual = 2.3004E-06,  cell energy = -63.369193425
+   Self-consistent step  7:  density residual = 9.2857E-07,  cell energy = -63.369193450
+   Self-consistent step  8:  density residual = 5.6562E-07,  cell energy = -63.369193453
+   Self-consistent step  9:  density residual = 2.0722E-07,  cell energy = -63.369193457
+   Self-consistent step 10:  density residual = 8.9323E-08,  cell energy = -63.369193458
+
+MD time:     400.00000    
+
+Temperature     :     412.54031    
+
+Kinetic   Energy:    0.27433786E-01
+
+Potential Energy:    -63.369193    
+
+Total     Energy:    -63.341760    
+
+ Atom information for step #8:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.14139   10.08379    0.28565         0.01386    0.98861    0.02801
+         2      Si1          5.35434    5.09375    0.31731         0.52494    0.49939    0.03111
+         3      Si1          4.93200    0.08020    4.87303         0.48353    0.00786    0.47775
+         4      Si1         10.00052    5.28472    4.96634         0.98044    0.51811    0.48690
+         5      Si1          2.43422    2.55846    2.42148         0.23865    0.25083    0.23740
+         6      Si1          7.55351    7.91949    2.48627         0.74054    0.77642    0.24375
+         7      Si1          7.66893    2.12600    7.60695         0.75186    0.20843    0.74578
+         8      Si1          2.71508    7.65371    7.64282         0.26618    0.75036    0.74930
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.12     6: 4.16     7: 4.52     8: 4.54
+         2       6: 4.19     5: 4.40     8: 4.67     7: 4.76
+         3       6: 4.26     5: 4.29     7: 4.38     8: 4.41
+         4       6: 4.37     5: 4.57     8: 4.61     7: 4.73
+         5       1: 4.12     3: 4.29     2: 4.40     4: 4.57
+         6       1: 4.16     2: 4.19     3: 4.26     4: 4.37
+         7       3: 4.38     1: 4.52     4: 4.73     2: 4.76
+         8       3: 4.41     1: 4.54     4: 4.61     2: 4.67
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.003236     -0.009313     -0.121007   Ryd/Bohr
+                      2        -0.035449     -0.042876     -0.106357
+                      3        -0.004179     -0.002632     +0.052964
+                      4        +0.024706     -0.042164     +0.049217
+                      5        +0.011730     +0.084104     +0.048583
+                      6        +0.009973     -0.033747     +0.044545
+                      7        +0.014761     +0.078926     +0.017416
+                      8        -0.018304     -0.032298     +0.014638
+
+   Residual force (removed) =      +0.000002     +0.000002     +0.000004
+
+   Cell energy = -63.369193458 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 4.0196E-04,  cell energy = -63.370117403
+   Self-consistent step  2:  density residual = 1.0961E-04,  cell energy = -63.370220361
+   Self-consistent step  3:  density residual = 1.6036E-05,  cell energy = -63.370223632
+   Self-consistent step  4:  density residual = 6.1547E-06,  cell energy = -63.370224421
+   Self-consistent step  5:  density residual = 2.4199E-06,  cell energy = -63.370224829
+   Self-consistent step  6:  density residual = 7.3871E-07,  cell energy = -63.370224893
+   Self-consistent step  7:  density residual = 5.1652E-07,  cell energy = -63.370224907
+   Self-consistent step  8:  density residual = 1.6275E-07,  cell energy = -63.370224908
+
+MD time:     450.00000    
+
+Temperature     :     427.17997    
+
+Kinetic   Energy:    0.28407318E-01
+
+Potential Energy:    -63.370225    
+
+Total     Energy:    -63.341818    
+
+ Atom information for step #9:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.15633   10.06423    0.27501         0.01533    0.98669    0.02696
+         2      Si1          5.37218    5.07575    0.31656         0.52668    0.49762    0.03104
+         3      Si1          4.90890    0.08833    4.86161         0.48126    0.00866    0.47663
+         4      Si1          9.98382    5.29199    4.96652         0.97881    0.51882    0.48691
+         5      Si1          2.42572    2.59209    2.42526         0.23782    0.25413    0.23777
+         6      Si1          7.54594    7.94272    2.49661         0.73980    0.77870    0.24477
+         7      Si1          7.67754    2.10222    7.60949         0.75270    0.20610    0.74603
+         8      Si1          2.72956    7.64279    7.64878         0.26760    0.74929    0.74988
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.15     6: 4.16     7: 4.52     8: 4.52
+         2       6: 4.21     5: 4.39     8: 4.67     7: 4.75
+         3       6: 4.25     5: 4.29     7: 4.39     8: 4.42
+         4       6: 4.37     5: 4.55     8: 4.63     7: 4.74
+         5       1: 4.15     3: 4.29     2: 4.39     4: 4.55
+         6       1: 4.16     2: 4.21     3: 4.25     4: 4.37
+         7       3: 4.39     1: 4.52     4: 4.74     2: 4.75
+         8       3: 4.42     1: 4.52     4: 4.63     2: 4.67
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.000193     -0.003515     -0.113477   Ryd/Bohr
+                      2        -0.032150     -0.037581     -0.103327
+                      3        -0.002990     -0.000820     +0.057129
+                      4        +0.025938     -0.041304     +0.051653
+                      5        +0.006277     +0.076038     +0.043022
+                      6        +0.009218     -0.038368     +0.038976
+                      7        +0.012597     +0.079129     +0.014366
+                      8        -0.019083     -0.033578     +0.011657
+
+   Residual force (removed) =      +0.000001     +0.000005     +0.000001
+
+   Cell energy = -63.370224908 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 4.2692E-04,  cell energy = -63.375267756
+   Self-consistent step  2:  density residual = 1.2363E-04,  cell energy = -63.375444466
+   Self-consistent step  3:  density residual = 2.7378E-05,  cell energy = -63.375445267
+   Self-consistent step  4:  density residual = 1.6685E-05,  cell energy = -63.375449443
+   Self-consistent step  5:  density residual = 3.2900E-06,  cell energy = -63.375453894
+   Self-consistent step  6:  density residual = 3.0424E-06,  cell energy = -63.375454163
+   Self-consistent step  7:  density residual = 1.0564E-06,  cell energy = -63.375454222
+   Self-consistent step  8:  density residual = 7.5523E-07,  cell energy = -63.375454227
+   Self-consistent step  9:  density residual = 2.4669E-07,  cell energy = -63.375454237
+   Self-consistent step 10:  density residual = 1.6065E-07,  cell energy = -63.375454237
+
+MD time:     500.00000    
+
+Temperature     :     504.44767    
+
+Kinetic   Energy:    0.33545593E-01
+
+Potential Energy:    -63.375454    
+
+Total     Energy:    -63.341909    
+
+ Atom information for step #10:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.17129   10.04434    0.25328         0.01679    0.98474    0.02483
+         2      Si1          5.38688    5.05408    0.30573         0.52813    0.49550    0.02997
+         3      Si1          4.88550    0.09638    4.85576         0.47897    0.00945    0.47606
+         4      Si1          9.96964    5.29523    4.97174         0.97742    0.51914    0.48743
+         5      Si1          2.41784    2.63315    2.43323         0.23704    0.25815    0.23855
+         6      Si1          7.53926    7.96219    2.51075         0.73914    0.78061    0.24615
+         7      Si1          7.68737    2.08617    7.61343         0.75366    0.20453    0.74641
+         8      Si1          2.74217    7.62859    7.65588         0.26884    0.74790    0.75058
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.18     5: 4.19     8: 4.50     7: 4.50
+         2       6: 4.24     5: 4.38     8: 4.66     7: 4.74
+         3       6: 4.24     5: 4.29     7: 4.41     8: 4.42
+         4       6: 4.37     5: 4.53     8: 4.64     7: 4.74
+         5       1: 4.19     3: 4.29     2: 4.38     4: 4.53
+         6       1: 4.18     2: 4.24     3: 4.24     4: 4.37
+         7       3: 4.41     1: 4.50     2: 4.74     4: 4.74
+         8       3: 4.42     1: 4.50     4: 4.64     2: 4.66
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.002976     +0.003594     -0.100885   Ryd/Bohr
+                      2        -0.027700     -0.030056     -0.097196
+                      3        -0.001531     +0.001141     +0.059797
+                      4        +0.026346     -0.039072     +0.053144
+                      5        +0.000375     +0.063610     +0.035504
+                      6        +0.008978     -0.042576     +0.031242
+                      7        +0.009807     +0.077672     +0.010552
+                      8        -0.019252     -0.034314     +0.007842
+
+   Residual force (removed) =      +0.000001     -0.000001     +0.000002
+
+   Cell energy = -63.375454237 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 4.7470E-04,  cell energy = -63.383143859
+   Self-consistent step  2:  density residual = 1.4569E-04,  cell energy = -63.383439484
+   Self-consistent step  3:  density residual = 4.5602E-05,  cell energy = -63.383434299
+   Self-consistent step  4:  density residual = 2.4235E-05,  cell energy = -63.383454841
+   Self-consistent step  5:  density residual = 4.9719E-06,  cell energy = -63.383464477
+   Self-consistent step  6:  density residual = 3.7658E-06,  cell energy = -63.383465216
+   Self-consistent step  7:  density residual = 1.4903E-06,  cell energy = -63.383465315
+   Self-consistent step  8:  density residual = 9.5200E-07,  cell energy = -63.383465325
+   Self-consistent step  9:  density residual = 3.8643E-07,  cell energy = -63.383465338
+   Self-consistent step 10:  density residual = 1.4717E-07,  cell energy = -63.383465341
+
+   current pressure:       -4.2181   kbar
+
+MD time:     550.00000    
+
+Temperature     :     623.35950    
+
+Kinetic   Energy:    0.41453188E-01
+
+Potential Energy:    -63.383465    
+
+Total     Energy:    -63.342012    
+
+Number of Averaging Steps:    1
+
+Average Temperature     :     623.35950    (   0.000    )
+
+Average Kinetic   Energy:    0.41453188E-01(   0.000    )
+
+Average Potential Energy:    -63.383465    (   0.000    )
+
+Average Total     Energy:    -63.342012    (   0.000    )
+
+Average Pressure (kbar, excludes thermal):    -4.2181729    (   0.000    )
+
+ Atom information for step #11:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.18654   10.02479    0.22170         0.01829    0.98282    0.02174
+         2      Si1          5.39888    5.02947    0.28541         0.52930    0.49309    0.02798
+         3      Si1          4.86196    0.10454    4.85576         0.47666    0.01025    0.47605
+         4      Si1          9.95805    5.29465    4.98216         0.97628    0.51908    0.48845
+         5      Si1          2.40999    2.68042    2.44467         0.23627    0.26279    0.23967
+         6      Si1          7.53347    7.97752    2.52795         0.73858    0.78211    0.24784
+         7      Si1          7.69817    2.07771    7.61840         0.75472    0.20370    0.74690
+         8      Si1          2.75291    7.61105    7.66375         0.26989    0.74618    0.75135
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.20     5: 4.25     8: 4.47     7: 4.49
+         2       6: 4.28     5: 4.37     8: 4.65     7: 4.71
+         3       6: 4.24     5: 4.30     7: 4.42     8: 4.43
+         4       6: 4.37     5: 4.51     8: 4.64     7: 4.73
+         5       1: 4.25     3: 4.30     2: 4.37     4: 4.51
+         6       1: 4.20     3: 4.24     2: 4.28     4: 4.37
+         7       3: 4.42     1: 4.49     2: 4.71     4: 4.73
+         8       3: 4.43     1: 4.47     4: 4.64     2: 4.65
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.004304     +0.011303     -0.084138   Ryd/Bohr
+                      2        -0.022800     -0.020990     -0.088282
+                      3        +0.000191     +0.003107     +0.060688
+                      4        +0.025820     -0.035524     +0.053643
+                      5        -0.004789     +0.047864     +0.026687
+                      6        +0.009390     -0.045910     +0.021921
+                      7        +0.006607     +0.074589     +0.006161
+                      8        -0.018723     -0.034439     +0.003321
+
+   Residual force (removed) =      +0.000001     +0.000001     +0.000001
+
+   Cell energy = -63.383465341 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.3090E-04,  cell energy = -63.392127337
+   Self-consistent step  2:  density residual = 1.7049E-04,  cell energy = -63.392572365
+   Self-consistent step  3:  density residual = 6.4388E-05,  cell energy = -63.392559433
+   Self-consistent step  4:  density residual = 2.9044E-05,  cell energy = -63.392610291
+   Self-consistent step  5:  density residual = 6.6508E-06,  cell energy = -63.392624285
+   Self-consistent step  6:  density residual = 4.1026E-06,  cell energy = -63.392625580
+   Self-consistent step  7:  density residual = 1.9092E-06,  cell energy = -63.392625706
+   Self-consistent step  8:  density residual = 1.0783E-06,  cell energy = -63.392625723
+   Self-consistent step  9:  density residual = 3.4145E-07,  cell energy = -63.392625740
+   Self-consistent step 10:  density residual = 1.9540E-07,  cell energy = -63.392625744
+
+   current pressure:       -7.6353   kbar
+
+MD time:     600.00000    
+
+Temperature     :     759.62977    
+
+Kinetic   Energy:    0.50515114E-01
+
+Potential Energy:    -63.392626    
+
+Total     Energy:    -63.342111    
+
+Number of Averaging Steps:    2
+
+Average Temperature     :     691.49463    (   68.14    )
+
+Average Kinetic   Energy:    0.45984151E-01(  0.4531E-02)
+
+Average Potential Energy:    -63.388046    (  0.4580E-02)
+
+Average Total     Energy:    -63.342061    (  0.4924E-04)
+
+Average Pressure (kbar, excludes thermal):    -5.9267861    (   1.709    )
+
+ Atom information for step #12:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.20222   10.00635    0.18191         0.01983    0.98101    0.01783
+         2      Si1          5.40865    5.00281    0.25646         0.53026    0.49047    0.02514
+         3      Si1          4.83843    0.11301    4.86168         0.47436    0.01108    0.47664
+         4      Si1          9.94897    5.29060    4.99781         0.97539    0.51869    0.48998
+         5      Si1          2.40168    2.73237    2.45872         0.23546    0.26788    0.24105
+         6      Si1          7.52859    7.98835    2.54728         0.73810    0.78317    0.24973
+         7      Si1          7.70961    2.07653    7.62397         0.75584    0.20358    0.74745
+         8      Si1          2.76182    7.59014    7.67193         0.27077    0.74413    0.75215
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.23     5: 4.31     8: 4.44     7: 4.47
+         2       6: 4.32     5: 4.36     8: 4.63     7: 4.68
+         3       6: 4.24     5: 4.31     8: 4.43     7: 4.44
+         4       6: 4.38     5: 4.48     8: 4.64     7: 4.72
+         5       3: 4.31     1: 4.31     2: 4.36     4: 4.48
+         6       1: 4.23     3: 4.24     2: 4.32     4: 4.38
+         7       3: 4.44     1: 4.47     2: 4.68     4: 4.72
+         8       3: 4.43     1: 4.44     2: 4.63     4: 4.64
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.003700     +0.018909     -0.064324   Ryd/Bohr
+                      2        -0.018112     -0.011065     -0.076832
+                      3        +0.002220     +0.004889     +0.059592
+                      4        +0.024300     -0.030709     +0.053052
+                      5        -0.008235     +0.030057     +0.017176
+                      6        +0.010378     -0.048054     +0.011707
+                      7        +0.003243     +0.069882     +0.001377
+                      8        -0.017495     -0.033909     -0.001748
+
+   Residual force (removed) =      +0.000000     +0.000002     +0.000000
+
+   Cell energy = -63.392625744 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.8394E-04,  cell energy = -63.400666958
+   Self-consistent step  2:  density residual = 1.9530E-04,  cell energy = -63.401268837
+   Self-consistent step  3:  density residual = 8.2221E-05,  cell energy = -63.401249379
+   Self-consistent step  4:  density residual = 3.2513E-05,  cell energy = -63.401340779
+   Self-consistent step  5:  density residual = 8.0688E-06,  cell energy = -63.401358614
+   Self-consistent step  6:  density residual = 4.4418E-06,  cell energy = -63.401360464
+   Self-consistent step  7:  density residual = 2.3812E-06,  cell energy = -63.401360616
+   Self-consistent step  8:  density residual = 1.3151E-06,  cell energy = -63.401360642
+   Self-consistent step  9:  density residual = 2.6956E-07,  cell energy = -63.401360668
+   Self-consistent step 10:  density residual = 2.7590E-07,  cell energy = -63.401360671
+   Self-consistent step 11:  density residual = 1.3363E-07,  cell energy = -63.401360671
+
+   current pressure:      -10.9491   kbar
+
+MD time:     650.00000    
+
+Temperature     :     889.75889    
+
+Kinetic   Energy:    0.59168655E-01
+
+Potential Energy:    -63.401361    
+
+Total     Energy:    -63.342192    
+
+Number of Averaging Steps:    3
+
+Average Temperature     :     757.58272    (   108.8    )
+
+Average Kinetic   Energy:    0.50378986E-01(  0.7233E-02)
+
+Average Potential Energy:    -63.392484    (  0.7306E-02)
+
+Average Total     Energy:    -63.342105    (  0.7354E-04)
+
+Average Pressure (kbar, excludes thermal):    -7.6009472    (   2.748    )
+
+ Atom information for step #13:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.21825    9.98976    0.13583         0.02140    0.97939    0.01332
+         2      Si1          5.41665    4.97507    0.22001         0.53104    0.48775    0.02157
+         3      Si1          4.81512    0.12195    4.87342         0.47207    0.01196    0.47779
+         4      Si1          9.94227    5.28356    5.01864         0.97473    0.51800    0.49202
+         5      Si1          2.39256    2.78725    2.47445         0.23456    0.27326    0.24259
+         6      Si1          7.52473    7.99450    2.56777         0.73772    0.78377    0.25174
+         7      Si1          7.72136    2.08218    7.62968         0.75700    0.20414    0.74801
+         8      Si1          2.76901    7.56592    7.67995         0.27147    0.74176    0.75294
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.27     5: 4.38     8: 4.41     7: 4.46
+         2       5: 4.36     6: 4.37     8: 4.61     7: 4.63
+         3       6: 4.25     5: 4.33     8: 4.43     7: 4.46
+         4       6: 4.38     5: 4.44     8: 4.63     7: 4.69
+         5       3: 4.33     2: 4.36     1: 4.38     4: 4.44
+         6       3: 4.25     1: 4.27     2: 4.37     4: 4.38
+         7       1: 4.46     3: 4.46     2: 4.63     4: 4.69
+         8       1: 4.41     3: 4.43     2: 4.61     4: 4.63
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        +0.001124     +0.025870     -0.042650   Ryd/Bohr
+                      2        -0.014183     -0.000881     -0.063094
+                      3        +0.004636     +0.006276     +0.056435
+                      4        +0.021815     -0.024733     +0.051258
+                      5        -0.009358     +0.011364     +0.007454
+                      6        +0.011651     -0.048770     +0.001348
+                      7        -0.000041     +0.063474     -0.003609
+                      8        -0.015645     -0.032601     -0.007143
+
+   Residual force (removed) =      +0.000001     +0.000001     +0.000002
+
+   Cell energy = -63.401360671 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.2653E-04,  cell energy = -63.407483237
+   Self-consistent step  2:  density residual = 2.1721E-04,  cell energy = -63.408217487
+   Self-consistent step  3:  density residual = 9.8727E-05,  cell energy = -63.408193082
+   Self-consistent step  4:  density residual = 3.4387E-05,  cell energy = -63.408333805
+   Self-consistent step  5:  density residual = 9.3801E-06,  cell energy = -63.408354162
+   Self-consistent step  6:  density residual = 4.6437E-06,  cell energy = -63.408356503
+   Self-consistent step  7:  density residual = 2.8294E-06,  cell energy = -63.408356663
+   Self-consistent step  8:  density residual = 1.5088E-06,  cell energy = -63.408356700
+   Self-consistent step  9:  density residual = 2.6925E-07,  cell energy = -63.408356731
+   Self-consistent step 10:  density residual = 3.4116E-07,  cell energy = -63.408356734
+   Self-consistent step 11:  density residual = 1.3104E-07,  cell energy = -63.408356734
+
+   current pressure:      -13.8770   kbar
+
+MD time:     700.00000    
+
+Temperature     :     994.11300    
+
+Kinetic   Energy:    0.66108167E-01
+
+Potential Energy:    -63.408357    
+
+Total     Energy:    -63.342249    
+
+Number of Averaging Steps:    4
+
+Average Temperature     :     816.71529    (   139.1    )
+
+Average Kinetic   Energy:    0.54311281E-01(  0.9253E-02)
+
+Average Potential Energy:    -63.396452    (  0.9342E-02)
+
+Average Total     Energy:    -63.342141    (  0.8902E-04)
+
+Average Pressure (kbar, excludes thermal):    -9.1700060    (   3.612    )
+
+ Atom information for step #14:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.23440    9.97569    0.08559         0.02298    0.97801    0.00839
+         2      Si1          5.42326    4.94725    0.17740         0.53169    0.48502    0.01739
+         3      Si1          4.79227    0.13150    4.89068         0.46983    0.01289    0.47948
+         4      Si1          9.93770    5.27410    5.04449         0.97428    0.51707    0.49456
+         5      Si1          2.38253    2.84324    2.49090         0.23358    0.27875    0.24421
+         6      Si1          7.52201    7.99588    2.58838         0.73745    0.78391    0.25376
+         7      Si1          7.73312    2.09403    7.63503         0.75815    0.20530    0.74853
+         8      Si1          2.77469    7.53851    7.68727         0.27203    0.73907    0.75365
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.32     8: 4.38     7: 4.44     5: 4.45
+         2       5: 4.36     6: 4.42     8: 4.58     7: 4.58
+         3       6: 4.27     5: 4.35     8: 4.44     7: 4.48
+         4       6: 4.39     5: 4.41     8: 4.62     7: 4.66
+         5       3: 4.35     2: 4.36     4: 4.41     1: 4.45
+         6       3: 4.27     1: 4.32     4: 4.39     2: 4.42
+         7       1: 4.44     3: 4.48     2: 4.58     4: 4.66
+         8       1: 4.38     3: 4.44     2: 4.58     4: 4.62
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.003042     +0.031828     -0.020367   Ryd/Bohr
+                      2        -0.011410     +0.009065     -0.047348
+                      3        +0.007474     +0.007112     +0.051287
+                      4        +0.018536     -0.017818     +0.048115
+                      5        -0.008013     -0.007126     -0.002116
+                      6        +0.012822     -0.048010     -0.008463
+                      7        -0.003025     +0.055339     -0.008567
+                      8        -0.013342     -0.030390     -0.012542
+
+   Residual force (removed) =      +0.000001     -0.000001     +0.000000
+
+   Cell energy = -63.408356734 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.5548E-04,  cell energy = -63.411667752
+   Self-consistent step  2:  density residual = 2.3434E-04,  cell energy = -63.412500736
+   Self-consistent step  3:  density residual = 1.1216E-04,  cell energy = -63.412477990
+   Self-consistent step  4:  density residual = 3.5033E-05,  cell energy = -63.412666084
+   Self-consistent step  5:  density residual = 1.0534E-05,  cell energy = -63.412687539
+   Self-consistent step  6:  density residual = 5.1803E-06,  cell energy = -63.412690335
+   Self-consistent step  7:  density residual = 2.4194E-06,  cell energy = -63.412690463
+   Self-consistent step  8:  density residual = 1.2945E-06,  cell energy = -63.412690499
+   Self-consistent step  9:  density residual = 6.2006E-07,  cell energy = -63.412690511
+   Self-consistent step 10:  density residual = 2.2898E-07,  cell energy = -63.412690514
+   Self-consistent step 11:  density residual = 1.3527E-07,  cell energy = -63.412690514
+
+   current pressure:      -16.2093   kbar
+
+MD time:     750.00000    
+
+Temperature     :     1058.8762    
+
+Kinetic   Energy:    0.70414898E-01
+
+Potential Energy:    -63.412691    
+
+Total     Energy:    -63.342276    
+
+Number of Averaging Steps:    5
+
+Average Temperature     :     865.14748    (   157.7    )
+
+Average Kinetic   Energy:    0.57532004E-01(  0.1049E-01)
+
+Average Potential Energy:    -63.399700    (  0.1058E-01)
+
+Average Total     Energy:    -63.342168    (  0.9615E-04)
+
+Average Pressure (kbar, excludes thermal):    -10.577928    (   4.286    )
+
+ Atom information for step #15:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.25024    9.96473    0.03335         0.02453    0.97693    0.00327
+         2      Si1          5.42876    4.92031    0.13016         0.53223    0.48238    0.01276
+         3      Si1          4.77014    0.14175    4.91294         0.46766    0.01390    0.48166
+         4      Si1          9.93493    5.26289    5.07502         0.97401    0.51597    0.49755
+         5      Si1          2.37171    2.89853    2.50715         0.23252    0.28417    0.24580
+         6      Si1          7.52053    7.99257    2.60816         0.73731    0.78359    0.25570
+         7      Si1          7.74457    2.11128    7.63955         0.75927    0.20699    0.74898
+         8      Si1          2.77905    7.50814    7.69337         0.27246    0.73609    0.75425
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.35     6: 4.37     7: 4.42     5: 4.52
+         2       5: 4.37     6: 4.47     7: 4.53     8: 4.55
+         3       6: 4.29     5: 4.37     8: 4.44     7: 4.49
+         4       5: 4.37     6: 4.40     8: 4.60     7: 4.62
+         5       2: 4.37     4: 4.37     3: 4.37     1: 4.52
+         6       3: 4.29     1: 4.37     4: 4.40     2: 4.47
+         7       1: 4.42     3: 4.49     2: 4.53     4: 4.62
+         8       1: 4.35     3: 4.44     2: 4.55     4: 4.60
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.008164     +0.036518     +0.001329   Ryd/Bohr
+                      2        -0.009952     +0.018447     -0.029964
+                      3        +0.010727     +0.007242     +0.044356
+                      4        +0.014750     -0.010244     +0.043458
+                      5        -0.004520     -0.024571     -0.011213
+                      6        +0.013546     -0.045787     -0.017136
+                      7        -0.005522     +0.045449     -0.013255
+                      8        -0.010865     -0.027054     -0.017575
+
+   Residual force (removed) =      +0.000001     -0.000001     -0.000001
+
+   Cell energy = -63.412690514 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.6920E-04,  cell energy = -63.412744184
+   Self-consistent step  2:  density residual = 2.4735E-04,  cell energy = -63.413640164
+   Self-consistent step  3:  density residual = 1.2300E-04,  cell energy = -63.413629371
+   Self-consistent step  4:  density residual = 3.5148E-05,  cell energy = -63.413858401
+   Self-consistent step  5:  density residual = 1.1698E-05,  cell energy = -63.413880634
+   Self-consistent step  6:  density residual = 5.5760E-06,  cell energy = -63.413883737
+   Self-consistent step  7:  density residual = 2.6138E-06,  cell energy = -63.413883880
+   Self-consistent step  8:  density residual = 1.3727E-06,  cell energy = -63.413883929
+   Self-consistent step  9:  density residual = 6.3056E-07,  cell energy = -63.413883940
+   Self-consistent step 10:  density residual = 2.2507E-07,  cell energy = -63.413883943
+   Self-consistent step 11:  density residual = 9.7866E-08,  cell energy = -63.413883943
+
+   current pressure:      -17.8217   kbar
+
+MD time:     800.00000    
+
+Temperature     :     1076.8373    
+
+Kinetic   Energy:    0.71609302E-01
+
+Potential Energy:    -63.413884    
+
+Total     Energy:    -63.342275    
+
+Number of Averaging Steps:    6
+
+Average Temperature     :     900.42911    (   164.2    )
+
+Average Kinetic   Energy:    0.59878221E-01(  0.1092E-01)
+
+Average Potential Energy:    -63.402064    (  0.1101E-01)
+
+Average Total     Energy:    -63.342186    (  0.9639E-04)
+
+Average Pressure (kbar, excludes thermal):    -11.785281    (   4.754    )
+
+ Atom information for step #16:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.26529    9.95734   10.18125         0.02601    0.97621    0.99816
+         2      Si1          5.43329    4.89518    0.08000         0.53268    0.47992    0.00784
+         3      Si1          4.74907    0.15271    4.93954         0.46559    0.01497    0.48427
+         4      Si1          9.93361    5.25069    5.10981         0.97388    0.51477    0.50096
+         5      Si1          2.36046    2.95142    2.52230         0.23142    0.28936    0.24728
+         6      Si1          7.52038    7.98479    2.62628         0.73729    0.78282    0.25748
+         7      Si1          7.75549    2.13296    7.64278         0.76034    0.20911    0.74929
+         8      Si1          2.78236    7.47512    7.69775         0.27278    0.73286    0.75468
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.32     7: 4.41     6: 4.42     5: 4.59
+         2       5: 4.38     7: 4.47     8: 4.51     6: 4.51
+         3       6: 4.32     5: 4.40     8: 4.44     7: 4.50
+         4       5: 4.35     6: 4.41     7: 4.57     8: 4.58
+         5       4: 4.35     2: 4.38     3: 4.40     1: 4.59
+         6       3: 4.32     4: 4.41     1: 4.42     2: 4.51
+         7       1: 4.41     2: 4.47     3: 4.50     4: 4.57
+         8       1: 4.32     3: 4.44     2: 4.51     4: 4.58
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.013516     +0.039727     +0.021404   Ryd/Bohr
+                      2        -0.009730     +0.027063     -0.011420
+                      3        +0.014336     +0.006554     +0.035947
+                      4        +0.010826     -0.002349     +0.037088
+                      5        +0.000465     -0.040315     -0.019510
+                      6        +0.013590     -0.042212     -0.024262
+                      7        -0.007435     +0.033871     -0.017411
+                      8        -0.008536     -0.022338     -0.021836
+
+   Residual force (removed) =      +0.000001     -0.000002     -0.000001
+
+   Cell energy = -63.413883943 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.6694E-04,  cell energy = -63.410687119
+   Self-consistent step  2:  density residual = 2.5316E-04,  cell energy = -63.411607531
+   Self-consistent step  3:  density residual = 1.2972E-04,  cell energy = -63.411614431
+   Self-consistent step  4:  density residual = 3.4791E-05,  cell energy = -63.411869612
+   Self-consistent step  5:  density residual = 1.2807E-05,  cell energy = -63.411892278
+   Self-consistent step  6:  density residual = 5.5652E-06,  cell energy = -63.411895566
+   Self-consistent step  7:  density residual = 2.6905E-06,  cell energy = -63.411895736
+   Self-consistent step  8:  density residual = 1.4348E-06,  cell energy = -63.411895795
+   Self-consistent step  9:  density residual = 6.3693E-07,  cell energy = -63.411895808
+   Self-consistent step 10:  density residual = 2.2520E-07,  cell energy = -63.411895811
+   Self-consistent step 11:  density residual = 1.0962E-07,  cell energy = -63.411895812
+
+   current pressure:      -18.6745   kbar
+
+MD time:     850.00000    
+
+Temperature     :     1047.3058    
+
+Kinetic   Energy:    0.69645469E-01
+
+Potential Energy:    -63.411896    
+
+Total     Energy:    -63.342250    
+
+Number of Averaging Steps:    7
+
+Average Temperature     :     921.41149    (   160.4    )
+
+Average Kinetic   Energy:    0.61273542E-01(  0.1067E-01)
+
+Average Potential Energy:    -63.403468    (  0.1076E-01)
+
+Average Total     Energy:    -63.342195    (  0.9207E-04)
+
+Average Pressure (kbar, excludes thermal):    -12.769494    (   5.018    )
+
+ Atom information for step #17:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.27902    9.95382   10.13124         0.02736    0.97586    0.99326
+         2      Si1          5.43687    4.87268    0.02872         0.53303    0.47771    0.00282
+         3      Si1          4.72939    0.16431    4.96964         0.46367    0.01611    0.48722
+         4      Si1          9.93335    5.23826    5.14821         0.97386    0.51355    0.50473
+         5      Si1          2.34925    3.00038    2.53555         0.23032    0.29416    0.24858
+         6      Si1          7.52156    7.97289    2.64202         0.73741    0.78166    0.25902
+         7      Si1          7.76568    2.15796    7.64430         0.76134    0.21156    0.74944
+         8      Si1          2.78483    7.43992    7.69999         0.27302    0.72940    0.75490
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.30     7: 4.40     6: 4.47     5: 4.65
+         2       5: 4.40     7: 4.41     8: 4.47     6: 4.56
+         3       6: 4.35     5: 4.43     8: 4.45     7: 4.51
+         4       5: 4.32     6: 4.42     7: 4.52     8: 4.55
+         5       4: 4.32     2: 4.40     3: 4.43     1: 4.65
+         6       3: 4.35     4: 4.42     1: 4.47     2: 4.56
+         7       1: 4.40     2: 4.41     3: 4.51     4: 4.52
+         8       1: 4.30     3: 4.45     2: 4.47     4: 4.55
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.018379     +0.041305     +0.039034   Ryd/Bohr
+                      2        -0.010481     +0.034728     +0.007659
+                      3        +0.018136     +0.005038     +0.026454
+                      4        +0.007207     +0.005461     +0.028836
+                      5        +0.006087     -0.053874     -0.026657
+                      6        +0.012885     -0.037481     -0.029640
+                      7        -0.008775     +0.020847     -0.020748
+                      8        -0.006678     -0.016024     -0.024938
+
+   Residual force (removed) =      +0.000001     -0.000003     -0.000001
+
+   Cell energy = -63.411895812 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.4979E-04,  cell energy = -63.405845909
+   Self-consistent step  2:  density residual = 2.5392E-04,  cell energy = -63.406756974
+   Self-consistent step  3:  density residual = 1.3109E-04,  cell energy = -63.406772811
+   Self-consistent step  4:  density residual = 3.6030E-05,  cell energy = -63.407035119
+   Self-consistent step  5:  density residual = 1.2510E-05,  cell energy = -63.407058919
+   Self-consistent step  6:  density residual = 5.7458E-06,  cell energy = -63.407062192
+   Self-consistent step  7:  density residual = 2.7970E-06,  cell energy = -63.407062379
+   Self-consistent step  8:  density residual = 1.5295E-06,  cell energy = -63.407062443
+   Self-consistent step  9:  density residual = 7.0392E-07,  cell energy = -63.407062460
+   Self-consistent step 10:  density residual = 2.5631E-07,  cell energy = -63.407062464
+   Self-consistent step 11:  density residual = 1.4136E-07,  cell energy = -63.407062465
+
+   current pressure:      -18.8012   kbar
+
+MD time:     900.00000    
+
+Temperature     :     975.26291    
+
+Kinetic   Energy:    0.64854642E-01
+
+Potential Energy:    -63.407062    
+
+Total     Energy:    -63.342208    
+
+Number of Averaging Steps:    8
+
+Average Temperature     :     928.14292    (   151.1    )
+
+Average Kinetic   Energy:    0.61721179E-01(  0.1005E-01)
+
+Average Potential Energy:    -63.403918    (  0.1014E-01)
+
+Average Total     Energy:    -63.342196    (  0.8623E-04)
+
+Average Pressure (kbar, excludes thermal):    -13.523501    (   5.100    )
+
+ Atom information for step #18:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.29096    9.95434   10.08504         0.02853    0.97592    0.98873
+         2      Si1          5.43943    4.85358   10.17819         0.53328    0.47584    0.99786
+         3      Si1          4.71148    0.17640    5.00233         0.46191    0.01729    0.49042
+         4      Si1          9.93379    5.22636    5.18944         0.97390    0.51239    0.50877
+         5      Si1          2.33863    3.04408    2.54619         0.22928    0.29844    0.24963
+         6      Si1          7.52399    7.95733    2.65487         0.73765    0.78013    0.26028
+         7      Si1          7.77502    2.18499    7.64380         0.76226    0.21421    0.74939
+         8      Si1          2.78665    7.40316    7.69980         0.27320    0.72580    0.75488
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.29     7: 4.39     6: 4.52     5: 4.70
+         2       7: 4.36     5: 4.41     8: 4.44     6: 4.60
+         3       6: 4.39     8: 4.45     5: 4.46     7: 4.52
+         4       5: 4.31     6: 4.44     7: 4.46     8: 4.51
+         5       4: 4.31     2: 4.41     3: 4.46     1: 4.70
+         6       3: 4.39     4: 4.44     1: 4.52     2: 4.60
+         7       2: 4.36     1: 4.39     4: 4.46     3: 4.52
+         8       1: 4.29     2: 4.44     3: 4.45     4: 4.51
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.022188     +0.041148     +0.053695   Ryd/Bohr
+                      2        -0.011782     +0.041247     +0.026552
+                      3        +0.021918     +0.002740     +0.016281
+                      4        +0.004284     +0.012799     +0.018572
+                      5        +0.011482     -0.064955     -0.032301
+                      6        +0.011499     -0.031813     -0.033246
+                      7        -0.009690     +0.006777     -0.022969
+                      8        -0.005524     -0.007943     -0.026585
+
+   Residual force (removed) =      +0.000001     -0.000003     -0.000000
+
+   Cell energy = -63.407062465 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.1745E-04,  cell energy = -63.398881295
+   Self-consistent step  2:  density residual = 2.4346E-04,  cell energy = -63.399727773
+   Self-consistent step  3:  density residual = 1.2592E-04,  cell energy = -63.399735184
+   Self-consistent step  4:  density residual = 3.6244E-05,  cell energy = -63.399978551
+   Self-consistent step  5:  density residual = 1.1504E-05,  cell energy = -63.400002404
+   Self-consistent step  6:  density residual = 5.6419E-06,  cell energy = -63.400005418
+   Self-consistent step  7:  density residual = 2.7511E-06,  cell energy = -63.400005591
+   Self-consistent step  8:  density residual = 1.4888E-06,  cell energy = -63.400005647
+   Self-consistent step  9:  density residual = 7.0016E-07,  cell energy = -63.400005663
+   Self-consistent step 10:  density residual = 2.6031E-07,  cell energy = -63.400005668
+   Self-consistent step 11:  density residual = 1.4362E-07,  cell energy = -63.400005668
+
+   current pressure:      -18.2944   kbar
+
+MD time:     950.00000    
+
+Temperature     :     869.96176    
+
+Kinetic   Energy:    0.57852153E-01
+
+Potential Energy:    -63.400006    
+
+Total     Energy:    -63.342154    
+
+Number of Averaging Steps:    9
+
+Average Temperature     :     921.67835    (   143.7    )
+
+Average Kinetic   Energy:    0.61291288E-01(  0.9553E-02)
+
+Average Potential Energy:    -63.403483    (  0.9635E-02)
+
+Average Total     Energy:    -63.342192    (  0.8240E-04)
+
+Average Pressure (kbar, excludes thermal):    -14.053636    (   5.037    )
+
+ Atom information for step #19:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.30072    9.95888   10.04408         0.02948    0.97636    0.98471
+         2      Si1          5.44083    4.83851   10.13025         0.53341    0.47436    0.99316
+         3      Si1          4.69572    0.18875    5.03661         0.46036    0.01851    0.49379
+         4      Si1          9.93464    5.21571    5.23247         0.97398    0.51134    0.51299
+         5      Si1          2.32914    3.08143    2.55368         0.22835    0.30210    0.25036
+         6      Si1          7.52755    7.93866    2.66447         0.73800    0.77830    0.26122
+         7      Si1          7.78341    2.21269    7.64105         0.76308    0.21693    0.74912
+         8      Si1          2.78793    7.36562    7.69702         0.27333    0.72212    0.75461
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.29     7: 4.38     6: 4.57     5: 4.74
+         2       7: 4.31     8: 4.40     5: 4.43     6: 4.63
+         3       6: 4.43     8: 4.46     5: 4.49     7: 4.52
+         4       5: 4.30     7: 4.41     6: 4.45     8: 4.47
+         5       4: 4.30     2: 4.43     3: 4.49     1: 4.74
+         6       3: 4.43     4: 4.45     1: 4.57     2: 4.63
+         7       2: 4.31     1: 4.38     4: 4.41     3: 4.52
+         8       1: 4.29     2: 4.40     3: 4.46     4: 4.47
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.024593     +0.039243     +0.065154   Ryd/Bohr
+                      2        -0.013124     +0.046365     +0.044478
+                      3        +0.025448     -0.000231     +0.005818
+                      4        +0.002329     +0.019322     +0.006293
+                      5        +0.015941     -0.073432     -0.036136
+                      6        +0.009596     -0.025444     -0.035188
+                      7        -0.010444     -0.007754     -0.023800
+                      8        -0.005153     +0.001931     -0.026619
+
+   Residual force (removed) =      +0.000001     -0.000002     +0.000000
+
+   Cell energy = -63.400005668 Ryd
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.7323E-04,  cell energy = -63.390561606
+   Self-consistent step  2:  density residual = 2.2462E-04,  cell energy = -63.391301426
+   Self-consistent step  3:  density residual = 1.1635E-04,  cell energy = -63.391299926
+   Self-consistent step  4:  density residual = 3.4722E-05,  cell energy = -63.391506970
+   Self-consistent step  5:  density residual = 1.0951E-05,  cell energy = -63.391528907
+   Self-consistent step  6:  density residual = 5.4637E-06,  cell energy = -63.391531575
+   Self-consistent step  7:  density residual = 2.5445E-06,  cell energy = -63.391531736
+   Self-consistent step  8:  density residual = 1.3654E-06,  cell energy = -63.391531779
+   Self-consistent step  9:  density residual = 6.6455E-07,  cell energy = -63.391531793
+   Self-consistent step 10:  density residual = 2.2073E-07,  cell energy = -63.391531797
+   Self-consistent step 11:  density residual = 1.4130E-07,  cell energy = -63.391531798
+
+   current pressure:      -17.2885   kbar
+
+MD time:     1000.0000    
+
+Temperature     :     743.44148    
+
+Kinetic   Energy:    0.49438598E-01
+
+Potential Energy:    -63.391532    
+
+Total     Energy:    -63.342093    
+
+Number of Averaging Steps:   10
+
+Average Temperature     :     903.85466    (   146.4    )
+
+Average Kinetic   Energy:    0.60106019E-01(  0.9736E-02)
+
+Average Potential Energy:    -63.402288    (  0.9819E-02)
+
+Average Total     Energy:    -63.342182    (  0.8357E-04)
+
+Average Pressure (kbar, excludes thermal):    -14.377148    (   4.876    )
+
+ Atom information for step #20:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.30809    9.96725   10.00949         0.03020    0.97718    0.98132
+         2      Si1          5.44096    4.82796   10.08666         0.53343    0.47333    0.98889
+         3      Si1          4.68243    0.20109    5.07146         0.45906    0.01971    0.49720
+         4      Si1          9.93573    5.20695    5.27612         0.97409    0.51049    0.51727
+         5      Si1          2.32120    3.11161    2.55764         0.22757    0.30506    0.25075
+         6      Si1          7.53205    7.91750    2.67063         0.73844    0.77623    0.26183
+         7      Si1          7.79078    2.23962    7.63598         0.76380    0.21957    0.74863
+         8      Si1          2.78871    7.32828    7.69163         0.27340    0.71846    0.75408
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.30     7: 4.37     6: 4.61     5: 4.77
+         2       7: 4.27     8: 4.36     5: 4.45     6: 4.65
+         3       8: 4.46     6: 4.48     5: 4.51     7: 4.52
+         4       5: 4.30     7: 4.36     8: 4.43     6: 4.46
+         5       4: 4.30     2: 4.45     3: 4.51     1: 4.77
+         6       4: 4.46     3: 4.48     1: 4.61     2: 4.65
+         7       2: 4.27     4: 4.36     1: 4.37     3: 4.52
+         8       1: 4.30     2: 4.36     4: 4.43     3: 4.46
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.025491     +0.035695     +0.073431   Ryd/Bohr
+                      2        -0.013994     +0.049787     +0.060645
+                      3        +0.028510     -0.003724     -0.004584
+                      4        +0.001414     +0.024746     -0.007796
+                      5        +0.019015     -0.079324     -0.037972
+                      6        +0.007373     -0.018612     -0.035647
+                      7        -0.011371     -0.021983     -0.023028
+                      8        -0.005457     +0.013416     -0.025047
+
+   Residual force (removed) =      +0.000001     -0.000002     -0.000000
+
+   Cell energy = -63.391531798 Ryd
+
+   Fermi level =   0.4847848652 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3710385351           2.0000
+                        2          -0.2338255938           2.0000
+                        3          -0.2204126326           2.0000
+                        4          -0.2054128149           2.0000
+                        5          -0.0292629628           2.0000
+                        6          -0.0188050014           2.0000
+                        7          -0.0117553496           2.0000
+                        8           0.1752434706           2.0000
+                        9           0.2009058075           2.0000
+                       10           0.2147936438           2.0000
+                       11           0.2229317568           2.0000
+                       12           0.2887167189           2.0000
+                       13           0.2906953244           2.0000
+                       14           0.3032299339           2.0000
+                       15           0.3889393082           2.0000
+                       16           0.4137392175           2.0000
+                       17           0.5363763024           0.0001
+                       18           0.5495573983           0.0000
+                       19           0.5600556035           0.0000
+                       20           0.5889599452           0.0000
+                       21           0.7024098735           0.0000
+                       22           0.7175228859           0.0000
+                       23           0.7642120289           0.0000
+                       24           0.7794996539           0.0000
+
+     Special k-point #2:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3696309135           2.0000
+                        2          -0.2379523473           2.0000
+                        3          -0.2245985617           2.0000
+                        4          -0.2037299066           2.0000
+                        5          -0.0255538621           2.0000
+                        6          -0.0148395205           2.0000
+                        7           0.0055701632           2.0000
+                        8           0.1628625682           2.0000
+                        9           0.1884717455           2.0000
+                       10           0.1941519578           2.0000
+                       11           0.2112918623           2.0000
+                       12           0.2908945578           2.0000
+                       13           0.2973702386           2.0000
+                       14           0.3176632896           2.0000
+                       15           0.3860615948           2.0000
+                       16           0.4297224740           2.0000
+                       17           0.5438451086           0.0000
+                       18           0.5562644356           0.0000
+                       19           0.5691251366           0.0000
+                       20           0.5965534876           0.0000
+                       21           0.6979914028           0.0000
+                       22           0.7269639246           0.0000
+                       23           0.7569982553           0.0000
+                       24           0.7707653025           0.0000
+
+     Special k-point #3:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694867942           2.0000
+                        2          -0.2363206716           2.0000
+                        3          -0.2201575347           2.0000
+                        4          -0.2125038404           2.0000
+                        5          -0.0244449621           2.0000
+                        6          -0.0094212301           2.0000
+                        7           0.0077916076           2.0000
+                        8           0.1612880184           2.0000
+                        9           0.1837957873           2.0000
+                       10           0.1954398425           2.0000
+                       11           0.1997470392           2.0000
+                       12           0.2936047616           2.0000
+                       13           0.3029500153           2.0000
+                       14           0.3102245390           2.0000
+                       15           0.3983016225           2.0000
+                       16           0.4340629263           1.9999
+                       17           0.5375826968           0.0001
+                       18           0.5520737584           0.0000
+                       19           0.5706969758           0.0000
+                       20           0.5966697497           0.0000
+                       21           0.6989706271           0.0000
+                       22           0.7431565826           0.0000
+                       23           0.7654455406           0.0000
+                       24           0.7741969446           0.0000
+
+     Special k-point #4:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3683190769           2.0000
+                        2          -0.2391649887           2.0000
+                        3          -0.2243763628           2.0000
+                        4          -0.2110242387           2.0000
+                        5          -0.0108854426           2.0000
+                        6          -0.0053744344           2.0000
+                        7           0.0106813789           2.0000
+                        8           0.1524825854           2.0000
+                        9           0.1735825664           2.0000
+                       10           0.1812392730           2.0000
+                       11           0.1953449730           2.0000
+                       12           0.2990613819           2.0000
+                       13           0.3077861631           2.0000
+                       14           0.3094280134           2.0000
+                       15           0.4042010839           2.0000
+                       16           0.4298433515           2.0000
+                       17           0.5499687055           0.0000
+                       18           0.5647959949           0.0000
+                       19           0.5698345080           0.0000
+                       20           0.6180814781           0.0000
+                       21           0.7113543560           0.0000
+                       22           0.7315006103           0.0000
+                       23           0.7582530274           0.0000
+                       24           0.7688310173           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  24.644612113
+     Hartree               =   4.216405393
+     exchange-correlation  = -19.217285723
+     local pseudopotential = -18.795076864
+     atomic                = -54.240186717
+     ---------------------------------------
+     cell energy           = -63.391531798
+
+   Pressure:       -17.2885   kbar
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                8           8.00           1.00
+config_sc: forces_i                                 168           1.11           0.14
+config_sc: pressure_i                                88           2.37           0.30
+config_sc: update                                   160          99.57          12.45
+eigensolver: diagonalize                           7264           1.35           0.17
+electrons_sc: constructor                             8           0.65           0.08
+electrons_sc: update                               1808         101.89          12.74
+fft: distributed                                  13568           2.26           0.28
+fft: serial                                      193832          45.71           5.71
+fields_sc: constructor                                8           0.05           0.01
+fields_sc: update                                  1976           3.85           0.48
+multibasis: band_remap                           193832           5.64           0.71
+multivector: gather_wf                                8           0.00           0.00
+multivector: scatter_wf                           21800           2.14           0.27
+multivector: zgemm                                71912           5.02           0.63
+operators: apply_hamiltonian                      28680          61.74           7.72
+operators: zgemm                                  68008           6.56           0.82
+Socorro: total time                                   8         112.21          14.03

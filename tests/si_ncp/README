@@ -1,0 +1,27 @@
+This test is for a primitive cell of Si in the diamond structure.
+There is also a test for this cell strained along the [111] direction
+wherein the stress tensor is calculated. Additional tests can be done
+with the restart flag set to f, fe, fe with kgroups = 2, or efe, and
+with a fixed hamiltonian.
+
+diaryf_4 <-- crystal, argvf, 4 processors
+diaryf_9 <-- crystal, argvf, 9 processors
+
+diaryf_8_vspin <-- crystal, argvf_vspin, 8 processors
+
+diaryf_4_libxc      <-- crystal, argvf_libxc,      4 processors
+diaryf_8_libxc_spin <-- crystal, argvf_libxc_spin, 8 processors (same results as diaryf_4_libxc)
+
+diaryf_4_strain <-- crystal_strain, argvf_strain, 4 processors
+
+diaryf_6_nekg <-- crystal, argvf_nekg, 6 processors
+
+diaryf_4_fh <-- crystal, argvf_fh, 4 processors
+
+diaryf_4_restart_efe    <-- crystal, argvf_restart_efe,    4 processors
+diaryf_4_restart_f      <-- crystal, argvf_restart_f,      4 processors
+diaryf_4_restart_fe     <-- crystal, argvf_restart_fe,     4 processors
+diaryf_4_restart_fe_cc  <-- crystal, argvf_restart_cc,     4 processors
+diaryf_4_restart_fe_kg2 <-- crystal, argvf_restart_fe_kg2, 4 processors
+
+diaryf_8_spin_restart_fe <-- crystal, argvf_spin_restart_fe, 8 processors

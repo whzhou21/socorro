@@ -1,0 +1,6 @@
+This test is to find the transition state for a vacancy in a
+16-atom cell of Si using the dimer method. The standard test
+uses the steepest-descent (sd) optimizer.
+
+diaryf_sd_01_4 <-- 01/crystal, argvf, 4 processors (8 total processors)
+diaryf_sd_02_4 <-- 02/crystal, argvf, 4 processors (8 total processors)

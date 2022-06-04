@@ -1,0 +1,34 @@
+kgroups  1
+
+atomic_representation  paw
+atomic_occupations_Si  1.0000  3.0000
+
+functional    lda
+correlation   pw
+
+projector_type  reciprocal
+
+wf_cutoff    20.0d0  
+den_cutoff   80.0d0  
+
+config_type         sc
+config_steps        20
+config_convergence  density
+density_tolerance   2.0d-5
+
+nbands  24
+
+kpoints    gmp
+mpparams   2 2 2
+
+kt  5.0d-3
+
+solver_method      bd
+solver_directions  4
+solver_tolerance   1.0d-4
+
+mix_type          density
+mix_method        pulay
+mix_weight        0.80d0
+mix_damping_type  none
+mix_history       4

@@ -1,0 +1,1368 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   8 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Norm-Conserving Pseudopotential method
+
+   Primitive lattice vectors:
+
+     a1:    10.2000000000     0.0000000000     0.0000000000
+     a2:     0.0000000000    10.2000000000     0.0000000000
+     a3:     0.0000000000     0.0000000000    10.2000000000
+
+     b1:     0.6159985595     0.0000000000     0.0000000000
+     b2:     0.0000000000     0.6159985595     0.0000000000
+     b3:     0.0000000000     0.0000000000     0.6159985595
+
+     cell volume = 1061.20800
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.10200    0.20400    0.00000         0.01000    0.02000    0.00000
+         2      Si1          4.99800    4.89600    0.20400         0.49000    0.48000    0.02000
+         3      Si1          5.10000    0.00000    4.89600         0.50000    0.00000    0.48000
+         4      Si1          0.00000    5.10000    5.10000         0.00000    0.50000    0.50000
+         5      Si1          2.55000    2.55000    2.55000         0.25000    0.25000    0.25000
+         6      Si1          7.65000    7.65000    2.55000         0.75000    0.75000    0.25000
+         7      Si1          7.65000    2.55000    7.65000         0.75000    0.25000    0.75000
+         8      Si1          2.55000    7.65000    7.65000         0.25000    0.75000    0.75000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.24     7: 4.36     8: 4.48     6: 4.60
+         2       5: 4.12     6: 4.49     7: 4.49     8: 4.60
+         3       5: 4.30     6: 4.30     7: 4.54     8: 4.54
+         4       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         5       2: 4.12     1: 4.24     3: 4.30     4: 4.42
+         6       3: 4.30     4: 4.42     2: 4.49     1: 4.60
+         7       1: 4.36     4: 4.42     2: 4.49     3: 4.54
+         8       4: 4.42     1: 4.48     3: 4.54     2: 4.60
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (automatic with tolerance = 1.0E-08):
+
+     The space group has 1 operation with point group C_1
+
+   Mesh:
+
+     dimension 1 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+     dimension 2 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+     dimension 3 =  32  =  2^5 * 3^0 * 5^0 * 7^0
+
+     Number of mesh points = 32768
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 8 groups with 4 planes per group
+
+     Plane wave cutoff energy = 80.00 Ryd
+
+       Number of plane waves = 12893
+
+   Density-dependent functional:
+
+     Exchange    (native): LDA
+     Correlation (native): PZ
+
+     Analytical expressions for the functional derivatives
+
+Fields object construction:
+
+   Guess-density initialization
+
+   Self-consistency achieved using density mixing:
+
+   Pulay mixing:
+
+     history = 4
+
+     weight = 0.600
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 20.00 Ryd
+
+   Number of bands = 24
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 2 --> 2
+       q2: 2 --> 2
+       q3: 2 --> 2
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.250000 +0.250000 +0.250000      +0.154000 +0.154000 +0.154000      0.250000
+           2      +0.250000 +0.250000 -0.250000      +0.154000 +0.154000 -0.154000      0.250000
+           3      +0.250000 -0.250000 +0.250000      +0.154000 -0.154000 +0.154000      0.250000
+           4      +0.250000 -0.250000 -0.250000      +0.154000 -0.154000 -0.154000      0.250000
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1            1607
+         2            1607
+         3            1607
+         4            1607
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Real-space projectors:
+
+     Si1:
+       optimization radius = 4.00 Bohr
+       inner cutoff energy =   20.00 Ryd
+       outer cutoff energy =  180.00 Ryd
+       l = 0: maximum Fourier error = 1.50E-10
+       l = 1: maximum Fourier error = 4.19E-11
+
+   MPI remap
+
+   Conjugate gradient solver:
+
+     maximum directions = 3
+
+     residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 1.2211E-02,  cell energy = -51.475556150
+   Self-consistent step  2:  density residual = 5.4963E-03,  cell energy = -61.785690838
+   Self-consistent step  3:  density residual = 6.0623E-03,  cell energy = -63.305627919
+   Self-consistent step  4:  density residual = 4.5508E-03,  cell energy = -63.408965876
+   Self-consistent step  5:  density residual = 1.3627E-03,  cell energy = -63.417626126
+   Self-consistent step  6:  density residual = 8.4314E-04,  cell energy = -63.423486742
+   Self-consistent step  7:  density residual = 4.2689E-04,  cell energy = -63.424566438
+   Self-consistent step  8:  density residual = 5.4894E-05,  cell energy = -63.424821539
+   Self-consistent step  9:  density residual = 3.0121E-05,  cell energy = -63.424853513
+   Self-consistent step 10:  density residual = 1.2595E-05,  cell energy = -63.424860949
+   Self-consistent step 11:  density residual = 4.8195E-06,  cell energy = -63.424861854
+   Self-consistent step 12:  density residual = 1.6645E-06,  cell energy = -63.424861910
+   Self-consistent step 13:  density residual = 5.9698E-07,  cell energy = -63.424861935
+   Self-consistent step 14:  density residual = 1.7990E-07,  cell energy = -63.424861939
+
+   Fermi level =   0.4791184303 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3740711420           2.0000
+                        2          -0.2453097144           2.0000
+                        3          -0.2203082670           2.0000
+                        4          -0.2143594808           2.0000
+                        5          -0.0275814135           2.0000
+                        6          -0.0167115961           2.0000
+                        7          -0.0003080065           2.0000
+                        8           0.1561919173           2.0000
+                        9           0.1874118511           2.0000
+                       10           0.1968334632           2.0000
+                       11           0.2017711333           2.0000
+                       12           0.2862952726           2.0000
+                       13           0.2923565693           2.0000
+                       14           0.2992936794           2.0000
+                       15           0.4039967020           2.0000
+                       16           0.4064054338           2.0000
+                       17           0.5502023353           0.0000
+                       18           0.5591979387           0.0000
+                       19           0.5673934846           0.0000
+                       20           0.6066133269           0.0000
+                       21           0.7143362248           0.0000
+                       22           0.7149646488           0.0000
+                       23           0.7684886791           0.0000
+                       24           0.7762516536           0.0000
+
+     Special k-point #2:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3741446175           2.0000
+                        2          -0.2417427157           2.0000
+                        3          -0.2256643764           2.0000
+                        4          -0.2131817970           2.0000
+                        5          -0.0240761067           2.0000
+                        6          -0.0133496461           2.0000
+                        7          -0.0061887566           2.0000
+                        8           0.1533754747           2.0000
+                        9           0.1887359030           2.0000
+                       10           0.1961811925           2.0000
+                       11           0.2041874755           2.0000
+                       12           0.2890329175           2.0000
+                       13           0.2907843819           2.0000
+                       14           0.2973052928           2.0000
+                       15           0.4036976413           2.0000
+                       16           0.4056475545           2.0000
+                       17           0.5522318647           0.0000
+                       18           0.5590750788           0.0000
+                       19           0.5673267726           0.0000
+                       20           0.6088394473           0.0000
+                       21           0.7126000447           0.0000
+                       22           0.7147416133           0.0000
+                       23           0.7707474905           0.0000
+                       24           0.7818252770           0.0000
+
+     Special k-point #3:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3740530784           2.0000
+                        2          -0.2454747751           2.0000
+                        3          -0.2205472644           2.0000
+                        4          -0.2139731307           2.0000
+                        5          -0.0274171141           2.0000
+                        6          -0.0166828725           2.0000
+                        7          -0.0004075342           2.0000
+                        8           0.1573977345           2.0000
+                        9           0.1841206314           2.0000
+                       10           0.1942403684           2.0000
+                       11           0.2061273773           2.0000
+                       12           0.2866289656           2.0000
+                       13           0.2914575640           2.0000
+                       14           0.3003306964           2.0000
+                       15           0.4031560030           2.0000
+                       16           0.4069748429           2.0000
+                       17           0.5535601971           0.0000
+                       18           0.5548906850           0.0000
+                       19           0.5684250112           0.0000
+                       20           0.6066633038           0.0000
+                       21           0.7125967520           0.0000
+                       22           0.7168089163           0.0000
+                       23           0.7683116551           0.0000
+                       24           0.7763565686           0.0000
+
+     Special k-point #4:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3741762946           2.0000
+                        2          -0.2422600961           2.0000
+                        3          -0.2250872237           2.0000
+                        4          -0.2128677514           2.0000
+                        5          -0.0242218574           2.0000
+                        6          -0.0137451984           2.0000
+                        7          -0.0073624500           2.0000
+                        8           0.1611433040           2.0000
+                        9           0.1869346224           2.0000
+                       10           0.1926900524           2.0000
+                       11           0.2022436002           2.0000
+                       12           0.2847181480           2.0000
+                       13           0.2892940638           2.0000
+                       14           0.3055525908           2.0000
+                       15           0.4045009568           2.0000
+                       16           0.4047929880           2.0000
+                       17           0.5496050116           0.0000
+                       18           0.5567702993           0.0000
+                       19           0.5698238667           0.0000
+                       20           0.6052497663           0.0000
+                       21           0.7139536641           0.0000
+                       22           0.7158147607           0.0000
+                       23           0.7687161986           0.0000
+                       24           0.7886826467           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  24.836437726
+     Hartree               =   4.464966099
+     exchange-correlation  = -19.293948503
+     local pseudopotential = -19.611455835
+     atomic                = -53.820861426
+     ---------------------------------------
+     cell energy           = -63.424861939
+
+ Atom information for step #0:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.10200    0.20400    0.00000         0.01000    0.02000    0.00000
+         2      Si1          4.99800    4.89600    0.20400         0.49000    0.48000    0.02000
+         3      Si1          5.10000    0.00000    4.89600         0.50000    0.00000    0.48000
+         4      Si1          0.00000    5.10000    5.10000         0.00000    0.50000    0.50000
+         5      Si1          2.55000    2.55000    2.55000         0.25000    0.25000    0.25000
+         6      Si1          7.65000    7.65000    2.55000         0.75000    0.75000    0.25000
+         7      Si1          7.65000    2.55000    7.65000         0.75000    0.25000    0.75000
+         8      Si1          2.55000    7.65000    7.65000         0.25000    0.75000    0.75000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.24     7: 4.36     8: 4.48     6: 4.60
+         2       5: 4.12     6: 4.49     7: 4.49     8: 4.60
+         3       5: 4.30     6: 4.30     7: 4.54     8: 4.54
+         4       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         5       2: 4.12     1: 4.24     3: 4.30     4: 4.42
+         6       3: 4.30     4: 4.42     2: 4.49     1: 4.60
+         7       1: 4.36     4: 4.42     2: 4.49     3: 4.54
+         8       4: 4.42     1: 4.48     3: 4.54     2: 4.60
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.030289     -0.060201     -0.018390   Ryd/Bohr
+                      2        +0.045707     +0.068979     -0.068785
+                      3        +0.004928     -0.011134     +0.060081
+                      4        -0.005313     +0.011156     +0.011253
+                      5        -0.029061     -0.006032     +0.042473
+                      6        +0.017609     -0.004566     -0.026696
+                      7        -0.018634     +0.000745     -0.008184
+                      8        +0.015053     +0.001053     +0.008248
+
+   Residual force (removed) =      +0.000000     +0.000001     +0.000001
+
+   Cell energy = -63.424861939 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             0
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       3.2233E-02
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 8.7269E-04,  cell energy = -63.441332025
+   Self-consistent step  2:  density residual = 3.7913E-04,  cell energy = -63.443610355
+   Self-consistent step  3:  density residual = 1.2888E-04,  cell energy = -63.443688011
+   Self-consistent step  4:  density residual = 4.4755E-05,  cell energy = -63.443797005
+   Self-consistent step  5:  density residual = 1.4112E-05,  cell energy = -63.443824341
+   Self-consistent step  6:  density residual = 9.7522E-06,  cell energy = -63.443827494
+   Self-consistent step  7:  density residual = 2.9784E-06,  cell energy = -63.443827844
+   Self-consistent step  8:  density residual = 9.9305E-07,  cell energy = -63.443827884
+   Self-consistent step  9:  density residual = 4.5617E-07,  cell energy = -63.443827892
+   Self-consistent step 10:  density residual = 1.4815E-07,  cell energy = -63.443827893
+
+ Atom information for step #1:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.07171    0.14380   10.18161         0.00703    0.01410    0.99820
+         2      Si1          5.04371    4.96498    0.13522         0.49448    0.48676    0.01326
+         3      Si1          5.10493   10.18887    4.95608         0.50048    0.99891    0.48589
+         4      Si1         10.19469    5.11116    5.11125         0.99948    0.50109    0.50110
+         5      Si1          2.52094    2.54397    2.59247         0.24715    0.24941    0.25416
+         6      Si1          7.66761    7.64543    2.52330         0.75173    0.74955    0.24738
+         7      Si1          7.63137    2.55074    7.64182         0.74817    0.25007    0.74920
+         8      Si1          2.56505    7.65105    7.65825         0.25148    0.75010    0.75081
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.31     7: 4.38     8: 4.45     6: 4.53
+         2       5: 4.27     6: 4.45     7: 4.45     8: 4.53
+         3       5: 4.33     6: 4.35     7: 4.49     8: 4.49
+         4       5: 4.40     6: 4.42     7: 4.42     8: 4.42
+         5       2: 4.27     1: 4.31     3: 4.33     4: 4.40
+         6       3: 4.35     4: 4.42     2: 4.45     1: 4.53
+         7       1: 4.38     4: 4.42     2: 4.45     3: 4.49
+         8       4: 4.42     1: 4.45     3: 4.49     2: 4.53
+
+   Cell energy = -63.443827893 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             1
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       1.7615E-02
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.158     0.337
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 9.8372E-04,  cell energy = -63.449010303
+   Self-consistent step  2:  density residual = 4.2809E-04,  cell energy = -63.451837568
+   Self-consistent step  3:  density residual = 1.4832E-04,  cell energy = -63.451980077
+   Self-consistent step  4:  density residual = 4.4950E-05,  cell energy = -63.452143653
+   Self-consistent step  5:  density residual = 1.7316E-05,  cell energy = -63.452173013
+   Self-consistent step  6:  density residual = 8.8993E-06,  cell energy = -63.452176719
+   Self-consistent step  7:  density residual = 2.8772E-06,  cell energy = -63.452177035
+   Self-consistent step  8:  density residual = 8.5767E-07,  cell energy = -63.452177071
+   Self-consistent step  9:  density residual = 3.9825E-07,  cell energy = -63.452177077
+   Self-consistent step 10:  density residual = 1.1319E-07,  cell energy = -63.452177078
+
+ Atom information for step #2:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.03729    0.07539   10.16071         0.00366    0.00739    0.99615
+         2      Si1          5.09565    5.04336    0.05705         0.49957    0.49445    0.00559
+         3      Si1          5.11053   10.17621    5.02435         0.50103    0.99767    0.49258
+         4      Si1         10.18865    5.12383    5.12404         0.99889    0.50234    0.50236
+         5      Si1          2.48792    2.53711    2.64074         0.24391    0.24874    0.25890
+         6      Si1          7.68762    7.64025    2.49297         0.75369    0.74904    0.24441
+         7      Si1          7.61019    2.55159    7.63252         0.74610    0.25016    0.74829
+         8      Si1          2.58216    7.65225    7.66762         0.25315    0.75022    0.75173
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.39     7: 4.41     8: 4.42     6: 4.46
+         2       6: 4.40     7: 4.41     5: 4.44     8: 4.45
+         3       5: 4.37     6: 4.41     7: 4.44     8: 4.44
+         4       5: 4.37     6: 4.42     7: 4.42     8: 4.43
+         5       4: 4.37     3: 4.37     1: 4.39     2: 4.44
+         6       2: 4.40     3: 4.41     4: 4.42     1: 4.46
+         7       2: 4.41     1: 4.41     4: 4.42     3: 4.44
+         8       1: 4.42     4: 4.43     3: 4.44     2: 4.45
+
+   Cell energy = -63.452177078 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             2
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       6.6911E-03
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.337     0.364
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.4463E-04,  cell energy = -63.452258724
+   Self-consistent step  2:  density residual = 6.3091E-05,  cell energy = -63.452320512
+   Self-consistent step  3:  density residual = 2.2527E-05,  cell energy = -63.452324422
+   Self-consistent step  4:  density residual = 6.6155E-06,  cell energy = -63.452328147
+   Self-consistent step  5:  density residual = 2.6721E-06,  cell energy = -63.452328773
+   Self-consistent step  6:  density residual = 1.3222E-06,  cell energy = -63.452328846
+   Self-consistent step  7:  density residual = 3.8646E-07,  cell energy = -63.452328852
+   Self-consistent step  8:  density residual = 1.2902E-07,  cell energy = -63.452328853
+
+ Atom information for step #3:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.03224    0.06535   10.15765         0.00316    0.00641    0.99585
+         2      Si1          5.10327    5.05487    0.04558         0.50032    0.49558    0.00447
+         3      Si1          5.11135   10.17436    5.03437         0.50111    0.99749    0.49357
+         4      Si1         10.18776    5.12569    5.12592         0.99880    0.50252    0.50254
+         5      Si1          2.48307    2.53611    2.64782         0.24344    0.24864    0.25959
+         6      Si1          7.69056    7.63948    2.48852         0.75398    0.74897    0.24397
+         7      Si1          7.60708    2.55172    7.63115         0.74579    0.25017    0.74815
+         8      Si1          2.58467    7.65242    7.66900         0.25340    0.75024    0.75186
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.40     7: 4.41     8: 4.42     6: 4.45
+         2       6: 4.40     7: 4.40     8: 4.44     5: 4.47
+         3       5: 4.38     6: 4.42     7: 4.43     8: 4.44
+         4       5: 4.37     6: 4.42     7: 4.42     8: 4.43
+         5       4: 4.37     3: 4.38     1: 4.40     2: 4.47
+         6       2: 4.40     4: 4.42     3: 4.42     1: 4.45
+         7       2: 4.40     1: 4.41     4: 4.42     3: 4.43
+         8       1: 4.42     4: 4.43     3: 4.44     2: 4.44
+
+   Cell energy = -63.452328853 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             3
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       6.4979E-03
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.364     0.366
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.1577E-05,  cell energy = -63.452329267
+   Self-consistent step  2:  density residual = 5.0322E-06,  cell energy = -63.452329668
+   Self-consistent step  3:  density residual = 1.7873E-06,  cell energy = -63.452329692
+   Self-consistent step  4:  density residual = 5.4065E-07,  cell energy = -63.452329714
+   Self-consistent step  5:  density residual = 2.0327E-07,  cell energy = -63.452329718
+   Self-consistent step  6:  density residual = 1.0763E-07,  cell energy = -63.452329719
+
+ Atom information for step #4:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.03184    0.06455   10.15740         0.00312    0.00633    0.99582
+         2      Si1          5.10388    5.05579    0.04466         0.50038    0.49567    0.00438
+         3      Si1          5.11141   10.17421    5.03518         0.50112    0.99747    0.49364
+         4      Si1         10.18769    5.12584    5.12607         0.99879    0.50253    0.50256
+         5      Si1          2.48268    2.53603    2.64839         0.24340    0.24863    0.25965
+         6      Si1          7.69079    7.63942    2.48816         0.75400    0.74896    0.24394
+         7      Si1          7.60683    2.55173    7.63104         0.74577    0.25017    0.74814
+         8      Si1          2.58487    7.65244    7.66911         0.25342    0.75024    0.75187
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.40     7: 4.41     8: 4.42     6: 4.44
+         2       6: 4.40     7: 4.40     8: 4.44     5: 4.47
+         3       5: 4.38     6: 4.42     7: 4.43     8: 4.44
+         4       5: 4.37     6: 4.42     7: 4.42     8: 4.43
+         5       4: 4.37     3: 4.38     1: 4.40     2: 4.47
+         6       2: 4.40     4: 4.42     3: 4.42     1: 4.44
+         7       2: 4.40     1: 4.41     4: 4.42     3: 4.43
+         8       1: 4.42     4: 4.43     3: 4.44     2: 4.44
+
+   Cell energy = -63.452329719 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             4
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       6.5092E-03
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             4
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       6.5092E-03
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.6885E-04,  cell energy = -63.453036618
+   Self-consistent step  2:  density residual = 6.9302E-05,  cell energy = -63.453099800
+   Self-consistent step  3:  density residual = 2.2105E-05,  cell energy = -63.453101368
+   Self-consistent step  4:  density residual = 6.5602E-06,  cell energy = -63.453105128
+   Self-consistent step  5:  density residual = 2.3644E-06,  cell energy = -63.453105821
+   Self-consistent step  6:  density residual = 1.3179E-06,  cell energy = -63.453105909
+   Self-consistent step  7:  density residual = 4.7263E-07,  cell energy = -63.453105916
+   Self-consistent step  8:  density residual = 1.4821E-07,  cell energy = -63.453105917
+
+ Atom information for step #5:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.02520    0.05275   10.15958         0.00247    0.00517    0.99604
+         2      Si1          5.09566    5.05917    0.04191         0.49957    0.49600    0.00411
+         3      Si1          5.11331   10.16859    5.04792         0.50131    0.99692    0.49489
+         4      Si1         10.18302    5.13062    5.13280         0.99834    0.50300    0.50322
+         5      Si1          2.49302    2.54140    2.63333         0.24441    0.24916    0.25817
+         6      Si1          7.69296    7.64446    2.48796         0.75421    0.74946    0.24392
+         7      Si1          7.60889    2.55112    7.62837         0.74597    0.25011    0.74788
+         8      Si1          2.58794    7.65189    7.66812         0.25372    0.75019    0.75178
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.41     7: 4.42     8: 4.42     6: 4.43
+         2       6: 4.41     7: 4.41     8: 4.43     5: 4.45
+         3       5: 4.39     7: 4.42     8: 4.42     6: 4.42
+         4       5: 4.39     7: 4.42     6: 4.42     8: 4.42
+         5       4: 4.39     3: 4.39     1: 4.41     2: 4.45
+         6       2: 4.41     4: 4.42     3: 4.42     1: 4.43
+         7       2: 4.41     1: 4.42     4: 4.42     3: 4.42
+         8       1: 4.42     4: 4.42     3: 4.42     2: 4.43
+
+   Cell energy = -63.453105917 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             5
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       3.9980E-03
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.031     0.076
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 2.4144E-04,  cell energy = -63.453371500
+   Self-consistent step  2:  density residual = 9.9068E-05,  cell energy = -63.453501729
+   Self-consistent step  3:  density residual = 3.1376E-05,  cell energy = -63.453505436
+   Self-consistent step  4:  density residual = 9.1126E-06,  cell energy = -63.453512914
+   Self-consistent step  5:  density residual = 3.6095E-06,  cell energy = -63.453514324
+   Self-consistent step  6:  density residual = 1.8101E-06,  cell energy = -63.453514510
+   Self-consistent step  7:  density residual = 6.7112E-07,  cell energy = -63.453514524
+   Self-consistent step  8:  density residual = 2.1300E-07,  cell energy = -63.453514526
+   Self-consistent step  9:  density residual = 8.4423E-08,  cell energy = -63.453514526
+
+ Atom information for step #6:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.01571    0.03591   10.16269         0.00154    0.00352    0.99634
+         2      Si1          5.08392    5.06401    0.03798         0.49842    0.49647    0.00372
+         3      Si1          5.11602   10.16055    5.06613         0.50157    0.99613    0.49668
+         4      Si1         10.17635    5.13745    5.14243         0.99768    0.50367    0.50416
+         5      Si1          2.50778    2.54906    2.61182         0.24586    0.24991    0.25606
+         6      Si1          7.69605    7.65165    2.48768         0.75451    0.75016    0.24389
+         7      Si1          7.61182    2.55025    7.62456         0.74626    0.25002    0.74751
+         8      Si1          2.59234    7.65111    7.66671         0.25415    0.75011    0.75164
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.40     5: 4.42     7: 4.42     8: 4.42
+         2       8: 4.42     6: 4.42     7: 4.42     5: 4.43
+         3       8: 4.41     7: 4.41     5: 4.42     6: 4.43
+         4       7: 4.41     5: 4.42     6: 4.42     8: 4.42
+         5       4: 4.42     3: 4.42     1: 4.42     2: 4.43
+         6       1: 4.40     2: 4.42     4: 4.42     3: 4.43
+         7       4: 4.41     3: 4.41     2: 4.42     1: 4.42
+         8       3: 4.41     2: 4.42     4: 4.42     1: 4.42
+
+   Cell energy = -63.453514526 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             6
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.2912E-03
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.4688E-06,  cell energy = -63.453514535
+   Self-consistent step  2:  density residual = 6.1367E-07,  cell energy = -63.453514540
+   Self-consistent step  3:  density residual = 2.0578E-07,  cell energy = -63.453514541
+   Self-consistent step  4:  density residual = 5.6338E-08,  cell energy = -63.453514541
+
+ Atom information for step #7:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.01577    0.03601   10.16267         0.00155    0.00353    0.99634
+         2      Si1          5.08399    5.06398    0.03801         0.49843    0.49647    0.00373
+         3      Si1          5.11601   10.16060    5.06602         0.50157    0.99614    0.49667
+         4      Si1         10.17639    5.13741    5.14237         0.99769    0.50367    0.50415
+         5      Si1          2.50769    2.54902    2.61195         0.24585    0.24990    0.25607
+         6      Si1          7.69603    7.65160    2.48768         0.75451    0.75016    0.24389
+         7      Si1          7.61181    2.55026    7.62458         0.74626    0.25003    0.74751
+         8      Si1          2.59231    7.65112    7.66672         0.25415    0.75011    0.75164
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.40     5: 4.42     7: 4.42     8: 4.42
+         2       8: 4.42     6: 4.42     7: 4.42     5: 4.43
+         3       8: 4.41     7: 4.41     5: 4.42     6: 4.43
+         4       7: 4.41     5: 4.42     6: 4.42     8: 4.42
+         5       4: 4.42     3: 4.42     1: 4.42     2: 4.43
+         6       1: 4.40     2: 4.42     4: 4.42     3: 4.43
+         7       4: 4.41     3: 4.41     2: 4.42     1: 4.42
+         8       3: 4.41     2: 4.42     4: 4.42     1: 4.42
+
+   Cell energy = -63.453514541 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             7
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.2846E-03
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             7
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.2846E-03
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.8045E-05,  cell energy = -63.453612108
+   Self-consistent step  2:  density residual = 2.1703E-05,  cell energy = -63.453615705
+   Self-consistent step  3:  density residual = 4.8463E-06,  cell energy = -63.453615752
+   Self-consistent step  4:  density residual = 1.5110E-06,  cell energy = -63.453615930
+   Self-consistent step  5:  density residual = 7.1287E-07,  cell energy = -63.453615965
+   Self-consistent step  6:  density residual = 3.7811E-07,  cell energy = -63.453615969
+   Self-consistent step  7:  density residual = 1.1832E-07,  cell energy = -63.453615970
+
+ Atom information for step #8:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.01594    0.03438   10.16334         0.00156    0.00337    0.99641
+         2      Si1          5.08347    5.06520    0.03636         0.49838    0.49659    0.00356
+         3      Si1          5.11655   10.16178    5.06676         0.50162    0.99625    0.49674
+         4      Si1         10.17811    5.13718    5.14023         0.99785    0.50365    0.50394
+         5      Si1          2.51125    2.54988    2.60669         0.24620    0.24999    0.25556
+         6      Si1          7.69216    7.65155    2.49216         0.75413    0.75015    0.24433
+         7      Si1          7.61297    2.54973    7.62729         0.74637    0.24997    0.74777
+         8      Si1          2.58955    7.65030    7.66716         0.25388    0.75003    0.75168
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.41     8: 4.42     7: 4.42     5: 4.42
+         2       8: 4.42     6: 4.42     7: 4.42     5: 4.42
+         3       8: 4.41     7: 4.41     5: 4.42     6: 4.42
+         4       7: 4.41     6: 4.42     8: 4.42     5: 4.42
+         5       4: 4.42     3: 4.42     1: 4.42     2: 4.42
+         6       1: 4.41     4: 4.42     2: 4.42     3: 4.42
+         7       4: 4.41     3: 4.41     2: 4.42     1: 4.42
+         8       3: 4.41     2: 4.42     4: 4.42     1: 4.42
+
+   Cell energy = -63.453615970 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             8
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       1.9458E-03
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.011     0.061
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 2.7764E-04,  cell energy = -63.453744952
+   Self-consistent step  2:  density residual = 1.0391E-04,  cell energy = -63.453828845
+   Self-consistent step  3:  density residual = 2.3576E-05,  cell energy = -63.453829932
+   Self-consistent step  4:  density residual = 7.3379E-06,  cell energy = -63.453834163
+   Self-consistent step  5:  density residual = 3.3626E-06,  cell energy = -63.453834987
+   Self-consistent step  6:  density residual = 1.8036E-06,  cell energy = -63.453835094
+   Self-consistent step  7:  density residual = 5.6827E-07,  cell energy = -63.453835098
+   Self-consistent step  8:  density residual = 1.3783E-07,  cell energy = -63.453835098
+
+ Atom information for step #9:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.01675    0.02656   10.16654         0.00164    0.00260    0.99672
+         2      Si1          5.08098    5.07104    0.02848         0.49814    0.49716    0.00279
+         3      Si1          5.11916   10.16740    5.07031         0.50188    0.99680    0.49709
+         4      Si1         10.18633    5.13609    5.13004         0.99866    0.50354    0.50294
+         5      Si1          2.52824    2.55402    2.58156         0.24787    0.25039    0.25309
+         6      Si1          7.67367    7.65129    2.51359         0.75232    0.75013    0.24643
+         7      Si1          7.61851    2.54719    7.64023         0.74691    0.24972    0.74904
+         8      Si1          2.57634    7.64640    7.66926         0.25258    0.74965    0.75189
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.41     7: 4.41     5: 4.42     6: 4.43
+         2       5: 4.40     8: 4.41     7: 4.42     6: 4.42
+         3       6: 4.40     7: 4.42     8: 4.42     5: 4.43
+         4       8: 4.41     6: 4.41     7: 4.43     5: 4.43
+         5       2: 4.40     1: 4.42     3: 4.43     4: 4.43
+         6       3: 4.40     4: 4.41     2: 4.42     1: 4.43
+         7       1: 4.41     3: 4.42     2: 4.42     4: 4.43
+         8       1: 4.41     2: 4.41     4: 4.41     3: 4.42
+
+   Cell energy = -63.453835098 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             9
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.2383E-03
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:             9
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.2383E-03
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 4.2245E-05,  cell energy = -63.453889987
+   Self-consistent step  2:  density residual = 1.5103E-05,  cell energy = -63.453890656
+   Self-consistent step  3:  density residual = 2.2090E-06,  cell energy = -63.453890671
+   Self-consistent step  4:  density residual = 9.0537E-07,  cell energy = -63.453890702
+   Self-consistent step  5:  density residual = 3.1708E-07,  cell energy = -63.453890713
+   Self-consistent step  6:  density residual = 1.7942E-07,  cell energy = -63.453890715
+
+ Atom information for step #10:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.01592    0.02519   10.16869         0.00156    0.00247    0.99693
+         2      Si1          5.08226    5.07280    0.02688         0.49826    0.49733    0.00264
+         3      Si1          5.11772   10.16959    5.07186         0.50174    0.99702    0.49724
+         4      Si1         10.18744    5.13366    5.12795         0.99877    0.50330    0.50274
+         5      Si1          2.52965    2.55370    2.57959         0.24800    0.25036    0.25290
+         6      Si1          7.67187    7.65100    2.51575         0.75214    0.75010    0.24664
+         7      Si1          7.62041    2.54745    7.64113         0.74710    0.24975    0.74913
+         8      Si1          2.57473    7.64660    7.66815         0.25242    0.74967    0.75178
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       8: 4.41     7: 4.41     5: 4.42     6: 4.43
+         2       5: 4.40     8: 4.41     7: 4.42     6: 4.42
+         3       6: 4.40     7: 4.42     8: 4.42     5: 4.43
+         4       8: 4.41     6: 4.41     7: 4.43     5: 4.43
+         5       2: 4.40     1: 4.42     3: 4.43     4: 4.43
+         6       3: 4.40     4: 4.41     2: 4.42     1: 4.43
+         7       1: 4.41     2: 4.42     3: 4.42     4: 4.43
+         8       1: 4.41     2: 4.41     4: 4.41     3: 4.42
+
+   Cell energy = -63.453890715 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            10
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.0948E-03
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.008     0.110
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.7091E-04,  cell energy = -63.454121165
+   Self-consistent step  2:  density residual = 2.0407E-04,  cell energy = -63.454243288
+   Self-consistent step  3:  density residual = 2.9291E-05,  cell energy = -63.454246321
+   Self-consistent step  4:  density residual = 1.2161E-05,  cell energy = -63.454251509
+   Self-consistent step  5:  density residual = 4.1537E-06,  cell energy = -63.454253453
+   Self-consistent step  6:  density residual = 2.2464E-06,  cell energy = -63.454253685
+   Self-consistent step  7:  density residual = 6.9868E-07,  cell energy = -63.454253693
+   Self-consistent step  8:  density residual = 2.6585E-07,  cell energy = -63.454253694
+   Self-consistent step  9:  density residual = 6.8925E-08,  cell energy = -63.454253695
+
+ Atom information for step #11:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00471    0.00664   10.19781         0.00046    0.00065    0.99978
+         2      Si1          5.09953    5.09650    0.00526         0.49995    0.49966    0.00052
+         3      Si1          5.09830   10.19928    5.09290         0.49983    0.99993    0.49930
+         4      Si1          0.00240    5.10076    5.09974         0.00023    0.50007    0.49997
+         5      Si1          2.54866    2.54935    2.55295         0.24987    0.24994    0.25029
+         6      Si1          7.64741    7.64715    2.54496         0.74975    0.74972    0.24951
+         7      Si1          7.64611    2.55097    7.65328         0.74962    0.25009    0.75032
+         8      Si1          2.55288    7.64934    7.65311         0.25028    0.74994    0.75030
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.41     7: 4.42     8: 4.42     6: 4.42
+         2       6: 4.41     7: 4.41     5: 4.41     8: 4.42
+         3       5: 4.41     6: 4.42     8: 4.42     7: 4.42
+         4       5: 4.41     8: 4.42     6: 4.42     7: 4.42
+         5       3: 4.41     1: 4.41     4: 4.41     2: 4.41
+         6       2: 4.41     3: 4.42     4: 4.42     1: 4.42
+         7       2: 4.41     1: 4.42     4: 4.42     3: 4.42
+         8       1: 4.42     2: 4.42     4: 4.42     3: 4.42
+
+   Cell energy = -63.454253695 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            11
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       1.0672E-03
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            11
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       1.0672E-03
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 2.3755E-05,  cell energy = -63.454268697
+   Self-consistent step  2:  density residual = 9.3014E-06,  cell energy = -63.454269578
+   Self-consistent step  3:  density residual = 2.7939E-06,  cell energy = -63.454269583
+   Self-consistent step  4:  density residual = 7.7700E-07,  cell energy = -63.454269662
+   Self-consistent step  5:  density residual = 3.5636E-07,  cell energy = -63.454269672
+   Self-consistent step  6:  density residual = 1.4877E-07,  cell energy = -63.454269674
+
+ Atom information for step #12:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00337    0.00493   10.19872         0.00033    0.00048    0.99987
+         2      Si1          5.09954    5.09728    0.00407         0.49995    0.49973    0.00040
+         3      Si1          5.09842   10.19960    5.09480         0.49984    0.99996    0.49949
+         4      Si1          0.00177    5.10020    5.09974         0.00017    0.50002    0.49997
+         5      Si1          2.54908    2.54955    2.55218         0.24991    0.24996    0.25021
+         6      Si1          7.64824    7.64791    2.54600         0.74983    0.74979    0.24961
+         7      Si1          7.64722    2.55089    7.65230         0.74973    0.25009    0.75023
+         8      Si1          2.55236    7.64963    7.65219         0.25023    0.74996    0.75021
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.41     7: 4.42     8: 4.42     6: 4.42
+         2       6: 4.41     7: 4.41     5: 4.41     8: 4.42
+         3       5: 4.41     6: 4.42     8: 4.42     7: 4.42
+         4       5: 4.41     8: 4.42     6: 4.42     7: 4.42
+         5       3: 4.41     1: 4.41     4: 4.41     2: 4.41
+         6       2: 4.41     3: 4.42     4: 4.42     1: 4.42
+         7       2: 4.41     1: 4.42     4: 4.42     3: 4.42
+         8       1: 4.42     2: 4.42     4: 4.42     3: 4.42
+
+   Cell energy = -63.454269674 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            12
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       7.7607E-04
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.004     0.015
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 6.0401E-05,  cell energy = -63.454280336
+   Self-consistent step  2:  density residual = 2.3649E-05,  cell energy = -63.454286037
+   Self-consistent step  3:  density residual = 7.0939E-06,  cell energy = -63.454286075
+   Self-consistent step  4:  density residual = 2.0219E-06,  cell energy = -63.454286576
+   Self-consistent step  5:  density residual = 9.1431E-07,  cell energy = -63.454286649
+   Self-consistent step  6:  density residual = 3.7608E-07,  cell energy = -63.454286658
+   Self-consistent step  7:  density residual = 1.4454E-07,  cell energy = -63.454286658
+
+ Atom information for step #13:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1         10.19996    0.00059    0.00105         1.00000    0.00006    0.00010
+         2      Si1          5.09956    5.09927    0.00105         0.49996    0.49993    0.00010
+         3      Si1          5.09871    0.00042    5.09964         0.49987    0.00004    0.49996
+         4      Si1          0.00019    5.09877    5.09975         0.00002    0.49988    0.49998
+         5      Si1          2.55015    2.55006    2.55021         0.25001    0.25001    0.25002
+         6      Si1          7.65035    7.64983    2.54866         0.75003    0.74998    0.24987
+         7      Si1          7.65004    2.55071    7.64979         0.75000    0.25007    0.74998
+         8      Si1          2.55105    7.65035    7.64984         0.25010    0.75003    0.74998
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       6: 4.42     5: 4.42     7: 4.42     8: 4.42
+         2       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         3       5: 4.42     8: 4.42     7: 4.42     6: 4.42
+         4       5: 4.42     7: 4.42     6: 4.42     8: 4.42
+         5       3: 4.42     2: 4.42     4: 4.42     1: 4.42
+         6       1: 4.42     2: 4.42     4: 4.42     3: 4.42
+         7       4: 4.42     2: 4.42     1: 4.42     3: 4.42
+         8       3: 4.42     2: 4.42     1: 4.42     4: 4.42
+
+   Cell energy = -63.454286658 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            13
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.8489E-04
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            13
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       2.8489E-04
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 7.5332E-06,  cell energy = -63.454288006
+   Self-consistent step  2:  density residual = 3.1400E-06,  cell energy = -63.454288143
+   Self-consistent step  3:  density residual = 1.0067E-06,  cell energy = -63.454288147
+   Self-consistent step  4:  density residual = 2.9559E-07,  cell energy = -63.454288154
+   Self-consistent step  5:  density residual = 1.0360E-07,  cell energy = -63.454288155
+
+ Atom information for step #14:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00006    0.00049    0.00054         0.00001    0.00005    0.00005
+         2      Si1          5.09972    5.09950    0.00067         0.49997    0.49995    0.00007
+         3      Si1          5.09933    0.00026    5.09963         0.49993    0.00003    0.49996
+         4      Si1          0.00020    5.09933    5.09982         0.00002    0.49993    0.49998
+         5      Si1          2.54999    2.54999    2.55023         0.25000    0.25000    0.25002
+         6      Si1          7.65019    7.64984    2.54919         0.75002    0.74998    0.24992
+         7      Si1          7.64989    2.55041    7.64991         0.74999    0.25004    0.74999
+         8      Si1          2.55062    7.65018    7.65001         0.25006    0.75002    0.75000
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         2       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         3       5: 4.42     8: 4.42     7: 4.42     6: 4.42
+         4       5: 4.42     7: 4.42     6: 4.42     8: 4.42
+         5       3: 4.42     4: 4.42     2: 4.42     1: 4.42
+         6       1: 4.42     2: 4.42     4: 4.42     3: 4.42
+         7       4: 4.42     2: 4.42     1: 4.42     3: 4.42
+         8       3: 4.42     2: 4.42     1: 4.42     4: 4.42
+
+   Cell energy = -63.454288155 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            14
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       1.5467E-04
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.001     0.003
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 8.6547E-06,  cell energy = -63.454288560
+   Self-consistent step  2:  density residual = 3.7607E-06,  cell energy = -63.454288729
+   Self-consistent step  3:  density residual = 1.0808E-06,  cell energy = -63.454288743
+   Self-consistent step  4:  density residual = 2.8897E-07,  cell energy = -63.454288756
+   Self-consistent step  5:  density residual = 1.3462E-07,  cell energy = -63.454288757
+
+ Atom information for step #15:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00017    0.00037   10.19995         0.00002    0.00004    0.99999
+         2      Si1          5.09990    5.09977    0.00023         0.49999    0.49998    0.00002
+         3      Si1          5.10004    0.00008    5.09962         0.50000    0.00001    0.49996
+         4      Si1          0.00022    5.09998    5.09990         0.00002    0.50000    0.49999
+         5      Si1          2.54981    2.54990    2.55026         0.24998    0.24999    0.25003
+         6      Si1          7.65002    7.64984    2.54980         0.75000    0.74998    0.24998
+         7      Si1          7.64972    2.55007    7.65004         0.74997    0.25001    0.75000
+         8      Si1          2.55013    7.64999    7.65021         0.25001    0.75000    0.75002
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     7: 4.42     8: 4.42     6: 4.42
+         2       7: 4.42     6: 4.42     5: 4.42     8: 4.42
+         3       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         4       5: 4.42     6: 4.42     8: 4.42     7: 4.42
+         5       4: 4.42     3: 4.42     1: 4.42     2: 4.42
+         6       2: 4.42     3: 4.42     4: 4.42     1: 4.42
+         7       2: 4.42     1: 4.42     3: 4.42     4: 4.42
+         8       2: 4.42     1: 4.42     4: 4.42     3: 4.42
+
+   Cell energy = -63.454288757 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            15
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       5.9679E-05
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            15
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       5.9679E-05
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.5533E-06,  cell energy = -63.454288805
+   Self-consistent step  2:  density residual = 8.1395E-07,  cell energy = -63.454288815
+   Self-consistent step  3:  density residual = 3.4862E-07,  cell energy = -63.454288819
+   Self-consistent step  4:  density residual = 8.6240E-08,  cell energy = -63.454288819
+
+ Atom information for step #16:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00010    0.00027   10.19991         0.00001    0.00003    0.99999
+         2      Si1          5.09989    5.09981    0.00019         0.49999    0.49998    0.00002
+         3      Si1          5.10007   10.19999    5.09973         0.50001    1.00000    0.49997
+         4      Si1          0.00013    5.10004    5.10000         0.00001    0.50000    0.50000
+         5      Si1          2.54984    2.54992    2.55021         0.24998    0.24999    0.25002
+         6      Si1          7.65007    7.64989    2.54982         0.75001    0.74999    0.24998
+         7      Si1          7.64978    2.55006    7.64999         0.74998    0.25001    0.75000
+         8      Si1          2.55012    7.65001    7.65016         0.25001    0.75000    0.75002
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     7: 4.42     8: 4.42     6: 4.42
+         2       7: 4.42     6: 4.42     5: 4.42     8: 4.42
+         3       5: 4.42     6: 4.42     7: 4.42     8: 4.42
+         4       5: 4.42     6: 4.42     8: 4.42     7: 4.42
+         5       4: 4.42     3: 4.42     1: 4.42     2: 4.42
+         6       2: 4.42     3: 4.42     4: 4.42     1: 4.42
+         7       2: 4.42     1: 4.42     3: 4.42     4: 4.42
+         8       2: 4.42     1: 4.42     4: 4.42     3: 4.42
+
+   Cell energy = -63.454288819 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            16
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       3.2258E-05
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.000     0.001
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.7869E-06,  cell energy = -63.454288830
+   Self-consistent step  2:  density residual = 9.2437E-07,  cell energy = -63.454288844
+   Self-consistent step  3:  density residual = 3.9103E-07,  cell energy = -63.454288848
+   Self-consistent step  4:  density residual = 9.8520E-08,  cell energy = -63.454288848
+
+ Atom information for step #17:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      Si1          0.00001    0.00015   10.19987         0.00000    0.00002    0.99999
+         2      Si1          5.09988    5.09986    0.00015         0.49999    0.49999    0.00001
+         3      Si1          5.10011   10.19989    5.09985         0.50001    0.99999    0.49999
+         4      Si1          0.00003    5.10012    5.10011         0.00000    0.50001    0.50001
+         5      Si1          2.54988    2.54995    2.55015         0.24999    0.24999    0.25002
+         6      Si1          7.65013    7.64995    2.54985         0.75001    0.74999    0.24999
+         7      Si1          7.64985    2.55005    7.64992         0.74999    0.25000    0.74999
+         8      Si1          2.55012    7.65004    7.65009         0.25001    0.75000    0.75001
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       5: 4.42     7: 4.42     8: 4.42     6: 4.42
+         2       5: 4.42     7: 4.42     8: 4.42     6: 4.42
+         3       6: 4.42     5: 4.42     7: 4.42     8: 4.42
+         4       5: 4.42     6: 4.42     8: 4.42     7: 4.42
+         5       2: 4.42     1: 4.42     4: 4.42     3: 4.42
+         6       3: 4.42     4: 4.42     2: 4.42     1: 4.42
+         7       3: 4.42     1: 4.42     2: 4.42     4: 4.42
+         8       1: 4.42     4: 4.42     2: 4.42     3: 4.42
+
+   Cell energy = -63.454288848 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            17
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       8.0325E-06
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  25
+   Number of force calls made:            17
+   Tolerance for RMS force value: 1.0000E-05
+   Current RMS force value:       8.0325E-06
+
+   Fermi level =   0.4812752063 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694357056           2.0000
+                        2          -0.2256021502           2.0000
+                        3          -0.2255983556           2.0000
+                        4          -0.2255968427           2.0000
+                        5          -0.0142666806           2.0000
+                        6          -0.0142651436           2.0000
+                        7          -0.0142614814           2.0000
+                        8           0.1665318997           2.0000
+                        9           0.1928745447           2.0000
+                       10           0.1928773278           2.0000
+                       11           0.1928781089           2.0000
+                       12           0.2937363051           2.0000
+                       13           0.2937368197           2.0000
+                       14           0.2937394908           2.0000
+                       15           0.4018966899           2.0000
+                       16           0.4019008558           2.0000
+                       17           0.5626790632           0.0000
+                       18           0.5626799298           0.0000
+                       19           0.5626825189           0.0000
+                       20           0.6047386189           0.0000
+                       21           0.7153267101           0.0000
+                       22           0.7153309165           0.0000
+                       23           0.7808048103           0.0000
+                       24           0.7808078638           0.0000
+
+     Special k-point #2:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694359244           2.0000
+                        2          -0.2256019742           2.0000
+                        3          -0.2255973570           2.0000
+                        4          -0.2255968401           2.0000
+                        5          -0.0142669461           2.0000
+                        6          -0.0142659612           2.0000
+                        7          -0.0142647010           2.0000
+                        8           0.1665342034           2.0000
+                        9           0.1928756868           2.0000
+                       10           0.1928802921           2.0000
+                       11           0.1928808894           2.0000
+                       12           0.2937361733           2.0000
+                       13           0.2937362435           2.0000
+                       14           0.2937368151           2.0000
+                       15           0.4018971547           2.0000
+                       16           0.4018980953           2.0000
+                       17           0.5626783380           0.0000
+                       18           0.5626786340           0.0000
+                       19           0.5626806091           0.0000
+                       20           0.6047375297           0.0000
+                       21           0.7153273825           0.0000
+                       22           0.7153283258           0.0000
+                       23           0.7808072282           0.0000
+                       24           0.7808084530           0.0000
+
+     Special k-point #3:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694357118           2.0000
+                        2          -0.2256022945           2.0000
+                        3          -0.2255980368           2.0000
+                        4          -0.2255969836           2.0000
+                        5          -0.0142670571           2.0000
+                        6          -0.0142650822           2.0000
+                        7          -0.0142612886           2.0000
+                        8           0.1665319651           2.0000
+                        9           0.1928747572           2.0000
+                       10           0.1928773476           2.0000
+                       11           0.1928780712           2.0000
+                       12           0.2937361469           2.0000
+                       13           0.2937368948           2.0000
+                       14           0.2937394792           2.0000
+                       15           0.4018966406           2.0000
+                       16           0.4019008408           2.0000
+                       17           0.5626788864           0.0000
+                       18           0.5626800668           0.0000
+                       19           0.5626824461           0.0000
+                       20           0.6047385860           0.0000
+                       21           0.7153266676           0.0000
+                       22           0.7153309065           0.0000
+                       23           0.7808049029           0.0000
+                       24           0.7808085246           0.0000
+
+     Special k-point #4:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.3694356531           2.0000
+                        2          -0.2256019811           2.0000
+                        3          -0.2255985294           2.0000
+                        4          -0.2255971208           2.0000
+                        5          -0.0142661447           2.0000
+                        6          -0.0142646767           2.0000
+                        7          -0.0142614504           2.0000
+                        8           0.1665313467           2.0000
+                        9           0.1928744407           2.0000
+                       10           0.1928766788           2.0000
+                       11           0.1928772066           2.0000
+                       12           0.2937365529           2.0000
+                       13           0.2937369112           2.0000
+                       14           0.2937399655           2.0000
+                       15           0.4018972305           2.0000
+                       16           0.4019008670           2.0000
+                       17           0.5626795749           0.0000
+                       18           0.5626800762           0.0000
+                       19           0.5626828028           0.0000
+                       20           0.6047388750           0.0000
+                       21           0.7153272100           0.0000
+                       22           0.7153308840           0.0000
+                       23           0.7808045751           0.0000
+                       24           0.7808077056           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  24.806923404
+     Hartree               =   4.401545276
+     exchange-correlation  = -19.290706731
+     local pseudopotential = -19.411891135
+     atomic                = -53.960159663
+     ---------------------------------------
+     cell energy           = -63.454288848
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                8          25.84           3.23
+config_sc: forces_i                                 144          16.26           2.03
+config_sc: update                                   136         225.52          28.19
+eigensolver: diagonalize                           4160           0.79           0.10
+electrons_sc: constructor                             8           4.48           0.56
+electrons_sc: update                               1032         244.01          30.50
+fft: distributed                                   7864           1.34           0.17
+fft: serial                                      126536          33.88           4.24
+fields_sc: constructor                                8           0.05           0.01
+fields_sc: update                                  1176           2.25           0.28
+multibasis: band_remap                           126536           6.42           0.80
+multivector: gather_wf                                8           0.00           0.00
+multivector: scatter_wf                           12488           1.14           0.14
+multivector: zgemm                                39912           3.24           0.41
+operators: apply_hamiltonian                      15784         133.58          16.70
+operators: zgemm                                      8           0.00           0.00
+Socorro: total time                                   8         268.36          33.54

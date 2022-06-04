@@ -1,0 +1,5 @@
+This test is for an H2O molecule in a cubic cell with BLYP exchange-
+correlation formulation. Note that the calculation is unstable and
+does not converge on ross.
+
+diaryf_8_blyp <-- crystal_blyp, argv_blyp, 8 processors

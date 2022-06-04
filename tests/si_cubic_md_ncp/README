@@ -1,0 +1,5 @@
+This test is MD for a 8-atom cube supercell of Si in the diamond structure.
+Note that the test reads the initial velocities instead of generating them,
+which is the standard procedure.
+
+diaryf_8 <-- crystal, argv, 8 processors

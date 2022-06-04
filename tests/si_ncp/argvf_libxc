@@ -1,0 +1,33 @@
+atomic_representation  ncp
+
+xctype_dependence   density
+xctype_ddf_source   libxc
+
+xctype_exchange     1  ! LDA_X
+xctype_correlation  9  ! LDA_C_PZ
+
+wf_cutoff    20.0d0
+den_cutoff   80.0d0  
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   1.0e-7
+
+nbands    8
+
+kgroups  1
+kpoints    gmp
+mpparams   2 2 2
+
+kt   5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+forces         on
+pressure       off
+
+restart         off
+write_restart   off

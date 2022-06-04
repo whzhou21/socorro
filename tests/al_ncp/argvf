@@ -1,0 +1,35 @@
+kgroups   1
+
+atomic_representation  ncp
+
+functional  lda
+
+wf_cutoff    15.0d0  
+den_cutoff   60.0d0  
+
+neighbor_range 6.0d0
+
+config_type         self-consistent
+config_steps        40
+config_convergence  density
+density_tolerance   1.0d-7
+
+nbands   4
+
+kpoints   gmp
+mpparams  4 4 4
+
+kt   5.0d-3
+
+solver_method      cg
+solver_directions  2
+solver_tolerance   1.0d-4
+
+forces   on
+
+mix_type    density
+mix_method  pulay
+mix_weight  0.95d0
+
+restart         off
+write_restart   off

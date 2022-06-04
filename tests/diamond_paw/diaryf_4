@@ -1,0 +1,198 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   4 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Projector-Augmented Wave method
+
+   Primitive lattice vectors:
+
+     a1:     3.3523748000     3.3523748000     0.0000000000
+     a2:     0.0000000000     3.3523748000     3.3523748000
+     a3:     3.3523748000     0.0000000000     3.3523748000
+
+     b1:     0.9371245284     0.9371245284    -0.9371245284
+     b2:    -0.9371245284     0.9371245284     0.9371245284
+     b3:     0.9371245284    -0.9371245284     0.9371245284
+
+     cell volume = 75.35077
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      C            5.86666    5.86666    5.86666         0.87500    0.87500    0.87500
+         2      C            0.83809    0.83809    0.83809         0.12500    0.12500    0.12500
+
+   Atom matching radii:
+
+           C:   1.310
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 2.90     2: 2.90     2: 2.90     2: 2.90     1: 4.74     1: 4.74     1: 4.74     1: 4.74
+                 1: 4.74     1: 4.74     1: 4.74     1: 4.74     1: 4.74     1: 4.74     1: 4.74     1: 4.74
+         2       1: 2.90     1: 2.90     1: 2.90     1: 2.90     2: 4.74     2: 4.74     2: 4.74     2: 4.74
+                 2: 4.74     2: 4.74     2: 4.74     2: 4.74     2: 4.74     2: 4.74     2: 4.74     2: 4.74
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (automatic with tolerance = 1.0E-08):
+
+     The space group has 48 operations with point group O_h
+
+   Mesh:
+
+     dimension 1 =  18  =  2^1 * 3^2 * 5^0 * 7^0
+     dimension 2 =  18  =  2^1 * 3^2 * 5^0 * 7^0
+     dimension 3 =  18  =  2^1 * 3^2 * 5^0 * 7^0
+
+     Number of mesh points = 5832
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 2 groups with 4 planes per group
+                    2 groups with 5 planes per group
+
+     Plane wave cutoff energy = 100.00 Ryd
+
+       Number of plane waves = 1243
+
+   Density-dependent functional:
+
+     Exchange    (native): LDA
+     Correlation (native): PW
+
+     Analytical expressions for the functional derivatives
+
+Fields object construction:
+
+   Guess-density initialization
+
+   Initial atomic occupations:
+
+     C:
+       l = 0:  1.000000
+       l = 1:  3.000000
+
+   Angular mesh for atomic exchange and correlation:
+
+     C:
+       8 points along theta
+       4 points along phi
+
+   Self-consistency achieved using potential mixing:
+
+   Pulay mixing:
+
+     history = 5
+
+     weight = 0.800
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 25.00 Ryd
+
+   Number of bands = 8
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 1 --> 1
+       q2: 1 --> 1
+       q3: 1 --> 1
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.000000 +0.000000 +0.000000      +0.000000 +0.000000 +0.000000      1.000000
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1             169
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Reciprocal-space projectors
+     using pdots blocksize = 8
+
+   MPI remap
+
+   Block Davidson solver:
+
+     maximum directions = 3
+
+     residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 1.0395E+00,  cell energy = -33.113254195
+   Self-consistent step  2:  density residual = 1.7899E-01,  cell energy = -33.232177316
+   Self-consistent step  3:  density residual = 2.3487E-02,  cell energy = -33.232673442
+   Self-consistent step  4:  density residual = 3.1243E-03,  cell energy = -33.232676141
+   Self-consistent step  5:  density residual = 8.0261E-04,  cell energy = -33.232676520
+   Self-consistent step  6:  density residual = 6.5678E-05,  cell energy = -33.232676524
+   Self-consistent step  7:  density residual = 3.2611E-06,  cell energy = -33.232676525
+
+   Fermi level =   1.0743830966 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -0.7470567229           2.0000
+                        2           0.9329524089           2.0000
+                        3           0.9329524089           2.0000
+                        4           0.9329524089           2.0000
+                        5           1.3029480700           0.0000
+                        6           1.3029480700           0.0000
+                        7           1.3029480700           0.0000
+                        8           1.9023102873           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  20.597005338
+     Hartree               =  11.102613204
+     exchange-correlation  =  -7.282164423
+     local pseudopotential =  -2.052455761
+     atomic                = -55.597674882
+     ---------------------------------------
+     cell energy           = -33.232676525
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                4           0.79           0.20
+eigensolver: diagonalize_gen                         68           0.01           0.00
+electrons_sc: constructor                             4           0.03           0.01
+electrons_sc: update                                 24           0.08           0.02
+fft: distributed                                    200           0.14           0.03
+fft: serial                                         472           0.02           0.01
+fields_sc: constructor                                4           0.03           0.01
+fields_sc: update                                    28           0.06           0.01
+multibasis: band_remap                              444           0.00           0.00
+multivector: gather_wf                                4           0.00           0.00
+multivector: scatter_wf                              60           0.00           0.00
+multivector: zgemm                                  720           0.00           0.00
+operators: apply_hamiltonian                        100           0.02           0.01
+operators: zgemm                                    424           0.00           0.00
+Socorro: total time                                   4           0.79           0.20

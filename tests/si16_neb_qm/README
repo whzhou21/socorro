@@ -1,0 +1,8 @@
+This test is to find the transition state for a vacancy in a
+16-atom cell of Si using the nudged-elastic-band method. The
+standard test uses the quickmin (qm) optimizer.
+
+diaryf_qm_01_4 <-- 01/crystal, argvf, 4 processors (16 total processors)
+diaryf_qm_02_4 <-- 02/crystal, argvf, 4 processors (16 total processors)
+diaryf_qm_03_4 <-- 03/crystal, argvf, 4 processors (16 total processors)
+diaryf_qm_04_4 <-- 04/crystal, argvf, 4 processors (16 total processors)

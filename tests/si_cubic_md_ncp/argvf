@@ -1,0 +1,45 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional  lda
+
+symmetry   off
+
+wf_cutoff   20.0d0  
+den_cutoff  80.0d0  
+
+config_type         self-consistent
+config_steps        30
+config_convergence  density
+density_tolerance   2.0d-7
+
+nbands   24
+
+kpoints    gmp
+mpparams   2 2 2
+
+kt   5.0d-3
+
+solver_method      cg
+solver_directions  3
+solver_tolerance   1.0d-4
+
+mix_type     density
+mix_method   pulay
+mix_weight   0.70d0
+mix_history  5
+
+pressure       on
+
+md_method           NVE
+md_gen_velocities   NO
+md_init_temp        300.0d0
+md_desired_temp     300.0d0
+md_time_step        50.0d0
+md_steps            20
+md_skip_steps       10
+md_temp_freq        1
+md_hoover_mass      2000.0d0
+atom_mass_Si1       28.086d0
+

@@ -1,0 +1,7 @@
+This test is relaxation of a primitive cell of Si in the diamond structure.
+The test can be done with the symmetry tag set to auto or full.
+
+diaryf_5 <-- crystal, argv, 5 processors
+diaryf_5_full <-- crystal, argv_full, 5 processors
+
+Note that diaryf_5_full is currently broken.

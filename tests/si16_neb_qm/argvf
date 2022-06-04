@@ -1,0 +1,42 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional  lda
+
+symmetry   off
+
+wf_cutoff   20.0d0
+den_cutoff  80.0d0  
+
+config_type         self-consistent
+config_steps        40
+config_convergence  energy
+energy_tolerance    1.0d-7
+
+nbands  45
+
+kpoints   gmp
+mpparams  3 3 3
+
+kt  5.0d-3
+
+solver_method      bd
+solver_directions  3
+solver_tolerance   1.0d-4
+
+mix_type          density
+mix_method        pulay
+mix_weight        0.80d0
+mix_damping_type  kerker
+mix_damping_gc    0.80d0
+
+configurations    4
+ts_method         neb
+neb_optimizer     qm
+neb_max_steps     50
+neb_force_tol     1.0d-3
+neb_qm_time_step  1.5d0
+
+restart         off
+write_restart   off

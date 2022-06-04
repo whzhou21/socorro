@@ -1,0 +1,441 @@
+Socorro 1.0
+
+Run-time environment:
+
+   1 configuration is running
+   8 MPI processes are working on this configuration
+
+   1 thread is running per MPI process
+
+External object construction:
+
+   Using the Norm-Conserving Pseudopotential method
+
+   Primitive lattice vectors:
+
+     a1:    16.0000000000     0.0000000000     0.0000000000
+     a2:     0.0000000000    16.0000000000     0.0000000000
+     a3:     0.0000000000     0.0000000000    16.0000000000
+
+     b1:     0.3926990817     0.0000000000     0.0000000000
+     b2:     0.0000000000     0.3926990817     0.0000000000
+     b3:     0.0000000000     0.0000000000     0.3926990817
+
+     cell volume = 4096.00000
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.87611         0.50000    0.50000    0.49226
+         2      HPBE         8.00000    6.56957    8.98326         0.50000    0.41060    0.56145
+         3      HPBE         8.00000    9.43043    8.98326         0.50000    0.58940    0.56145
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 1.81     3: 1.81
+         2       1: 1.81     3: 2.86
+         3       1: 1.81     2: 2.86
+
+   Lattice symmetry (automatic):
+
+     The lattice is cubic with point group O_h                   
+
+   Crystal symmetry (automatic with tolerance = 1.0E-08):
+
+     The space group has 4 operations with point group C_2v
+
+   Mesh:
+
+     dimension 1 =  81  =  2^0 * 3^4 * 5^0 * 7^0
+     dimension 2 =  81  =  2^0 * 3^4 * 5^0 * 7^0
+     dimension 3 =  81  =  2^0 * 3^4 * 5^0 * 7^0
+
+     Number of mesh points = 531441
+
+     Distribution:
+
+       dimension 1: on processor
+       dimension 2: on processor
+       dimension 3: 7 groups with 10 planes per group
+                      1 group with 11 planes
+
+     Plane wave cutoff energy = 240.00 Ryd
+
+       Number of plane waves = 257295
+
+   Density-dependent functional:
+
+     Exchange    (native): PBE
+     Correlation (native): PW
+
+     Numerical expressions for the functional derivatives
+
+Fields object construction:
+
+   Guess-density initialization
+
+   Self-consistency achieved using density mixing:
+
+   Pulay mixing:
+
+     history = 5
+
+     weight = 0.800
+
+Electrons object construction:
+
+   Plane wave cutoff energy = 60.00 Ryd
+
+   Number of bands = 8
+
+   Brillouin-zone sampling:
+
+     Monkhorst-Pack method:
+
+       q1: 1 --> 1
+       q2: 1 --> 1
+       q3: 1 --> 1
+
+       k-point              {b1,b2,b3}                          {x,y,z}                  weight
+
+           1      +0.000000 +0.000000 +0.000000      +0.000000 +0.000000 +0.000000      1.000000
+
+   Plane wave expansion:
+
+     k-point     plane waves
+
+         1           32231
+
+   Fermi occupations with kT = 5.000E-03 Ryd
+
+   Reciprocal-space projectors
+     using pdots blocksize = 8
+
+   MPI remap
+
+   Block Davidson solver:
+
+     maximum directions = 6
+
+     residual tolerance = 1.00E-04
+
+   LAPACK diagonalization
+
+Config object construction:
+
+   Self-consistent calculation
+
+   Convergence will be determined from the density residual
+
+   Self-consistent step  1:  density residual = 2.8080E-02,  cell energy = -31.249667440
+   Self-consistent step  2:  density residual = 8.1377E-03,  cell energy = -33.854788343
+   Self-consistent step  3:  density residual = 6.0936E-03,  cell energy = -34.051875124
+   Self-consistent step  4:  density residual = 1.0093E-03,  cell energy = -34.346297352
+   Self-consistent step  5:  density residual = 4.5183E-04,  cell energy = -34.349291028
+   Self-consistent step  6:  density residual = 4.7564E-05,  cell energy = -34.350936015
+   Self-consistent step  7:  density residual = 8.2237E-06,  cell energy = -34.350957570
+   Self-consistent step  8:  density residual = 1.0230E-06,  cell energy = -34.350958169
+   Self-consistent step  9:  density residual = 9.9064E-08,  cell energy = -34.350958175
+
+   Fermi level =  -0.3766171089 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -1.8597093144           2.0000
+                        2          -0.9568109318           2.0000
+                        3          -0.6704570114           2.0000
+                        4          -0.5161873253           2.0000
+                        5          -0.0705186909           0.0000
+                        6           0.0714257764           0.0000
+                        7           0.0850020326           0.0000
+                        8           0.1177469596           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  25.136464049
+     Hartree               =  31.517173001
+     exchange-correlation  =  -8.444224728
+     local pseudopotential = -88.809995299
+     atomic                =   6.249624802
+     ---------------------------------------
+     cell energy           = -34.350958175
+
+ Atom information for step #0:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.87611         0.50000    0.50000    0.49226
+         2      HPBE         8.00000    6.56957    8.98326         0.50000    0.41060    0.56145
+         3      HPBE         8.00000    9.43043    8.98326         0.50000    0.58940    0.56145
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 1.81     3: 1.81
+         2       1: 1.81     3: 2.86
+         3       1: 1.81     2: 2.86
+
+   Atomic forces:
+                    atom           Fx            Fy            Fz
+                   ---------------------------------------------------
+                      1        -0.000000     +0.000000     -0.031572   Ryd/Bohr
+                      2        +0.000000     -0.019445     +0.015786
+                      3        -0.000000     +0.019445     +0.015786
+
+   Residual force (removed) =      +0.000000     +0.000000     -0.000005
+
+   Cell energy = -34.350958175 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             0
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       1.5816E-02
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 1.3335E-03,  cell energy = -34.345969898
+   Self-consistent step  2:  density residual = 4.0053E-04,  cell energy = -34.350327650
+   Self-consistent step  3:  density residual = 2.3088E-04,  cell energy = -34.350740210
+   Self-consistent step  4:  density residual = 6.2486E-05,  cell energy = -34.351151055
+   Self-consistent step  5:  density residual = 2.7762E-06,  cell energy = -34.351181050
+   Self-consistent step  6:  density residual = 3.3025E-07,  cell energy = -34.351181107
+   Self-consistent step  7:  density residual = 4.2803E-08,  cell energy = -34.351181108
+
+ Atom information for step #1:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.84454         0.50000    0.50000    0.49028
+         2      HPBE         8.00000    6.55013    8.99905         0.50000    0.40938    0.56244
+         3      HPBE         8.00000    9.44987    8.99905         0.50000    0.59062    0.56244
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 1.85     3: 1.85
+         2       1: 1.85     3: 2.90
+         3       1: 1.85     2: 2.90
+
+   Cell energy = -34.351181108 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             1
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       1.2065E-02
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 5.7634E-04,  cell energy = -34.350599580
+   Self-consistent step  2:  density residual = 1.7705E-04,  cell energy = -34.351398387
+   Self-consistent step  3:  density residual = 1.0435E-04,  cell energy = -34.351480671
+   Self-consistent step  4:  density residual = 2.4387E-05,  cell energy = -34.351565643
+   Self-consistent step  5:  density residual = 8.6977E-07,  cell energy = -34.351569954
+   Self-consistent step  6:  density residual = 9.5069E-08,  cell energy = -34.351569958
+
+ Atom information for step #2:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.85819         0.50000    0.50000    0.49114
+         2      HPBE         8.00000    6.55854    8.99222         0.50000    0.40991    0.56201
+         3      HPBE         8.00000    9.44146    8.99222         0.50000    0.59009    0.56201
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 1.83     3: 1.83
+         2       1: 1.83     3: 2.88
+         3       1: 1.83     2: 2.88
+
+   Cell energy = -34.351569958 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             2
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       5.0656E-04
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 2.1599E-05,  cell energy = -34.351569152
+   Self-consistent step  2:  density residual = 6.4534E-06,  cell energy = -34.351570285
+   Self-consistent step  3:  density residual = 3.6904E-06,  cell energy = -34.351570398
+   Self-consistent step  4:  density residual = 9.5617E-07,  cell energy = -34.351570500
+   Self-consistent step  5:  density residual = 3.3573E-08,  cell energy = -34.351570507
+
+ Atom information for step #3:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.85870         0.50000    0.50000    0.49117
+         2      HPBE         8.00000    6.55885    8.99197         0.50000    0.40993    0.56200
+         3      HPBE         8.00000    9.44115    8.99197         0.50000    0.59007    0.56200
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 1.83     3: 1.83
+         2       1: 1.83     3: 2.88
+         3       1: 1.83     2: 2.88
+
+   Cell energy = -34.351570507 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             3
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       1.8849E-04
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             3
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       1.8849E-04
+
+Beginning line minimization
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 9.7263E-06,  cell energy = -34.351570514
+   Self-consistent step  2:  density residual = 3.1034E-06,  cell energy = -34.351570717
+   Self-consistent step  3:  density residual = 2.2649E-06,  cell energy = -34.351570738
+   Self-consistent step  4:  density residual = 4.2444E-07,  cell energy = -34.351570781
+   Self-consistent step  5:  density residual = 2.4520E-08,  cell energy = -34.351570782
+
+ Atom information for step #4:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.85898         0.50000    0.50000    0.49119
+         2      HPBE         8.00000    6.55853    8.99183         0.50000    0.40991    0.56199
+         3      HPBE         8.00000    9.44147    8.99183         0.50000    0.59009    0.56199
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       2: 1.83     3: 1.83
+         2       1: 1.83     3: 2.88
+         3       1: 1.83     2: 2.88
+
+   Cell energy = -34.351570782 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             4
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       1.3023E-04
+
+Increase step to bracket minimum
+ alpha_a,alpha_c:     0.001     0.002
+
+   Updating external:
+
+   Self-consistent step  1:  density residual = 2.1463E-05,  cell energy = -34.351569726
+   Self-consistent step  2:  density residual = 6.8355E-06,  cell energy = -34.351570713
+   Self-consistent step  3:  density residual = 4.9845E-06,  cell energy = -34.351570816
+   Self-consistent step  4:  density residual = 9.4132E-07,  cell energy = -34.351571022
+   Self-consistent step  5:  density residual = 5.3755E-08,  cell energy = -34.351571027
+
+ Atom information for step #5:
+
+   Atom Positions:
+
+       atom     type            x          y          z               a1         a2         a3
+      ----------------    ---------------------------------     ---------------------------------
+         1      OPBE         8.00000    8.00000    7.85960         0.50000    0.50000    0.49123
+         2      HPBE         8.00000    6.55783    8.99152         0.50000    0.40986    0.56197
+         3      HPBE         8.00000    9.44217    8.99152         0.50000    0.59014    0.56197
+
+   Nearest-neighbor atoms (range = 5.000):
+
+      atom     neighbor:separation
+
+         1       3: 1.83     2: 1.83
+         2       1: 1.83     3: 2.88
+         3       1: 1.83     2: 2.88
+
+   Cell energy = -34.351571027 Ryd
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             5
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       4.8447E-05
+
+Completed line minimization
+
+   Conjugate gradient optimization of structure
+   Maximum number of optimization steps:  10
+   Number of force calls made:             5
+   Tolerance for RMS force value: 1.0000E-04
+   Current RMS force value:       4.8447E-05
+
+   Fermi level =  -0.3747164843 Ryd
+
+     Special k-point #1:
+
+                     band        eigenvalue (Ryd)       occupation
+                   -------------------------------------------------
+                        1          -1.8501208260           2.0000
+                        2          -0.9450869570           2.0000
+                        3          -0.6718191347           2.0000
+                        4          -0.5143981476           2.0000
+                        5          -0.0728360616           0.0000
+                        6           0.0694893414           0.0000
+                        7           0.0826991950           0.0000
+                        8           0.1170849630           0.0000
+
+   Energy components (Ryd):
+     kinetic               =  25.028182486
+     Hartree               =  31.372192676
+     exchange-correlation  =  -8.419868120
+     local pseudopotential = -88.418041267
+     atomic                =   6.085963199
+     ---------------------------------------
+     cell energy           = -34.351571027
+  
+  
+                         Timer                    Calls           Wall      Wall/call
+----------------------------------------  -------------  -------------  -------------
+config_sc: constructor                                8          53.27           6.66
+config_sc: forces_i                                  48           0.64           0.08
+config_sc: update                                    40         132.65          16.58
+eigensolver: diagonalize_gen                       1776           0.28           0.03
+electrons_sc: constructor                             8           3.76           0.47
+electrons_sc: update                                288          98.40          12.30
+fft: distributed                                   5272          33.28           4.16
+fft: serial                                        4744          47.01           5.88
+fields_sc: constructor                                8           1.73           0.22
+fields_sc: update                                   336          71.51           8.94
+multibasis: band_remap                             4448           1.93           0.24
+multivector: gather_wf                                8           0.00           0.00
+multivector: scatter_wf                             304           1.22           0.15
+multivector: zgemm                                12744           2.96           0.37
+operators: apply_hamiltonian                       2080          63.90           7.99
+operators: zgemm                                   4640           0.94           0.12
+Socorro: total time                                   8         186.86          23.36

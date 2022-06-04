@@ -1,0 +1,25 @@
+kgroups  1
+
+atomic_representation  ncp
+
+functional  lda
+
+wf_cutoff    10.0d0
+den_cutoff   40.0d0  
+
+config_type         sc
+config_convergence  density
+density_tolerance   1.0d-8
+
+nbands   12
+
+kpoints    gmp
+mpparams   3 3 2
+
+kt    1.0d-4
+
+solver_method       cg
+solver_directions   3
+solver_tolerance    1.0d-4
+
+forces  on
