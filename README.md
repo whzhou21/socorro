@@ -4,7 +4,7 @@ Socorro is a plane-wave density functional theory code for solid-state electroni
 
 ## Availability:
 
-The official Socorro release and related information can be found on this website: 'https://dft.sandia.gov/'
+Socorro is an open-source project. The official Socorro release and related information can be found on this website: 'https://dft.sandia.gov/'
 
 ## Notice:
 
