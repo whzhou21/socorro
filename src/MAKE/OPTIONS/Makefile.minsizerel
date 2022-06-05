@@ -6,7 +6,7 @@ FC		:= mpifort
 FC_FLAGS	:= -Os -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -Os -Wno-error=implicit-function-declaration -DFFT_FFTW
+CC_FLAGS	:= -Os -DFFT_FFTW
 
 CX		:= mpicxx
 CX_FLAGS	:= -Os
@@ -22,6 +22,10 @@ LD_FLAGS	:= $(FC_FLAGS) -lstdc++
 #  Libraries
 #* ---------------------------------------------------------------------
 
+FFTW2_PATH	:= ../../lib/fftw2/bin
+FFTW2_INCS	:= -I ${FFTW2_PATH}/include
+FFTW2_LIBS	:= -L ${FFTW2_PATH}/lib -lfftw
+
 LIBXC_PATH	:= ../../lib/libxc/libxc/bin
 LIBXC_INCS	:= -I ${LIBXC_PATH}/include
 LIBXC_LIBS	:= -L ${LIBXC_PATH}/lib -lxc
@@ -29,10 +33,6 @@ LIBXC_LIBS	:= -L ${LIBXC_PATH}/lib -lxc
 FFTW3_PATH	:= ../../lib/fftw3/fftw3/bin
 FFTW3_INCS	:= -I ${FFTW3_PATH}/include
 FFTW3_LIBS	:= -L ${FFTW3_PATH}/lib -lfftw3 -lfftw3_threads
-
-FFTW2_PATH	:= /Users/jastew09/Computing/libs/fftw2/fftw-2.1.5/bin
-FFTW2_INCS	:= -I ${FFTW2_PATH}/include
-FFTW2_LIBS	:= -L ${FFTW2_PATH}/lib -lfftw
 
 FFTMPI_PATH	:= ../../lib/fftmpi/fftmpi/src
 FFTMPI_INCS	:= 
