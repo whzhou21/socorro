@@ -48,10 +48,10 @@ depends	:
 	@ test -f MAKE/MINE/Makefile.$@ -o -f MAKE/OPTIONS/Makefile.$@
 	@ if [ ! -d $(OBJ_DIR) ] ; then mkdir $(OBJ_DIR) ; fi
 	@ echo 'Gathering build information ...' ; sleep 0.5s
-	@ if [ -f MAKE/MINE/Makefile.$@ ]; \
-	  then cp MAKE/MINE/Makefile.$@ $(OBJ_DIR)/Makefile; fi
-	@ if [ -f MAKE/OPTIONS/Makefile.$@ ]; \
-	  then cp MAKE/OPTIONS/Makefile.$@ $(OBJ_DIR)/Makefile; fi
+	@ if [ -f MAKE/MINE/Makefile.$@ ] ; \
+	  then cp MAKE/MINE/Makefile.$@ $(OBJ_DIR)/Makefile ; fi
+	@ if [ -f MAKE/OPTIONS/Makefile.$@ ] ; \
+	  then cp MAKE/OPTIONS/Makefile.$@ $(OBJ_DIR)/Makefile ; fi
 	@ make f90mods ; mv Makefile.depends $(OBJ_DIR)
 	@ echo 'Compiling socorro with Makefile.$@ settings ...' ; sleep 0.5s
 	@ cd $(OBJ_DIR) ; $(MAKE) "OBJ = $(OBJ)" "EXE = ../$(EXE)"
