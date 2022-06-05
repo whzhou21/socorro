@@ -10,20 +10,27 @@
 #include "macros.h"
 
       module socorro_mod
+!doc$ module socorro_mod
+
+!     Some info ...
+!     ...
 
       use arg_mod
-      use kind_mod
-      use system_mod
-      use error_mod
+      use born_oppenheimer_mod
+      use check_kpoints_mod
+      use check_symmetry_mod
+      use config_fh_mod
       use config_sc_mod
       use config_td_mod
-      use config_fh_mod
-      use relax_mod
-      use born_oppenheimer_mod
-      use many_body_theory_mod
-      use transition_state_mod
       use ehrenfest_mod
+      use error_mod
+      use kind_mod
+      use many_body_theory_mod
+      use relax_mod
+      use system_mod
+      use transition_state_mod
 
+!cod$
       implicit none ; private
 
       logical :: found
@@ -32,22 +39,42 @@
       type(config_sc_obj) :: cfg_sc
       type(config_td_obj) :: cfg_td
 
+!doc$
       public :: socorro
 
+!cod$
       interface socorro
          module procedure socorro_
       end interface
 
       contains
 
-      subroutine socorro_()
+! public routines
 
+      subroutine socorro_()
+!doc$ subroutine socorro()
+!       effects:
+!       errors:
+!       requires:
+
+!cod$
          call system_start() ; if ( error() ) goto 200
 
-         call arglc("config_type",mode,found) ; if ( .not.found ) mode = "self-consistent"
+         call arglc("check_kpoints",mode,found) ; if ( .not.found ) mode = "no"
+         select case ( trim( mode ) )
+         case ( "y" , "yes" )
+            call check_kpoints() ; goto 200
+         end select
 
-         select case ( trim(mode) )
-         case ( "self-consistent" , "sc" )
+         call arglc("check_symmetry",mode,found) ; if ( .not.found ) mode = "no"
+         select case ( trim( mode ) )
+         case ( "y" , "yes" )
+            call check_symmetry() ; goto 200
+         end select
+
+         call arglc("config_type",mode,found) ; if ( .not.found ) mode = "self-consistent"
+         select case ( trim( mode ) )
+         case ( "sc" , "self-consistent" )
             call my(config_sc(),cfg_sc)       ; if ( error() ) goto 200
             call diary(cfg_sc)
             call forces(cfg_sc)               ; if ( error() ) goto 100
@@ -76,9 +103,9 @@
             call write_els_potential(cfg_sc)  ; if ( error() ) goto 100
             call write_restart(cfg_sc)
 100         call glean(thy(cfg_sc))
-         case ( "time-dependent" , "td" )
+         case ( "td" , "time-dependent" )
             call ehrenfest_dynamics()
-         case ( "fixed-hamiltonian" , "fh" )
+         case ( "fh" , "fixed-hamiltonian" )
             call my(config_fh(),cfg_fh)       ; if ( error() ) goto 200
             call diary(cfg_fh)
             call decompose(cfg_fh)
@@ -92,4 +119,4 @@
 
       end subroutine
 
-      end module
+      end module socorro_mod
