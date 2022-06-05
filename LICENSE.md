@@ -1,5 +1,3 @@
-Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.
-
 Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS).
 Under the terms of contract DE-NA0003525 with NTESS, the United States Government
 retains certain rights to this software. This software is distributed uner the 
