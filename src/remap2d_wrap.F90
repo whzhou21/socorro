@@ -16,9 +16,9 @@
 
 module remap2d_wrap
 
-  interface
-
-  subroutine remap2d_create(comm,ptr) bind(c, name = 'remap2d_create_fortran')
+interface
+  subroutine remap2d_create(comm,ptr) &
+          bind(c,name='remap2d_create_fortran')
     use iso_c_binding
     integer(c_int), value :: comm
     type(c_ptr) :: ptr
@@ -39,7 +39,8 @@ module remap2d_wrap
   subroutine remap2d_setup(ptr, &
     in_ilo,in_ihi,in_jlo,in_jhi, &
     out_ilo,out_ihi,out_jlo,out_jhi, &
-    nqty,permute,memoryflag,sendsize,recvsize) bind(c, name = 'remap2d_setup_fortran')
+    nqty,permute,memoryflag,sendsize,recvsize) &
+    bind(c,name='remap2d_setup_fortran')
     use iso_c_binding
     type(c_ptr), value :: ptr
     integer(c_int), value :: in_ilo,in_ihi,in_jlo,in_jhi
@@ -53,7 +54,6 @@ module remap2d_wrap
     type(c_ptr), value :: ptr
     type(c_ptr), value :: in,out,sendbuf,recvbuf
   end subroutine remap2d_remap
-
-  end interface
+end interface
 
 end module remap2d_wrap

@@ -16,9 +16,9 @@
 
 module fft3d_wrap
 
-  interface
-
-  subroutine fft3d_create(comm,precision,ptr) bind(c, name = 'fft3d_create_fortran')
+interface
+  subroutine fft3d_create(comm,precision,ptr) &
+          bind(c,name='fft3d_create_fortran')
     use iso_c_binding
     integer(c_int), value :: comm
     integer(c_int), value :: precision
@@ -85,7 +85,8 @@ module fft3d_wrap
   subroutine fft3d_setup(ptr,nfast,nmid,nslow, &
     in_ilo,in_ihi,in_jlo,in_jhi,in_klo,in_khi, &
     out_ilo,out_ihi,out_jlo,out_jhi,out_klo,out_khi, &
-    permute,fftsize,sendsize,recvsize)  bind(c, name = 'fft3d_setup_fortran')
+    permute,fftsize,sendsize,recvsize) &
+    bind(c,name='fft3d_setup_fortran')
     use iso_c_binding
     type(c_ptr), value :: ptr
     integer(c_int), value :: nfast,nmid,nslow
@@ -145,7 +146,6 @@ module fft3d_wrap
     real(c_double), value :: tmax
     integer(c_int), value :: tflag
   end subroutine fft3d_tune
-
-  end interface
+end interface
 
 end module fft3d_wrap
