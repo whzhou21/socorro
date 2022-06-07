@@ -570,9 +570,8 @@
         type(fft_distributed_plan) :: plan
         
 !cod$
-        !call fft3d_destroy(plan%pl)
+        call fft3d_destroy(plan%pl)
         call fft_3d_destroy_plan(plan%plan)
-
       end subroutine
 
       subroutine fft_distributed(data,dir,plan)
@@ -591,12 +590,12 @@
 
         select case (dir)
         case (R_TO_Q)
-        !  call fft3d_compute(plan%pl,c_loc(data),c_loc(data),Q_TO_R)
+        !  call fft3d_compute(c_loc(data),c_loc(data),plan%pl,Q_TO_R)
           call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
           scale = 1.0_double/plan%norm
           call point_mxs(data,scale)
         case (Q_TO_R)
-        !  call fft3d_compute(plan%pl,c_loc(data),c_loc(data),R_TO_Q)
+        !  call fft3d_compute(c_loc(data),c_loc(data),plan%pl,R_TO_Q)
           call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
         end select
 
@@ -626,14 +625,13 @@
         lnf2 = lnf(2)
         lnf3 = lnf(3)
 
-        !call fft3d_create(comm,precision,plan%pl)
-        !call fft3d_set(plan%pl,"scale",scaled)
-        !call fft3d_set(plan%pl,"pack",0)
-        !call fft3d_setup(plan%pl,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,&
-        !                         fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,permute,fftsize,sendsize,recvsize)
+        call fft3d_create(comm,precision,plan%pl)
+        call fft3d_set(plan%pl,"scale",scaled)
+        call fft3d_setup(plan%pl,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,&
+                                 fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,permute,fftsize,sendsize,recvsize)
 
-        call fft_3d_create_plan(comm,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,fnf1, &
-                              & lnf1,fnf2,lnf2,fnf3,lnf3,howmany,scaled,permute,nloc,plan%plan)
+        call fft_3d_create_plan(comm,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,fnf1,&
+                                lnf1,fnf2,lnf2,fnf3,lnf3,howmany,scaled,permute,nloc,plan%plan)
       end subroutine
 
       end module
