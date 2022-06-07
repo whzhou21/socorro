@@ -267,8 +267,8 @@ contains
 
       if ( i_access( diaryfile() ) ) then
          unit = x_unit(diaryfile())
-         write(unit,'(/)')
-         write(unit,fmt) "Timer Breakdown                              ",          "Calls",   "CPU Time (s)",  "Wall Time (s)"
+         write(unit,'(/,"Runtime task breakdown:",/)')
+         write(unit,fmt) "Timer                                        ",          "Calls",   "CPU Time (s)",  "Wall Time (s)"
          write(unit,fmt) "---------------------------------------------","---------------","---------------","---------------"
       end if
 
