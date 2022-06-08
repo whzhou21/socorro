@@ -83,12 +83,11 @@ help	:
 	@ echo ''
 	@ echo 'where Makefile.machine is one of these files from src/MAKE/OPTIONS:'
 	@ echo ''
-	@ ( cd MAKE/OPTIONS/ && ls -1 Makefile.* && cd ../ )
+	@ ( cd MAKE/OPTIONS/ ; ls -1 Makefile.* 2>/dev/null ; cd ../ )
 	@ echo ''
 	@ echo '... or one of these files from src/MAKE/MINE'
 	@ echo ''
-	@ files="`ls MAKE/MINE/Makefile.* 2>/dev/null`"; \
-	  for file in $$files; do head -1 $$file; done
+	@ ( cd MAKE/MINE/ ; ls -1 Makefile.* 2>/dev/null ; cd ../ )
 	@ echo ''
 	@ echo '... or a new Makefile.machine can be created and placed in src/MAKE/MINE for use'
 	@ echo ''
