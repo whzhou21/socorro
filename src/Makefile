@@ -33,7 +33,7 @@ lib-%   :
 	  ( cd ../lib/$(LIB_DIR) ; $(PYTHON) Install.py $(args) ) ; \
 	else \
 	  echo "Install.py file for lib $(@:lib-%=%) does not exist" ; \
-	fi ; touch socorro.F90
+	fi ; touch main.F90
 
 # ----- Socorro compilation ------------------------------------------ #
 
