@@ -56,9 +56,8 @@
       ! distributed FFT plan
       type, public :: fft_distributed_plan
         private
-        real(double) :: plan
-        real(double) :: norm
-        type(c_ptr) :: pl
+        type(c_ptr) :: plan
+        complex(double), dimension(:), pointer :: work
       end type
 
 !cod$
@@ -110,12 +109,12 @@
 !doc$ subroutine fft_start()
         integer :: fft_rthreads
 
-        fft_nthreads = omp_get_max_threads()
+        !fft_nthreads = omp_get_max_threads()
 
-        call dfftw_init_threads(fft_rthreads)
-        if (error(fft_rthreads == 0,"FATAL ERROR: fft_rthreads = 0")) goto 100
+        !call dfftw_init_threads(fft_rthreads)
+        !if (error(fft_rthreads == 0,"FATAL ERROR: fft_rthreads = 0")) goto 100
 
-        call dfftw_plan_with_nthreads(fft_nthreads)
+        !call dfftw_plan_with_nthreads(fft_nthreads)
 
 100     if (error("Exit fft_mod::fft_start")) continue
 
@@ -244,7 +243,7 @@
         integer, dimension(3), intent(in) :: dims
         integer, dimension(:,:), intent(in) :: index
         type(fft_serial_plan_i) :: plan
-        
+
 !cod$
         integer :: i1, i2, i3, ip, np
         integer :: rank, howmany, stride, distance
@@ -555,28 +554,27 @@
         integer :: comm
         integer, dimension(3) :: dims, base, locdims
         type(fft_distributed_plan) :: plan
-        
+
 !cod$
         integer :: howmany
 
         howmany = 1
         call create_nfplan_i(comm,dims,base,base+locdims-1,howmany,plan)
-        plan%norm = product(dims)
 
       end subroutine
 
       subroutine fft_destroy_distributed_plan(plan)
 !doc$ subroutine fft_destroy_distributed_plan(plan)
         type(fft_distributed_plan) :: plan
-        
+
 !cod$
-        call fft3d_destroy(plan%pl)
-        call fft_3d_destroy_plan(plan%plan)
+        if ( associated( plan%work ) ) deallocate( plan%work )
+        call fft3d_destroy(plan%plan)
       end subroutine
 
       subroutine fft_distributed(data,dir,plan)
 !doc$ subroutine fft_distribured(data,dir,plan)
-        complex(double), dimension(:,:,:), intent(inout), target :: data
+        complex(double), dimension(:,:,:), intent(inout) :: data
         integer, intent(in) :: dir
         type(fft_distributed_plan) :: plan
 !       requires: dir = -1 or +1 and plan be compatible with the data.
@@ -584,20 +582,18 @@
 !       effects : Performs a distributed FFT using dir as the sign of the exponent.
 
 !cod$
-        real(double) :: scale
-
         call start_timer("fft: distributed")
+
+        plan%work = reshape(data,(/size(data)/))
 
         select case (dir)
         case (R_TO_Q)
-        !  call fft3d_compute(c_loc(data),c_loc(data),plan%pl,Q_TO_R)
-          call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
-          scale = 1.0_double/plan%norm
-          call point_mxs(data,scale)
+          call fft3d_compute(plan%plan,c_loc(plan%work),c_loc(plan%work),dir)
         case (Q_TO_R)
-        !  call fft3d_compute(c_loc(data),c_loc(data),plan%pl,R_TO_Q)
-          call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
+          call fft3d_compute(plan%plan,c_loc(plan%work),c_loc(plan%work),dir)
         end select
+
+        data = reshape(plan%work,(/size(data,1),size(data,2),size(data,3)/))
 
         if (.not.error()) call stop_timer("fft: distributed")
 
@@ -609,7 +605,7 @@
         integer :: howmany
         type(fft_distributed_plan) :: plan
 
-        integer, parameter :: precision = 2, permute = 0, scaled = 0
+        integer, parameter :: precision = 2, permute = 0, scaled = 1
         integer :: nf1, nf2, nf3, fnf1, fnf2, fnf3, lnf1, lnf2, lnf3
         integer :: nloc, fftsize, sendsize, recvsize
 
@@ -625,13 +621,12 @@
         lnf2 = lnf(2)
         lnf3 = lnf(3)
 
-        call fft3d_create(comm,precision,plan%pl)
-        call fft3d_set(plan%pl,"scale",scaled)
-        call fft3d_setup(plan%pl,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,&
-                                 fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,permute,fftsize,sendsize,recvsize)
+        call fft3d_create(comm,precision,plan%plan)
+        call fft3d_set(plan%plan,"scale",scaled)
+        call fft3d_setup(plan%plan,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,&
+                                   fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,permute,fftsize,sendsize,recvsize)
 
-        call fft_3d_create_plan(comm,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,fnf1,&
-                                lnf1,fnf2,lnf2,fnf3,lnf3,howmany,scaled,permute,nloc,plan%plan)
+        allocate( plan%work(fftsize) )
       end subroutine
 
       end module

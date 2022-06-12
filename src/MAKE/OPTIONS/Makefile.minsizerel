@@ -6,7 +6,7 @@ FC		:= mpifort
 FC_FLAGS	:= -Os -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -Os -DFFT_FFTW
+CC_FLAGS	:= -Os
 
 CX		:= mpicxx
 CX_FLAGS	:= -Os
@@ -22,10 +22,6 @@ LD_FLAGS	:= $(FC_FLAGS) -lstdc++
 #  Libraries
 #* ---------------------------------------------------------------------
 
-FFTW2_PATH	:= ../../lib/fftw2/bin
-FFTW2_INCS	:= -I ${FFTW2_PATH}/include
-FFTW2_LIBS	:= -L ${FFTW2_PATH}/lib -lfftw
-
 LIBXC_PATH	:= ../../lib/libxc/libxc/bin
 LIBXC_INCS	:= -I ${LIBXC_PATH}/include
 LIBXC_LIBS	:= -L ${LIBXC_PATH}/lib -lxc
@@ -35,19 +31,19 @@ FFTW3_INCS	:= -I ${FFTW3_PATH}/include
 FFTW3_LIBS	:= -L ${FFTW3_PATH}/lib -lfftw3 -lfftw3_threads
 
 FFTMPI_PATH	:= ../../lib/fftmpi/fftmpi/src
-FFTMPI_INCS	:= 
+FFTMPI_INCS	:=
 FFTMPI_LIBS	:= -L ${FFTMPI_PATH} -lfft2dmpi -lfft3dmpi
 
 BLAS_PATH	:= ../../lib/lapack/lapack
-BLAS_INCS	:= 
+BLAS_INCS	:=
 BLAS_LIBS	:= -L ${BLAS_PATH} -lrefblas
 
 LAPACK_PATH	:= ../../lib/lapack/lapack
-LAPACK_INCS	:= 
+LAPACK_INCS	:=
 LAPACK_LIBS	:= -L ${LAPACK_PATH} -llapack
 
 SCALAPACK_PATH	:= ../../lib/scalapack/scalapack
-SCALAPACK_INCS	:= 
+SCALAPACK_INCS	:=
 SCALAPACK_LIBS	:= -L ${SCALAPACK_PATH} -lscalapack
 
 #* ---------------------------------------------------------------------
@@ -57,13 +53,13 @@ SCALAPACK_LIBS	:= -L ${SCALAPACK_PATH} -lscalapack
 FC_INCS		:= $(LIBXC_INCS) $(FFTW3_INCS) $(FFTMPI_INCS) $(BLAS_INCS) $(LAPACK_INCS) $(SCALAPACK_INCS)
 FCFLAGS		:= $(FC_FLAGS) $(FC_INCS)
 
-CC_INCS		:= $(FFTW2_INCS) 
+CC_INCS		:=
 CCFLAGS		:= $(CC_FLAGS) $(CC_INCS)
 
-CX_INCS		:= 
+CX_INCS		:=
 CXFLAGS		:= $(CX_FLAGS) $(CX_INCS)
 
-LD_LIBS		:= $(LIBXC_LIBS) $(FFTW2_LIBS) $(FFTW3_LIBS) $(FFTMPI_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
+LD_LIBS		:= $(LIBXC_LIBS) $(FFTW3_LIBS) $(FFTMPI_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
 
 #* ---------------------------------------------------------------------
 #  Build rules: Do not edit
