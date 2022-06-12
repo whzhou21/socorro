@@ -593,7 +593,7 @@
           call fft3d_compute(plan%plan,c_loc(plan%work),c_loc(plan%work),dir)
         end select
 
-        data = reshape(plan%work,(/size(data,1),size(data,2),size(data,3)/))
+        data = reshape(plan%work,shape(data))
 
         if (.not.error()) call stop_timer("fft: distributed")
 
