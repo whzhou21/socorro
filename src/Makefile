@@ -85,6 +85,10 @@ help	:
 	@ echo ''
 	@ ( cd MAKE/OPTIONS/ ; ls -1 Makefile.* 2>/dev/null ; cd ../ )
 	@ echo ''
+	@ echo '... or one of these files from src/MAKE/MACHINES'
+	@ echo ''
+	@ ( cd MAKE/MACHINES/ ; ls -1 Makefile.* 2>/dev/null ; cd ../ )
+	@ echo ''
 	@ echo '... or one of these files from src/MAKE/MINE'
 	@ echo ''
 	@ ( cd MAKE/MINE/ ; ls -1 Makefile.* 2>/dev/null ; cd ../ )
