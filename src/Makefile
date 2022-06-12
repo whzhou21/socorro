@@ -5,7 +5,7 @@ PYTHON	= python
 
 # ----- Definitions -------------------------------------------------- #
 
-CSRC	= ctof_io.c fft_3d.c
+CSRC	= ctof_io.c
 
 EXE	= socorro
 
