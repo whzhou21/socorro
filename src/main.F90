@@ -17,5 +17,5 @@
 !cod$
       implicit none
 
-      call socorro() ; stop
+      call socorro()
       end program main

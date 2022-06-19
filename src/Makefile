@@ -5,7 +5,7 @@ PYTHON	= python
 
 # ----- Definitions -------------------------------------------------- #
 
-CSRC	= ctof_io.c
+CSRC	= ctof_io.c remap_2d.c fft_3d.c
 
 EXE	= socorro
 
@@ -45,7 +45,9 @@ depends	:
 	@ make f90mods
 
 .DEFAULT:
-	@ test -f MAKE/MINE/Makefile.$@ -o -f MAKE/OPTIONS/Makefile.$@
+	@ test -f MAKE/MACHINES/Makefile.$@ -o \
+	       -f MAKE/MINE/Makefile.$@ -o \
+	       -f MAKE/OPTIONS/Makefile.$@
 	@ if [ ! -d $(OBJ_DIR) ] ; then mkdir $(OBJ_DIR) ; fi
 	@ echo 'Gathering build information ...' ; sleep 0.5s
 	@ if [ -f MAKE/MACHINES/Makefile.$@ ] ; \

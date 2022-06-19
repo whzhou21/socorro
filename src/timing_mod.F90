@@ -695,8 +695,6 @@ contains
 
       cpu_time = 0.0d0
       call reduce(CONFIG,MPI_SUM, timer%elapsed_time, cpu_time)
-
-      ncalls = ( ncalls / mpi_nprocs(config) )
       wall_time = ( cpu_time / real(mpi_nprocs(config), double) )
 
       if ( i_access( diaryfile() ) ) then

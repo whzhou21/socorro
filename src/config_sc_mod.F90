@@ -338,7 +338,6 @@
         end select
 
         call sync_configuration_errors() ; if (error()) goto 300
-
         call diary_construction_i(cfg%o)
 
         ! iterate to convergence
@@ -1181,9 +1180,11 @@
         do
           if (error(user_abort(),"USER INITIATED ABORT")) goto 100
           lc = lc + 1
+          !write(*,*) "Here 1",mpi_myproc(world)
           call update(cfgr%fields,cfgr%external,cfgr%electrons) ; if (error()) goto 100
           call check_convergence_i(cfgr,lc,done)
           if (done) exit
+          !write(*,*) "Here 2",mpi_myproc(world)
           call update(cfgr%electrons,cfgr%external,x_potential(cfgr%fields)) ; if (error()) goto 100
         end do
 

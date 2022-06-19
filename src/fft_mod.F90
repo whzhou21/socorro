@@ -1,13 +1,5 @@
-!* ------------------------------------------------------------------------------------------------------------------------------ *!
-!  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
-!  See the README file in the top-level directory.                                                                                 !
-!                                                                                                                                  !
-!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
-!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
-!  modified Berkeley Software Distribution (BSD) License.                                                                          !
-!* ------------------------------------------------------------------------------------------------------------------------------ *!
-
-#include "macros.h"
+! Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms
+! of Contract DE-NA0003525 with NTESS, the U.S. Government retains certains rights to this software.
 
       module fft_mod
 !doc$ module fft_mod
@@ -18,16 +10,13 @@
       use timing_mod
       use point_blas_mod
       use omp_lib
-      use mpi_mod
-      use fft3d_wrap
-      use,intrinsic :: iso_c_binding
 
 !     This module encapsulates fast-Fourier transform routines that utilize fftw3
 !     interfaces for transforms on serial data and fftw2 interfaces for transforms
 !     on distributed data.
 !
 !     FFT directions:  -1: r -> q  Forward transform
-!                      +1: q -> r  Backward transform
+!                      +1: q -> r  Backward tranform
 
 !cod$
       implicit none
@@ -56,8 +45,8 @@
       ! distributed FFT plan
       type, public :: fft_distributed_plan
         private
-        type(c_ptr) :: plan
-        complex(double), dimension(:), pointer :: work
+        real(double) :: plan
+        real(double) :: norm
       end type
 
 !cod$
@@ -109,12 +98,12 @@
 !doc$ subroutine fft_start()
         integer :: fft_rthreads
 
-        !fft_nthreads = omp_get_max_threads()
+        fft_nthreads = omp_get_max_threads()
 
-        !call dfftw_init_threads(fft_rthreads)
-        !if (error(fft_rthreads == 0,"FATAL ERROR: fft_rthreads = 0")) goto 100
+        call dfftw_init_threads(fft_rthreads)
+        if (error(fft_rthreads == 0,"FATAL ERROR: fft_rthreads = 0")) goto 100
 
-        !call dfftw_plan_with_nthreads(fft_nthreads)
+        call dfftw_plan_with_nthreads(fft_nthreads)
 
 100     if (error("Exit fft_mod::fft_start")) continue
 
@@ -243,7 +232,7 @@
         integer, dimension(3), intent(in) :: dims
         integer, dimension(:,:), intent(in) :: index
         type(fft_serial_plan_i) :: plan
-
+        
 !cod$
         integer :: i1, i2, i3, ip, np
         integer :: rank, howmany, stride, distance
@@ -554,22 +543,23 @@
         integer :: comm
         integer, dimension(3) :: dims, base, locdims
         type(fft_distributed_plan) :: plan
-
+        
 !cod$
         integer :: howmany
 
         howmany = 1
-        call create_nfplan_i(comm,dims,base,base+locdims-1,howmany,plan)
+        call create_nfplan_i(comm,dims,base,base+locdims-1,howmany,plan%plan)
+        plan%norm = product(dims)
 
       end subroutine
 
       subroutine fft_destroy_distributed_plan(plan)
 !doc$ subroutine fft_destroy_distributed_plan(plan)
         type(fft_distributed_plan) :: plan
-
+        
 !cod$
-        if ( associated( plan%work ) ) deallocate( plan%work )
-        call fft3d_destroy(plan%plan)
+        call fft_3d_destroy_plan(plan%plan)
+
       end subroutine
 
       subroutine fft_distributed(data,dir,plan)
@@ -582,32 +572,33 @@
 !       effects : Performs a distributed FFT using dir as the sign of the exponent.
 
 !cod$
-        call start_timer("fft: distributed")
+        real(double) :: scale
 
-        plan%work = reshape(data,(/size(data)/))
+        call start_timer("fft: distributed")
 
         select case (dir)
         case (R_TO_Q)
-          call fft3d_compute(plan%plan,c_loc(plan%work),c_loc(plan%work),dir)
+          call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
+          scale = 1.0_double/plan%norm
+          call point_mxs(data,scale)
         case (Q_TO_R)
-          call fft3d_compute(plan%plan,c_loc(plan%work),c_loc(plan%work),dir)
+          call fft_3d(data(1,1,1),data(1,1,1),dir,plan%plan)
         end select
-
-        data = reshape(plan%work,shape(data))
 
         if (.not.error()) call stop_timer("fft: distributed")
 
       end subroutine
 
-      subroutine create_nfplan_i(comm,nf,fnf,lnf,howmany,plan)
+      subroutine create_nfplan_i(comm,nf,fnf,lnf,howmany,pl)
         integer :: comm
         integer, dimension(3) :: nf, fnf, lnf
         integer :: howmany
-        type(fft_distributed_plan) :: plan
+        real(double) :: pl
 
-        integer, parameter :: precision = 2, permute = 0, scaled = 1
+        integer, parameter :: scale = 0
+        integer, parameter :: permute = 0
         integer :: nf1, nf2, nf3, fnf1, fnf2, fnf3, lnf1, lnf2, lnf3
-        integer :: nloc, fftsize, sendsize, recvsize
+        integer :: nloc
 
         nf1 = nf(1)
         nf2 = nf(2)
@@ -621,12 +612,8 @@
         lnf2 = lnf(2)
         lnf3 = lnf(3)
 
-        call fft3d_create(comm,precision,plan%plan)
-        call fft3d_set(plan%plan,"scale",scaled)
-        call fft3d_setup(plan%plan,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,&
-                                   fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,permute,fftsize,sendsize,recvsize)
-
-        allocate( plan%work(fftsize) )
+        call fft_3d_create_plan(comm,nf1,nf2,nf3,fnf1,lnf1,fnf2,lnf2,fnf3,lnf3,fnf1, &
+                              & lnf1,fnf2,lnf2,fnf3,lnf3,howmany,scale,permute,nloc,pl)
       end subroutine
 
       end module

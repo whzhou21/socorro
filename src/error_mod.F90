@@ -27,12 +27,11 @@
 !     Note: This module should not be changed without first consulting AFW.
 
       use kind_mod
+      use mpi
       use path_mod
 
 !cod$
       implicit none ; private
-
-      include 'mpif.h'
 
       ! error file status
       integer, parameter :: EF_OFF = 0
