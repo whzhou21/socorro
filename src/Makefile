@@ -5,12 +5,11 @@ PYTHON	= python
 
 # ----- Definitions -------------------------------------------------- #
 
+FSRC	= $(shell ls *.F90)
 CSRC	= ctof_io.c remap_2d.c fft_3d.c
 
 EXE	= socorro
-
-SRC	= $(shell ls *.F90)
-OBJ	= $(SRC:.F90=.o) $(CSRC:.c=.o)
+OBJ	= $(FSRC:.F90=.o) $(CSRC:.c=.o)
 
 OBJ_DIR	= Obj_build
 LIB_DIR	= $(@:lib-%=%)
@@ -38,7 +37,7 @@ lib-%   :
 # ----- Socorro compilation ------------------------------------------ #
 
 f90mods	:
-	@ rm -rf Makefile.depends ; MAKE/TOOLS/f90makedep.pl $(SRC)
+	@ rm -rf Makefile.depends ; MAKE/TOOLS/f90makedep.pl $(FSRC)
 
 depends	:
 	@ echo 'Creating the module dependency list ...' ; sleep 0.5s
