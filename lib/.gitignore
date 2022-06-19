@@ -1,6 +1,7 @@
 # Ignore everything ...
 
 fftmpi/*
+fftw2/*
 fftw3/*
 lapack/*
 libxc/*
