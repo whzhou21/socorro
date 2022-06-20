@@ -125,7 +125,7 @@
       public :: mpi_sgroup_split
       public :: mpi_kgroup_split
       public :: mpi_comm
-      public :: mpi_first
+      public :: mpi_isroot
       public :: mpi_nprocs
       public :: mpi_myproc
       public :: mpi_nconfigs
@@ -627,8 +627,8 @@
         end select
       end function 
 
-      function mpi_first(sc) result(f)
-!doc$ function mpi_first(sc) result(f)
+      function mpi_isroot(sc) result(f)
+!doc$ function mpi_isroot(sc) result(f)
         integer, intent(in) :: sc
         logical :: f
 !       effects: Returns the_mpi%sc_first.

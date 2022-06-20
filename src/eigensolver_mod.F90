@@ -1348,7 +1348,7 @@
 
         call start_timer("eigensolver: diagonalize")
 
-        i_participate = mpi_first(KGROUP)
+        i_participate = mpi_isroot(KGROUP)
 
         if (i_participate) then
 
@@ -1478,7 +1478,7 @@
 
         call start_timer("eigensolver: diagonalize_gen")
 
-        i_participate = mpi_first(KGROUP)
+        i_participate = mpi_isroot(KGROUP)
 
         if (i_participate) then
 

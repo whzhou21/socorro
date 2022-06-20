@@ -67,18 +67,18 @@
         call arg('configurations',nc,found)
         if (.not.found) nc = 1
         if (nc < 1) then
-          if (mpi_first(WORLD)) write(6,'("ERROR: configurations < 1")')
+          if (mpi_isroot(WORLD)) write(6,'("ERROR: configurations < 1")')
           call mpi_stop() ; stop
         elseif (nc == 1) then
           continue
         elseif ((nc > 1) .and. (nc < 99)) then
           if (mod(mpi_nprocs(WORLD),nc) /= 0) then
-            if (mpi_first(WORLD)) write(6,'("ERROR: non-equal division of world processes among configurations")')
+            if (mpi_isroot(WORLD)) write(6,'("ERROR: non-equal division of world processes among configurations")')
             call mpi_stop() ; stop
           end if
           call mpi_config_split(nc)
         else
-          if (mpi_first(WORLD)) write(6,'("ERROR: configurations > 98")')
+          if (mpi_isroot(WORLD)) write(6,'("ERROR: configurations > 98")')
           call mpi_stop() ; stop
         end if
 
@@ -88,12 +88,12 @@
         select case (trim(tag))
         case ("dimer","dmr")
           if (nc /= 2) then
-            if (mpi_first(WORLD)) write(6,'("ERROR: configurations /= 2 for a dimer calculation")')
+            if (mpi_isroot(WORLD)) write(6,'("ERROR: configurations /= 2 for a dimer calculation")')
             call mpi_stop() ; stop
           end if
         case ("neb")
           if (nc == 1) then
-            if (mpi_first(WORLD)) write(6,'("ERROR: configurations == 1 for an neb calculation")')
+            if (mpi_isroot(WORLD)) write(6,'("ERROR: configurations == 1 for an neb calculation")')
             call mpi_stop() ; stop
           end if
         end select
@@ -102,18 +102,18 @@
         call arg('sgroups',ng,found)
         if (.not.found) ng = 1
         if (ng < 1) then
-          if (mpi_first(WORLD)) write(6,'("ERROR: sgroups < 1")')
+          if (mpi_isroot(WORLD)) write(6,'("ERROR: sgroups < 1")')
           call mpi_stop() ; stop
         elseif (ng == 1) then
           continue
         elseif (ng == 2) then
           if (mod(mpi_nprocs(CONFIG),ng) /= 0) then
-            if (mpi_first(WORLD)) write(6,'("ERROR: non-equal division of config processes among sgroups")')
+            if (mpi_isroot(WORLD)) write(6,'("ERROR: non-equal division of config processes among sgroups")')
             call mpi_stop() ; stop
           end if
           call mpi_sgroup_split(ng)
         else
-          if (mpi_first(WORLD)) write(6,'("ERROR: sgroups > 2")')
+          if (mpi_isroot(WORLD)) write(6,'("ERROR: sgroups > 2")')
           call mpi_stop() ; stop
         end if
 
@@ -121,13 +121,13 @@
         call arg('kgroups',ng,found)
         if (.not.found) ng = 1
         if (ng < 1) then
-          if (mpi_first(WORLD)) write(6,'("ERROR: kgroups < 1")')
+          if (mpi_isroot(WORLD)) write(6,'("ERROR: kgroups < 1")')
           call mpi_stop() ; stop
         elseif (ng == 1) then
           continue
         else
           if (mod(mpi_nprocs(SGROUP),ng) /= 0) then
-            if (mpi_first(WORLD)) write(6,'("ERROR: non-equal division of sgroup processes among kgroups")')
+            if (mpi_isroot(WORLD)) write(6,'("ERROR: non-equal division of sgroup processes among kgroups")')
             call mpi_stop() ; stop
           end if
           call mpi_kgroup_split(ng)
@@ -144,14 +144,14 @@
           ef_status = "on"
         case ("first")
           ef_status = "off"
-          if (mpi_first(CONFIG)) ef_status = "on"
+          if (mpi_isroot(CONFIG)) ef_status = "on"
         case ("none")
           ef_status = "off"
         case default
-          if (mpi_first(WORLD)) write(6,'("ERROR: error_file_mode tag must be all, first, or none")')
+          if (mpi_isroot(WORLD)) write(6,'("ERROR: error_file_mode tag must be all, first, or none")')
           call mpi_stop() ; stop
         end select
-        call error_start(mpi_comm(CONFIG),mpi_comm(SGROUP),mpi_comm(KGROUP),mpi_myproc(CONFIG),mpi_first(WORLD),tag,ef_status)
+        call error_start(mpi_comm(CONFIG),mpi_comm(SGROUP),mpi_comm(KGROUP),mpi_myproc(CONFIG),mpi_isroot(WORLD),tag,ef_status)
 
         ! write MPI information to the error files
         select case (trim(tag))

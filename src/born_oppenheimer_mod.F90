@@ -843,7 +843,7 @@
            bo%o%current%velocities = bo%o%current%velocities + (time_step/2.0_double)*accel
 
 !          The following generates the same 'random' numbers at every pass through the loop
-!          if (mpi_first(MOD_SCOPE)) then
+!          if (mpi_isroot(MOD_SCOPE)) then
 !            seed = 101
 !            do i = 1,53
 !              r1 = random(seed)
@@ -853,7 +853,7 @@
 !            end do
 !          end if
 
-           if (mpi_first(MOD_SCOPE)) call random_number(test_numbers)
+           if (mpi_isroot(MOD_SCOPE)) call random_number(test_numbers)
            call broadcast(MOD_SCOPE,test_numbers)
            do i = 1,bo%o%current%natoms
               if (test_numbers(i) < 1.0_double/bo%o%temp_mod_freq) then
@@ -1171,7 +1171,7 @@
         real(double), dimension(n1) :: a1, a2
 
 !       The following generates the same 'random' numbers every time rgauss is called
-!       if (mpi_first(MOD_SCOPE)) then
+!       if (mpi_isroot(MOD_SCOPE)) then
 !         seed = 37
 !         do i = 1,55
 !           r1 = random(seed)
@@ -1181,7 +1181,7 @@
 !         end do
 !       end if
 !       call broadcast(MOD_SCOPE,a1)
-!       if (mpi_first(MOD_SCOPE)) then
+!       if (mpi_isroot(MOD_SCOPE)) then
 !         seed = 39
 !         do i = 1,57
 !           r1 = random(seed)
@@ -1192,9 +1192,9 @@
 !       end if
 !       call broadcast(MOD_SCOPE,a2)
 
-        if (mpi_first(MOD_SCOPE)) call random_number(a1)
+        if (mpi_isroot(MOD_SCOPE)) call random_number(a1)
         call broadcast(MOD_SCOPE,a1)
-        if (mpi_first(MOD_SCOPE)) call random_number(a2)
+        if (mpi_isroot(MOD_SCOPE)) call random_number(a2)
         call broadcast(MOD_SCOPE,a2)
         grnd = sqrt(-2.0_double*log(a1))*cos(two_pi*a2)
 

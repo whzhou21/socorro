@@ -110,7 +110,7 @@
         logical :: ex
         integer :: ios
 
-        if (mpi_first(WORLD)) then
+        if (mpi_isroot(WORLD)) then
           inquire(file=trim(stop_name),exist=ex)
           if (ex) then
             open(unit=INTERRUPT_UNIT,file=trim(stop_name),status='old',iostat=ios)
@@ -133,7 +133,7 @@
          character(*) :: file, mesg
          integer :: line
 
-         if ( mpi_first( world ) ) then
+         if ( mpi_isroot( world ) ) then
             write(*,'(/,"ERROR: ",a," (src/",a,":",a,")")') trimstr(mesg),basename(file),num2str(line)
          end if
 

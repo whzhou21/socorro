@@ -841,7 +841,7 @@
            if (mod(state%istep,params%move_atoms_interval) == 0) then
               if (move_atoms(state%iondyn, state%cfg_td)) then
                  if (error("Move atoms failed")) goto 100
-!                 if (mpi_first(MOD_SCOPE)) write(*,*) '**md_step ', x_istep(state%iondyn)
+!                 if (mpi_isroot(MOD_SCOPE)) write(*,*) '**md_step ', x_istep(state%iondyn)
                  na = x_n_atoms(at); if (error()) goto 100
 
                  do ia=1,na
@@ -912,7 +912,7 @@
 
               num_hpsis = num_hamiltonian_ops(x_electrons(state%cfg_td))
 
-              if (mpi_first(MOD_SCOPE)) write(x_unit(output),"(a8,i8,a6,f9.4,a5,f20.16,a7,i4,a9,i4)") &
+              if (mpi_isroot(MOD_SCOPE)) write(x_unit(output),"(a8,i8,a6,f9.4,a5,f20.16,a7,i4,a9,i4)") &
                    "td_step ", state%istep, &
                    "  time", state%time*ARU_2_FS, &
                    "  |v|", norm, &

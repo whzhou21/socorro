@@ -69,7 +69,7 @@
 
         inflag = 0
 
-        if ( mpi_first( world ) ) argc = command_argument_count()
+        if ( mpi_isroot( world ) ) argc = command_argument_count()
         call broadcast_seh(argc)
         if ( argc == 0 ) call interrupt_stop(FLERR,"No command-line arguments given")
 
@@ -91,20 +91,20 @@
 
         ! Process the input-file arguments
 
-        if ( mpi_first( world ) ) then
+        if ( mpi_isroot( world ) ) then
            call get_command_argument(inflag,infile)
            inquire(file=trim(infile),exist=found)
         end if
         call broadcast_seh(found)
         if ( .not.found ) call interrupt_stop(FLERR,"The input file '"//trimstr(infile)//"' was not found")
 
-        if ( mpi_first( world ) ) open(newunit=argunit,file=trim(infile),status="unknown",iostat=iostatus)
+        if ( mpi_isroot( world ) ) open(newunit=argunit,file=trim(infile),status="unknown",iostat=iostatus)
         call broadcast_seh(iostatus)
         if ( iostatus /= 0 ) call interrupt_stop(FLERR,"The input file '"//trimstr(infile)//"' could not be opened")
 
         ! Determine the number of lines in the control file
 
-        if ( mpi_first( world ) ) then
+        if ( mpi_isroot( world ) ) then
            nlines = -1
            iostatus = 0
            do while ( iostatus == 0 )
@@ -120,12 +120,12 @@
         ! Read and broadcast the contents of the control file
 
         do ii = 1,nlines
-           if ( mpi_first( world ) ) read(argunit,'(a)') buffer
+           if ( mpi_isroot( world ) ) read(argunit,'(a)') buffer
            call broadcast_seh(buffer)
            call arg_split_i(buffer,arg_params(ii))
         end do
 
-        if ( mpi_first( world ) ) close( argunit )
+        if ( mpi_isroot( world ) ) close( argunit )
 
       end subroutine
 

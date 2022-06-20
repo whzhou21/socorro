@@ -412,7 +412,7 @@
 
 !doc$ logical function i_access(tagio)
 !doc$ type(tagio_obj) :: tagio
-!doc$ effects : returns (not x_first_only) or (mpi_first())
+!doc$ effects : returns (not x_first_only) or (mpi_isroot())
 !doc$           to determine if the process should call read or write
 !******************************************************************
 

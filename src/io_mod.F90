@@ -165,7 +165,7 @@
           end if
         end do
         if (error(in_use,"ERROR: no unit was found")) goto 200
-        if (mpi_first(WORLD)) then
+        if (mpi_isroot(WORLD)) then
           open(unit=iu,file="io_scratch",status="new",iostat=ios)
           if (error(ios /= 0,"ERROR: unable to open file")) goto 100
           write(iu,*) "this is a test"
@@ -397,7 +397,7 @@
 
 !cod$
         call my(f)
-        l = (.not.f%o%first_only .or. mpi_first(FILE_SCOPE))
+        l = (.not.f%o%first_only .or. mpi_isroot(FILE_SCOPE))
         call glean(thy(f))
       end function
 
@@ -433,7 +433,7 @@
 
 !cod$
         call my(f)
-        if (mpi_first(FILE_SCOPE)) then
+        if (mpi_isroot(FILE_SCOPE)) then
           close(unit=f%o%unit)
           open(unit=f%o%unit,file=trim(f%o%name),status='old',position='append')
         end if

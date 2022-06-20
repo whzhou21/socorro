@@ -593,9 +593,9 @@ end interface
         real(double), dimension(n1) :: a1,a2
         real(double) :: twopi = 6.28318530717958647690_double
 
-        if (mpi_first(MOD_SCOPE)) call random_number(a1)
+        if (mpi_isroot(MOD_SCOPE)) call random_number(a1)
         call broadcast(MOD_SCOPE,a1)
-        if (mpi_first(MOD_SCOPE)) call random_number(a2)
+        if (mpi_isroot(MOD_SCOPE)) call random_number(a2)
         call broadcast(MOD_SCOPE,a2)
         grnd = sqrt(-2.*log(a1))*cos(twopi*a2)
       end function rgauss
@@ -1548,7 +1548,7 @@ end interface
         
         iondyn%o%current%velocities = iondyn%o%current%velocities + (time_step/2.0_double)*accel
         
-        if (mpi_first(MOD_SCOPE)) call random_number(test_numbers)
+        if (mpi_isroot(MOD_SCOPE)) call random_number(test_numbers)
         call broadcast(MOD_SCOPE,test_numbers)
         do i = 1,iondyn%o%current%natoms
            if (test_numbers(i) < 1.0_double/iondyn%o%temp_mod_freq) then
