@@ -2,9 +2,9 @@
 !  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
 !  See the README file in the top-level directory.                                                                                 !
 !                                                                                                                                  !
-!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
-!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
-!  modified Berkeley Software Distribution (BSD) License.                                                                          !
+!  Copyright 2011 National Technology and Engineering Solutions of Sandia, LLC (NTESS).                                            !
+!  This software is distributed uner the modified Berkeley Software Distribution (BSD) License.                                    !
+!  Under the terms of contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights to this software.               !
 !* ------------------------------------------------------------------------------------------------------------------------------ *!
 
 #include "macros.h"
@@ -12,8 +12,9 @@
       module check_kpoints_mod
 !doc$ module check_kpoints_mod
 
-!     Some info ...
-!     ...
+!     This check_kpoints module determines the symmetry for a set of
+!     atomic coordinates in a parallelpiped and the Monkhorst-Pack
+!     special k-points for a set of Monkhorst-Pack parameters.
 
       use kind_mod
       use mpi_mod
@@ -28,9 +29,9 @@
       implicit none ; private
 
       type(crystal_obj) :: cr
+      type(kpoints_obj) :: kp
       type(point_group_obj) :: dg, lg
       type(space_group_obj) :: sg
-      type(kpoints_obj) :: kp
 
 !doc$
       public :: check_kpoints
@@ -42,7 +43,7 @@
 
       contains
 
-! public routines
+! Public routines
 
       subroutine check_kpoints_()
 !doc$ subroutine check_kpoints()
@@ -53,13 +54,13 @@
 !cod$
          call start_timer("check_kpoints: total time")
 
-         call my(crystal(),cr) ; if (error()) goto 100
+         call my(crystal(),cr) ; if ( error() ) goto 900
 
-         call my(point_group(x_lattice(cr)),lg) ; if (error()) goto 100
-         call my(space_group(lg,x_atoms(cr),x_lattice(cr)),sg) ; if (error()) goto 100
+         call my(point_group(x_lattice(cr)),lg) ; if ( error() ) goto 900
+         call my(space_group(lg,x_atoms(cr),x_lattice(cr)),sg) ; if ( error() ) goto 900
 
-         call my(point_group(sg,parity=.true.),dg) ; if (error()) goto 100
-         call my(kpoints(x_lattice(cr),lg,dg),kp) ; if (error()) goto 100
+         call my(point_group(sg,parity=.true.),dg) ; if ( error() ) goto 900
+         call my(kpoints(x_lattice(cr),lg,dg),kp) ; if ( error() ) goto 900
 
          call diary(cr)
          call diary(lg)
@@ -72,7 +73,7 @@
          call glean(thy(dg))
          call glean(thy(kp))
 
-100      if ( error("Exit check_kpoints") ) continue
+900      if ( error("Exiting check_kpoints") ) continue
          if ( .not.error() ) call stop_timer("check_kpoints: total time")
 
       end subroutine
