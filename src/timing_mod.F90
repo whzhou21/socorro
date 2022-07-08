@@ -2,9 +2,9 @@
 !  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
 !  See the README file in the top-level directory.                                                                                 !
 !                                                                                                                                  !
-!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
-!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
-!  modified Berkeley Software Distribution (BSD) License.                                                                          !
+!  Copyright 2011 National Technology and Engineering Solutions of Sandia, LLC (NTESS).                                            !
+!  This software is distributed uner the modified Berkeley Software Distribution (BSD) License.                                    !
+!  Under the terms of contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights to this software.               !
 !* ------------------------------------------------------------------------------------------------------------------------------ *!
 
 #include "macros.h"
@@ -263,7 +263,7 @@ contains
    subroutine write_timers_()
 
       integer :: unit
-      character(line_len) :: fmt = '(a45,3(3x,a15))'
+      character(line_len) :: fmt = '(t4,a45,3(3x,a15))'
 
       if ( i_access( diaryfile() ) ) then
          unit = x_unit(diaryfile())
@@ -688,7 +688,7 @@ contains
       integer :: ii, ncalls
       real(double) :: cpu_time, wall_time
       character(line_len) :: name
-      character(line_len) :: fmt = '(a45,3x,i15,3x,2(f15.2,3x))'
+      character(line_len) :: fmt = '(t4,a45,3x,i15,3x,2(f15.2,3x))'
 
       ncalls = 0
       call reduce(CONFIG,MPI_SUM, timer%ncalls, ncalls)

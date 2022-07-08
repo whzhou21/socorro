@@ -2,9 +2,9 @@
 !  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
 !  See the README file in the top-level directory.                                                                                 !
 !                                                                                                                                  !
-!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
-!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
-!  modified Berkeley Software Distribution (BSD) License.                                                                          !
+!  Copyright 2011 National Technology and Engineering Solutions of Sandia, LLC (NTESS).                                            !
+!  This software is distributed uner the modified Berkeley Software Distribution (BSD) License.                                    !
+!  Under the terms of contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights to this software.               !
 !* ------------------------------------------------------------------------------------------------------------------------------ *!
 
 #include "macros.h"
@@ -22,7 +22,7 @@
       use xc_density_native_mod
       use xc_density_libxc_mod
 
-!     One datatype is defined here: type(xc_density_obj).  
+!     One datatype is defined here: type(xc_density_obj).
 
 !     xc_density_mod is a wrapper for density-dependent native and libxc exchange-correlation
 !     routines that operate on grid data.

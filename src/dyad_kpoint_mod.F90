@@ -2,9 +2,9 @@
 !  Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.                       !
 !  See the README file in the top-level directory.                                                                                 !
 !                                                                                                                                  !
-!  Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of contract DE-NA0003525     !
-!  with NTESS, the United States Government retains certain rights to this software. This software is distributed uner the         !
-!  modified Berkeley Software Distribution (BSD) License.                                                                          !
+!  Copyright 2011 National Technology and Engineering Solutions of Sandia, LLC (NTESS).                                            !
+!  This software is distributed uner the modified Berkeley Software Distribution (BSD) License.                                    !
+!  Under the terms of contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights to this software.               !
 !* ------------------------------------------------------------------------------------------------------------------------------ *!
 
 #include "macros.h"
@@ -18,7 +18,7 @@
 !     then the action of the dyad_kpoint_obj defined by V and W on X is given by (VW' + WV')X, where "'" indicates the
 !     transpose of the preceding matrix.  Dyads may either contain data or be empty.  Calling the apply() function on an
 !     empty dyad_kpoint is an error.
-!     
+!
 
       use kind_mod
       use error_mod
