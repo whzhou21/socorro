@@ -1,28 +1,50 @@
-// Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms
-// of Contract DE-NA0003525 with NTESS, the U.S. Government retains certains rights to this software.
+/* ---------------------------------------------------------------------------------------------------------------------------------
+   Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.
+   See the README file in the top-level directory.
 
-#include <stdlib.h>
-#include <stdio.h>
+   Copyright 2011 National Technology and Engineering Solutions of Sandia, LLC (NTESS).
+   This software is distributed uner the modified Berkeley Software Distribution (BSD) License.
+   Under the terms of contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights to this software.
+--------------------------------------------------------------------------------------------------------------------------------- */
+
+/* 3d FFT and data remapping functions
+
+   Original author: Steve Plimpton, Sandia National Laboratories
+   Original code: Parallel FFT Package - 1998, 1999
+*/
+
 #include <math.h>
 #include <mpi.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#ifdef NO_UNDERSCORE
-# define FTN(x) x
-#elif  DOUBLE_UNDERSCORE
-# define FTN(x) x##__
-#else
-# define FTN(x) x##_
-#endif
+/* ------------------------------------------------------------------ */
 
 #define MIN(A,B) ((A) < (B)) ? (A) : (B)
 #define MAX(A,B) ((A) > (B)) ? (A) : (B)
 
-/* parallel pack functions - 1998, 1999
+#ifdef  NO_UNDERSCORE
+#define FTN(x) x
+#elif   DOUBLE_UNDERSCORE
+#define FTN(x) x##__
+#else
+#define FTN(x) x##_
+#endif
 
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
+#if (MPI_VERSION == 1)
+#define FOR_MPI_COMM MPI_Comm
+#else
+#define FOR_MPI_COMM MPI_Fint
+#endif
+
+#if !defined(PACK_POINTER) && !defined(PACK_MEMCPY)
+#define PACK_ARRAY
+#endif
+
+#define FFT_FFTW
+#define FFT_PRECISION 2
+
+/* ------------------------------------------------------------------ */
 
 /* loop counters for doing a pack/unpack */
 
@@ -45,13 +67,6 @@ void unpack_3d_permute1_n(double *, double *, struct pack_plan_3d *);
 void unpack_3d_permute2_1(double *, double *, struct pack_plan_3d *);
 void unpack_3d_permute2_2(double *, double *, struct pack_plan_3d *);
 void unpack_3d_permute2_n(double *, double *, struct pack_plan_3d *);
-
-/* parallel remap functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
 
 /* details of how to do a 3d remap */
 
@@ -93,11 +108,6 @@ struct extent_3d {
 };
 
 /* function prototypes */
-#if (MPI_VERSION == 1)     // Handle MPI version issues
-#define FOR_MPI_COMM MPI_Comm
-#else
-#define FOR_MPI_COMM MPI_Fint
-#endif
 
 void remap_3d_cfunc(double *, double *, double *, struct remap_plan_3d *);
 struct remap_plan_3d *remap_3d_create_plan_cfunc(MPI_Comm, 
@@ -117,20 +127,6 @@ int remap_3d_collide(struct extent_3d *,
 #define MPI_DOUBLE_PRECISION MPI_DOUBLE
 
 #endif
-
-/* parallel FFT functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
-/* User-settable FFT precision */
-
-/* FFT_PRECISION = 1 is single-precision complex (4-byte real, 4-byte imag) */
-/* FFT_PRECISION = 2 is double-precision complex (8-byte real, 8-byte imag) */
-
-#define FFT_PRECISION 2
 
 /* ------------------------------------------------------------------------- */
 
@@ -278,15 +274,6 @@ void fft_3d_destroy_plan_cfunc(struct fft_plan_3d *);
 void factor(int, int *, int *);
 void bifactor(int, int *, int *);
 
-/* machine specifics */
-
-/* parallel FFT functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
 /* ------------------------------------------------------------------- */
 /* F77 wrappers on fft */
 
@@ -303,7 +290,6 @@ void FTN(fft_3d_ip)(FFT_DATA *inout,
 {
   fft_3d_cfunc(inout,inout,*flag,*plan);
 }
-
 
 /* ------------------------------------------------------------------- */
 /* F77 wrapper on fft_create_plan */
@@ -1557,7 +1543,6 @@ plan->send_mallocd = 0; // Initialize as false
   }
   else
     plan->sendbuf = NULL;
-  
 
 /* if requested, allocate internal scratch space for recvs,
    only need it if I will receive any data (including self) */
@@ -1582,16 +1567,11 @@ plan->send_mallocd = 0; // Initialize as false
   return plan;
 }
 
-/* ------------------------------------------------------------------- */
-/* Destroy a 3d remap plan */
-
-/* Arguments:
-
-   plan         plan returned by previous call to remap_3d_create_plan
-*/
+/* ---------------------------------------------------------------------
+   Destroy a 3d remap plan
+--------------------------------------------------------------------- */
 
 void remap_3d_destroy_plan_cfunc(struct remap_plan_3d *plan)
-
 {
   /* free MPI communicator */
 
@@ -1609,7 +1589,7 @@ void remap_3d_destroy_plan_cfunc(struct remap_plan_3d *plan)
 
     if (plan->sendbuf != NULL)
       free(plan->sendbuf);
-    
+
   }
 
 //  if (plan->nrecv) {
@@ -1629,16 +1609,14 @@ void remap_3d_destroy_plan_cfunc(struct remap_plan_3d *plan)
   free(plan);
 }
 
-/* ------------------------------------------------------------------- */
-/* collide 2 sets of indices to determine overlap */
-
-/* compare bounds of block1 with block2 to see if they overlap
+/* ----------------------------------------------------------------------
+   collide 2 sets of indices to determine overlap
+   compare bounds of block1 with block2 to see if they overlap
    return 1 if they do and put bounds of overlapping section in overlap
-   return 0 if they do not overlap */
+   return 0 if they do not overlap
+------------------------------------------------------------------------- */
 
-int remap_3d_collide(struct extent_3d *block1, struct extent_3d *block2,
-		     struct extent_3d *overlap)
-
+int remap_3d_collide(struct extent_3d *block1, struct extent_3d *block2, struct extent_3d *overlap)
 {
   overlap->ilo = MAX(block1->ilo,block2->ilo);
   overlap->ihi = MIN(block1->ihi,block2->ihi);
@@ -1646,8 +1624,8 @@ int remap_3d_collide(struct extent_3d *block1, struct extent_3d *block2,
   overlap->jhi = MIN(block1->jhi,block2->jhi);
   overlap->klo = MAX(block1->klo,block2->klo);
   overlap->khi = MIN(block1->khi,block2->khi);
-  
-  if (overlap->ilo > overlap->ihi || 
+
+  if (overlap->ilo > overlap->ihi ||
       overlap->jlo > overlap->jhi ||
       overlap->klo > overlap->khi) return 0;
 
@@ -1658,41 +1636,25 @@ int remap_3d_collide(struct extent_3d *block1, struct extent_3d *block2,
   return 1;
 }
 
-/* parallel pack functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
-#if !defined(PACK_POINTER) && !defined(PACK_MEMCPY)
-#define PACK_ARRAY
-#endif
-
-/* ------------------------------------------------------------------- */
-/* Pack and unpack functions:
+/* ---------------------------------------------------------------------
+   Pack and unpack functions:
 
    pack routines copy strided values from data into contiguous locs in buf
    unpack routines copy contiguous values from buf into strided locs in data
-   different versions of unpack depending on permutation
-     and # of values/element
-   PACK_ARRAY routines work via array indices (default)
-   PACK_POINTER routines work via pointers
-   PACK_MEMCPY routines work via pointers and memcpy function
-*/
-/* ------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------- */
-/* pack/unpack with array indices */
-/* ------------------------------------------------------------------- */
+   different versions of unpack depending on permutation and # of values/element
+      PACK_ARRAY    methods work via array indices (default)
+      PACK_POINTER  methods work via pointers
+      PACK_MEMCPY   methods work via pointers and memcpy function
+                    no memcpy version of unpack_permute methods, just use POINTER versions
+--------------------------------------------------------------------- */
 
 #ifdef PACK_ARRAY
 
-/* ------------------------------------------------------------------- */
-/* pack from data -> buf */
+/* ---------------------------------------------------------------------
+   pack from data -> buf
+--------------------------------------------------------------------- */
 
 void pack_3d(double *data, double *buf, struct pack_plan_3d *plan)
-
 {
   register int in,out,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane,plane;
@@ -1708,17 +1670,18 @@ void pack_3d(double *data, double *buf, struct pack_plan_3d *plan)
     plane = slow*nstride_plane;
     for (mid = 0; mid < nmid; mid++) {
       out = plane + mid*nstride_line;
-      for (fast = 0; fast < nfast; fast++)
-	buf[in++] = data[out++];
+      for (fast = 0; fast < nfast; fast++) {
+        buf[in++] = data[out++];
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data
+--------------------------------------------------------------------- */
 
 void unpack_3d(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane,plane;
@@ -1734,17 +1697,18 @@ void unpack_3d(double *buf, double *data, struct pack_plan_3d *plan)
     plane = slow*nstride_plane;
     for (mid = 0; mid < nmid; mid++) {
       in = plane + mid*nstride_line;
-      for (fast = 0; fast < nfast; fast++)
-	data[in++] = buf[out++];
+      for (fast = 0; fast < nfast; fast++) {
+        data[in++] = buf[out++];
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_1(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane,plane;
@@ -1760,17 +1724,18 @@ void unpack_3d_permute1_1(double *buf, double *data, struct pack_plan_3d *plan)
     plane = slow*nstride_line;
     for (mid = 0; mid < nmid; mid++) {
       in = plane + mid;
-      for (fast = 0; fast < nfast; fast++, in += nstride_plane)
-	data[in] = buf[out++];
+      for (fast = 0; fast < nfast; fast++, in += nstride_plane) {
+        data[in] = buf[out++];
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_2(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane,plane;
@@ -1787,18 +1752,18 @@ void unpack_3d_permute1_2(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       in = plane + 2*mid;
       for (fast = 0; fast < nfast; fast++, in += nstride_plane) {
-	data[in] = buf[out++];
-	data[in+1] = buf[out++];
+        data[in] = buf[out++];
+        data[in+1] = buf[out++];
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_n(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,iqty,instart,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane,plane,nqty;
@@ -1816,18 +1781,20 @@ void unpack_3d_permute1_n(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       instart = plane + nqty*mid;
       for (fast = 0; fast < nfast; fast++, instart += nstride_plane) {
-	in = instart;
-	for (iqty = 0; iqty < nqty; iqty++) data[in++] = buf[out++];
+        in = instart;
+        for (iqty = 0; iqty < nqty; iqty++) {
+          data[in++] = buf[out++];
+        }
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_1(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane;
@@ -1842,17 +1809,18 @@ void unpack_3d_permute2_1(double *buf, double *data, struct pack_plan_3d *plan)
   for (slow = 0; slow < nslow; slow++) {
     for (mid = 0; mid < nmid; mid++) {
       in = slow + mid*nstride_plane;
-      for (fast = 0; fast < nfast; fast++, in += nstride_line)
-	data[in] = buf[out++];
+      for (fast = 0; fast < nfast; fast++, in += nstride_line) {
+        data[in] = buf[out++];
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_2(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane;
@@ -1868,18 +1836,18 @@ void unpack_3d_permute2_2(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       in = 2*slow + mid*nstride_plane;
       for (fast = 0; fast < nfast; fast++, in += nstride_line) {
-	data[in] = buf[out++];
-	data[in+1] = buf[out++];
+        data[in] = buf[out++];
+        data[in+1] = buf[out++];
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register int in,out,iqty,instart,fast,mid,slow;
   register int nfast,nmid,nslow,nstride_line,nstride_plane,nqty;
@@ -1896,26 +1864,23 @@ void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       instart = nqty*slow + mid*nstride_plane;
       for (fast = 0; fast < nfast; fast++, instart += nstride_line) {
-	in = instart;
-	for (iqty = 0; iqty < nqty; iqty++) data[in++] = buf[out++];
+        in = instart;
+        for (iqty = 0; iqty < nqty; iqty++) {
+          data[in++] = buf[out++];
+        }
       }
     }
   }
 }
 
 #endif
-
-/* ------------------------------------------------------------------- */
-/* pack/unpack with pointers */
-/* ------------------------------------------------------------------- */
-
 #ifdef PACK_POINTER
 
-/* ------------------------------------------------------------------- */
-/* pack from data -> buf */
+/* --------------------------------------------------------------------
+   pack from data -> buf
+--------------------------------------------------------------------- */
 
 void pack_3d(double *data, double *buf, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -1933,17 +1898,18 @@ void pack_3d(double *data, double *buf, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       begin = &(data[plane+mid*nstride_line]);
       end = begin + nfast;
-      for (out = begin; out < end; out++)
-	*(in++) = *out;
+      for (out = begin; out < end; out++) {
+        *(in++) = *out;
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data
+--------------------------------------------------------------------- */
 
 void unpack_3d(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -1961,17 +1927,18 @@ void unpack_3d(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       begin = &(data[plane+mid*nstride_line]);
       end = begin + nfast;
-      for (in = begin; in < end; in++)
-	*in = *(out++);
+      for (in = begin; in < end; in++) {
+        *in = *(out++);
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_1(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -1989,17 +1956,18 @@ void unpack_3d_permute1_1(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       begin = &(data[plane+mid]);
       end = begin + nfast*nstride_plane;
-      for (in = begin; in < end; in += nstride_plane)
-	*in = *(out++);
+      for (in = begin; in < end; in += nstride_plane) {
+        *in = *(out++);
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_2(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2018,18 +1986,18 @@ void unpack_3d_permute1_2(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[plane+2*mid]);
       end = begin + nfast*nstride_plane;
       for (in = begin; in < end; in += nstride_plane) {
-	*in = *(out++);
-	*(in+1) = *(out++);
+        *in = *(out++);
+        *(in+1) = *(out++);
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_n(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*instart,*begin,*end;
   register int iqty,mid,slow;
@@ -2049,18 +2017,20 @@ void unpack_3d_permute1_n(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[plane+nqty*mid]);
       end = begin + nfast*nstride_plane;
       for (instart = begin; instart < end; instart += nstride_plane) {
-	in = instart;
-	for (iqty = 0; iqty < nqty; iqty++) *(in++) = *(out++);
+        in = instart;
+        for (iqty = 0; iqty < nqty; iqty++) {
+          *(in++) = *(out++);
+        }
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_1(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2077,17 +2047,18 @@ void unpack_3d_permute2_1(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       begin = &(data[slow+mid*nstride_plane]);
       end = begin + nfast*nstride_line;
-      for (in = begin; in < end; in += nstride_line)
-	*in = *(out++);
+      for (in = begin; in < end; in += nstride_line) {
+        *in = *(out++);
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_2(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2105,18 +2076,18 @@ void unpack_3d_permute2_2(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[2*slow+mid*nstride_plane]);
       end = begin + nfast*nstride_line;
       for (in = begin; in < end; in += nstride_line) {
-	*in = *(out++);
-	*(in+1) = *(out++);
+        *in = *(out++);
+        *(in+1) = *(out++);
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*instart,*begin,*end;
   register int iqty,mid,slow;
@@ -2135,28 +2106,23 @@ void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[nqty*slow+mid*nstride_plane]);
       end = begin + nfast*nstride_line;
       for (instart = begin; instart < end; instart += nstride_line) {
-	in = instart;
-	for (iqty = 0; iqty < nqty; iqty++) *(in++) = *(out++);
+        in = instart;
+        for (iqty = 0; iqty < nqty; iqty++) {
+          *(in++) = *(out++);
+        }
       }
     }
   }
 }
 
 #endif
-
-/* ------------------------------------------------------------------- */
-/* pack/unpack with pointers and memcpy function 
-   no memcpy version of unpack_permute routines,
-     just use PACK_POINTER versions */
-/* ------------------------------------------------------------------- */
-
 #ifdef PACK_MEMCPY
 
-/* ------------------------------------------------------------------- */
-/* pack from data -> buf */
+/* ---------------------------------------------------------------------
+   pack from data -> buf
+--------------------------------------------------------------------- */
 
 void pack_3d(double *data, double *buf, struct pack_plan_3d *plan)
-
 {
   register double *in,*out;
   register int mid,slow,size;
@@ -2180,11 +2146,11 @@ void pack_3d(double *data, double *buf, struct pack_plan_3d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data
+--------------------------------------------------------------------- */
 
 void unpack_3d(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out;
   register int mid,slow,size;
@@ -2208,11 +2174,11 @@ void unpack_3d(double *buf, double *data, struct pack_plan_3d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_1(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2230,17 +2196,18 @@ void unpack_3d_permute1_1(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       begin = &(data[plane+mid]);
       end = begin + nfast*nstride_plane;
-      for (in = begin; in < end; in += nstride_plane)
-	*in = *(out++);
+      for (in = begin; in < end; in += nstride_plane) {
+        *in = *(out++);
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_2(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2259,18 +2226,18 @@ void unpack_3d_permute1_2(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[plane+2*mid]);
       end = begin + nfast*nstride_plane;
       for (in = begin; in < end; in += nstride_plane) {
-	*in = *(out++);
-	*(in+1) = *(out++);
+        *in = *(out++);
+        *(in+1) = *(out++);
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, one axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute1_n(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*instart,*begin,*end;
   register int iqty,mid,slow;
@@ -2290,18 +2257,20 @@ void unpack_3d_permute1_n(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[plane+nqty*mid]);
       end = begin + nfast*nstride_plane;
       for (instart = begin; instart < end; instart += nstride_plane) {
-	in = instart;
-	for (iqty = 0; iqty < nqty; iqty++) *(in++) = *(out++);
+        in = instart;
+        for (iqty = 0; iqty < nqty; iqty++) {
+          *(in++) = *(out++);
+        }
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_1(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2318,17 +2287,18 @@ void unpack_3d_permute2_1(double *buf, double *data, struct pack_plan_3d *plan)
     for (mid = 0; mid < nmid; mid++) {
       begin = &(data[slow+mid*nstride_plane]);
       end = begin + nfast*nstride_line;
-      for (in = begin; in < end; in += nstride_line)
-	*in = *(out++);
+      for (in = begin; in < end; in += nstride_line) {
+        *in = *(out++);
+      }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_2(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int mid,slow;
@@ -2346,18 +2316,18 @@ void unpack_3d_permute2_2(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[2*slow+mid*nstride_plane]);
       end = begin + nfast*nstride_line;
       for (in = begin; in < end; in += nstride_line) {
-	*in = *(out++);
-	*(in+1) = *(out++);
+        *in = *(out++);
+        *(in+1) = *(out++);
       }
     }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, two axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, two axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
-
 {
   register double *in,*out,*instart,*begin,*end;
   register int iqty,mid,slow;
@@ -2376,8 +2346,10 @@ void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
       begin = &(data[nqty*slow+mid*nstride_plane]);
       end = begin + nfast*nstride_line;
       for (instart = begin; instart < end; instart += nstride_line) {
-	in = instart;
-	for (iqty = 0; iqty < nqty; iqty++) *(in++) = *(out++);
+        in = instart;
+        for (iqty = 0; iqty < nqty; iqty++) {
+          *(in++) = *(out++);
+        }
       }
     }
   }
@@ -2385,18 +2357,11 @@ void unpack_3d_permute2_n(double *buf, double *data, struct pack_plan_3d *plan)
 
 #endif
 
-/* parallel FFT functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
-/* ------------------------------------------------------------------- */
-/* recursively divide n into small factors, return them in list */
+/* ---------------------------------------------------------------------
+   recursively divide n into small factors, return them in list
+--------------------------------------------------------------------- */
 
 void factor(int n, int *num, int *list)
-
 {
   if (n == 1) {
     return;
@@ -2438,12 +2403,11 @@ void factor(int n, int *num, int *list)
   }
 }
 
-
-/* ------------------------------------------------------------------- */
-/* divide n into 2 factors of as equal size as possible */
+/* ---------------------------------------------------------------------
+   divide n into 2 factors of as equal size as possible
+--------------------------------------------------------------------- */
 
 void bifactor(int n, int *factor1, int *factor2)
-
 {
   int n1,n2,facmax;
 
@@ -2458,3 +2422,5 @@ void bifactor(int n, int *factor1, int *factor2)
     }
   }
 }
+
+/* ------------------------------------------------------------------ */

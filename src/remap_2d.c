@@ -1,41 +1,92 @@
-// Copyright 2011 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms
-// of Contract DE-NA0003525 with NTESS, the U.S. Government retains certains rights to this software.
+/* ---------------------------------------------------------------------------------------------------------------------------------
+   Socorro is a plane-wave density functional theory code for solid-state electronic structure calculations.
+   See the README file in the top-level directory.
 
-/* 2d remapping */
+   Copyright 2011 National Technology and Engineering Solutions of Sandia, LLC (NTESS).
+   This software is distributed uner the modified Berkeley Software Distribution (BSD) License.
+   Under the terms of contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights to this software.
+--------------------------------------------------------------------------------------------------------------------------------- */
 
-/* parallel pack functions - 1998, 1999
+/* 2d data remapping functions
 
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
+   Original author: Steve Plimpton, Sandia National Laboratories
+   Original code: Parallel FFT Package - 1998, 1999
 */
 
-#include <stdlib.h>
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi.h>
 
-#ifdef NO_UNDERSCORE
-# define FTN(x) x
-#elif  DOUBLE_UNDERSCORE
-# define FTN(x) x##__
+/* ------------------------------------------------------------------ */
+
+#define MIN(A,B) ((A) < (B)) ? (A) : (B)
+#define MAX(A,B) ((A) > (B)) ? (A) : (B)
+
+#ifdef  NO_UNDERSCORE
+#define FTN(x) x
+#elif   DOUBLE_UNDERSCORE
+#define FTN(x) x##__
 #else
-# define FTN(x) x##_
+#define FTN(x) x##_
 #endif
 
-/* Timing info */
+#if (MPI_VERSION == 1)
+#define FOR_MPI_COMM MPI_Comm
+#else
+#define FOR_MPI_COMM MPI_Fint
+#endif
+
+#if !defined(PACK_POINTER) && !defined(PACK_MEMCPY)
+#define PACK_ARRAY
+#endif
+
+/* ------------------------------------------------------------------ */
+
+// Timing info
+
 double recv_time, send_time, waitany_time;
 
-/* loop counters for doing a pack/unpack */
+// Collision between 2 regions
 
-struct pack_plan_2d {
-  int nfast;                 /* # of elements in fast index */
-  int nslow;                 /* # of elements in slow index */
-  int nstride;               /* stride between succesive slow indices */
-  int nqty;                  /* # of values/element */
+struct extent_2d {
+  int ilo,ihi,isize;
+  int jlo,jhi,jsize;
 };
 
-/* function prototypes */
+// Loop counters for performing a pack/unpack
+
+struct pack_plan_2d {
+  int nfast;                         /* # of elements in fast index */
+  int nslow;                         /* # of elements in slow index */
+  int nstride;                       /* stride between succesive slow indices */
+  int nqty;                          /* # of values/element */
+};
+
+// Details of how to perform a 2d remap
+
+struct remap_plan_2d {
+  double *sendbuf;                   /* buffer for MPI sends */
+  double *scratch;                   /* scratch buffer for MPI recvs */
+  void (*pack)();                    /* which pack function to use */
+  void (*unpack)();                  /* which unpack function to use */
+  int *send_offset;                  /* extraction loc for each send */
+  int *send_size;                    /* size of each send message */
+  int *send_proc;                    /* proc to send each message to */
+  struct pack_plan_2d *packplan;     /* pack plan for each send message */
+  int *recv_offset;                  /* insertion loc for each recv */
+  int *recv_size;                    /* size of each recv message */
+  int *recv_proc;                    /* proc to recv each message from */
+  int *recv_bufloc;                  /* offset in scratch buf for each recv */
+  MPI_Request *request;              /* MPI request for each posted recv */
+  struct pack_plan_2d *unpackplan;   /* unpack plan for each recv message */
+  int nrecv;                         /* # of recvs from other procs */
+  int nsend;                         /* # of sends to other procs */
+  int self;                          /* whether I send/recv with myself */
+  int memory;                        /* user provides scratch space or not */
+  MPI_Comm comm;                     /* group of procs performing remap */
+};
+
+// Function prototypes for the pack/unpack routines
 
 void pack_2d(double *, double *, struct pack_plan_2d *);
 void unpack_2d(double *, double *, struct pack_plan_2d *);
@@ -43,131 +94,61 @@ void unpack_2d_permute_1(double *, double *, struct pack_plan_2d *);
 void unpack_2d_permute_2(double *, double *, struct pack_plan_2d *);
 void unpack_2d_permute_n(double *, double *, struct pack_plan_2d *);
 
-/* parallel remap functions - 1998, 1999
+// Function prototypes for the remap routines
 
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
-/* details of how to do a 2d remap */
-
-struct remap_plan_2d {
-  double *sendbuf;                  /* buffer for MPI sends */
-  double *scratch;                  /* scratch buffer for MPI recvs */
-  void (*pack)();                   /* which pack function to use */
-  void (*unpack)();                 /* which unpack function to use */
-  int *send_offset;                 /* extraction loc for each send */
-  int *send_size;                   /* size of each send message */
-  int *send_proc;                   /* proc to send each message to */
-  struct pack_plan_2d *packplan;    /* pack plan for each send message */
-  int *recv_offset;                 /* insertion loc for each recv */
-  int *recv_size;                   /* size of each recv message */
-  int *recv_proc;                   /* proc to recv each message from */
-  int *recv_bufloc;                 /* offset in scratch buf for each recv */
-  MPI_Request *request;             /* MPI request for each posted recv */
-  struct pack_plan_2d *unpackplan;  /* unpack plan for each recv message */
-  int nrecv;                        /* # of recvs from other procs */
-  int nsend;                        /* # of sends to other procs */
-  int self;                         /* whether I send/recv with myself */
-  int memory;                       /* user provides scratch space or not */
-  MPI_Comm comm;                    /* group of procs performing remap */
-};
-
-/* collision between 2 regions */
-
-struct extent_2d {
-  int ilo,ihi,isize;
-  int jlo,jhi,jsize;
-};
-
-/* function prototypes */
-
-#if (MPI_VERSION == 1)     // Handle MPI version issues
-#define FOR_MPI_COMM MPI_Comm
-#else
-#define FOR_MPI_COMM MPI_Fint
-#endif
-
-void remap_2d_cfunc(double *, double *, double *, struct remap_plan_2d *);
 struct remap_plan_2d *remap_2d_create_plan_cfunc(MPI_Comm,
-  int, int, int, int, int, int, int, int,
-  int, int, int, int);
+  int, int, int, int, int, int, int, int, int, int, int, int);
+void remap_2d_cfunc(double *, double *, double *, struct remap_plan_2d *);
 void remap_2d_destroy_plan_cfunc(struct remap_plan_2d *);
-int remap_2d_collide(struct extent_2d *, 
-		     struct extent_2d *, struct extent_2d *);
-
-/* machine specifics */
-
-/* parallel remap functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
+int remap_2d_collide(struct extent_2d *, struct extent_2d *, struct extent_2d *);
 
 /* ------------------------------------------------------------------- */
-/* F77 wrapper on remap */
 
-void FTN(remap_2d)(double *in, double *out, double *buf,
-	       struct remap_plan_2d **plan)
-
-{
-  remap_2d_cfunc(in,out,buf,*plan);
-}
-
-/* ------------------------------------------------------------------- */
-/* F77 wrapper on remap_create_plan */
+// Fortran wrapper on remap_2d_create_plan_cfunc
 
 void FTN(remap_2d_create_plan)(
-       FOR_MPI_COMM *for_comm,
-       int *in_ilo, int *in_ihi, int *in_jlo, int *in_jhi,
-       int *out_ilo, int *out_ihi, int *out_jlo, int *out_jhi,
-       int *nqty, int *permute, int *memory, int *precision,
-       struct remap_plan_2d **plan)
-
+         FOR_MPI_COMM *for_comm,
+         int *in_ilo, int *in_ihi, int *in_jlo, int *in_jhi,
+         int *out_ilo, int *out_ihi, int *out_jlo, int *out_jhi,
+         int *nqty, int *permute, int *memory, int *precision,
+         struct remap_plan_2d **plan)
 {
   int me;
   MPI_Comm comm;
 
-#if (MPI_VERSION == 1)      //Pass the comm correctly
+#if (MPI_VERSION == 1)
   comm = *for_comm;
 #else
   comm = MPI_Comm_f2c(*for_comm);
 #endif
 
-
-/* convert F77 indices to C */
+  // Create plan for performing a 2d remap
+  // Note: Convert Fortran indices to C
 
   *plan = remap_2d_create_plan_cfunc(comm,
-			       *in_ilo-1,*in_ihi-1,*in_jlo-1,*in_jhi-1,
-			       *out_ilo-1,*out_ihi-1,*out_jlo-1,*out_jhi-1,
-			       *nqty, *permute, *memory, *precision);
+                                     *in_ilo-1,*in_ihi-1,*in_jlo-1,*in_jhi-1,
+                                     *out_ilo-1,*out_ihi-1,*out_jlo-1,*out_jhi-1,
+                                     *nqty, *permute, *memory, *precision);
+
   if (*plan == NULL) {
     MPI_Comm_rank(comm,&me);
     printf("ERROR: REMAP 2d plan is NULL on proc %d\n",me);
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* F77 wrapper on remap_destroy_plan */
+// Fortran wrapper on remap_2d_cfunc
+
+void FTN(remap_2d)(double *in, double *out, double *buf, struct remap_plan_2d **plan)
+{
+  remap_2d_cfunc(in,out,buf,*plan);
+}
+
+// Fortran wrapper on remap_2d_destroy_plan_cfunc
 
 void FTN(remap_2d_destroy_plan)(struct remap_plan_2d **plan)
-
 {
   remap_2d_destroy_plan_cfunc(*plan);
 }
-
-
-/* parallel remap functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
-#define MIN(A,B) ((A) < (B)) ? (A) : (B)
-#define MAX(A,B) ((A) > (B)) ? (A) : (B)
 
 /* ------------------------------------------------------------------- */
 /* Data layout for 2d remaps:
@@ -179,9 +160,9 @@ void FTN(remap_2d_destroy_plan)(struct remap_plan_2d **plan)
    my subsection must not overlap with any other proc's subsection,
      i.e. the union of all proc's input (or output) subsections must
      exactly tile the global Nfast x Nslow data set
-   when called from C, all subsection indices are 
+   when called from C, all subsection indices are
      C-style from 0 to N-1 where N = Nfast or Nslow
-   when called from F77, all subsection indices are 
+   when called from F77, all subsection indices are
      F77-style from 1 to N where N = Nfast or Nslow
    a proc can own 0 elements on input or output
      by specifying hi index < lo index
@@ -207,68 +188,56 @@ void FTN(remap_2d_destroy_plan)(struct remap_plan_2d **plan)
    plan         plan returned by previous call to remap_2d_create_plan
 */
 
-void remap_2d_cfunc(double *in, double *out, double *buf,
-	      struct remap_plan_2d *plan)
-
+void remap_2d_cfunc(double *in, double *out, double *buf, struct remap_plan_2d *plan)
 {
   MPI_Status status;
   int i,isend,irecv;
   double *scratch;
   double st, et;
 
-  if (plan->memory == 0)
+  if (plan->memory == 0) {
     scratch = buf;
-  else
+  }
+  else {
     scratch = plan->scratch;
+  }
 
-/* post all recvs into scratch space */
+  // post all recvs into scratch space
 
-  st = MPI_Wtime(); 
-  for (irecv = 0; irecv < plan->nrecv; irecv++)
+  st = MPI_Wtime();
+  for (irecv = 0; irecv < plan->nrecv; irecv++) {
     MPI_Irecv(&scratch[plan->recv_bufloc[irecv]],plan->recv_size[irecv],
-	      MPI_DOUBLE_PRECISION,plan->recv_proc[irecv],0,
-	      plan->comm,&plan->request[irecv]);
+              MPI_DOUBLE_PRECISION,plan->recv_proc[irecv],0,plan->comm,&plan->request[irecv]);
+  }
   recv_time = recv_time + MPI_Wtime() - st;
 
-/* send all messages to other procs */
+  // send all messages to other procs
 
-  st = MPI_Wtime(); 
+  st = MPI_Wtime();
   for (isend = 0; isend < plan->nsend; isend++) {
-    plan->pack(&in[plan->send_offset[isend]],
-	       plan->sendbuf,&plan->packplan[isend]);
-    MPI_Send(plan->sendbuf,plan->send_size[isend],MPI_DOUBLE_PRECISION,
-	     plan->send_proc[isend],0,plan->comm);
-  }       
+    plan->pack(&in[plan->send_offset[isend]],plan->sendbuf,&plan->packplan[isend]);
+    MPI_Send(plan->sendbuf,plan->send_size[isend],MPI_DOUBLE_PRECISION,plan->send_proc[isend],0,plan->comm);
+  }
   send_time = send_time + MPI_Wtime() - st;
 
-/* copy in -> scratch -> out for self data */
+  // copy in -> scratch -> out for self data
 
   if (plan->self) {
     isend = plan->nsend;
     irecv = plan->nrecv;
-    plan->pack(&in[plan->send_offset[isend]],
-	       &scratch[plan->recv_bufloc[irecv]],
-	       &plan->packplan[isend]);
-    plan->unpack(&scratch[plan->recv_bufloc[irecv]],
-		 &out[plan->recv_offset[irecv]],&plan->unpackplan[irecv]);
+    plan->pack(&in[plan->send_offset[isend]],&scratch[plan->recv_bufloc[irecv]],&plan->packplan[isend]);
+    plan->unpack(&scratch[plan->recv_bufloc[irecv]],&out[plan->recv_offset[irecv]],&plan->unpackplan[irecv]);
   }
 
-/* unpack all messages from scratch -> out */
+  // unpack all messages from scratch -> out
 
   st = MPI_Wtime();
   for (i = 0; i < plan->nrecv; i++) {
     MPI_Waitany(plan->nrecv,plan->request,&irecv,&status);
-    plan->unpack(&scratch[plan->recv_bufloc[irecv]],
-		 &out[plan->recv_offset[irecv]],&plan->unpackplan[irecv]);
+    plan->unpack(&scratch[plan->recv_bufloc[irecv]],&out[plan->recv_offset[irecv]],&plan->unpackplan[irecv]);
   }
 
   waitany_time = waitany_time + MPI_Wtime() - st;
-
-  /*
-    printf("remad_2d: Timing info - RECV=%lf * SEND=%lf * WAITANY=%lf\n",
-  	 recv_time, send_time, waitany_time);
-  */
-
 }
 
 /* ------------------------------------------------------------------- */
@@ -293,15 +262,13 @@ void remap_2d_cfunc(double *in, double *out, double *buf,
 			  2 = double precision (8 bytes per datum)
 */
 
-struct remap_plan_2d *remap_2d_create_plan_cfunc(
-       MPI_Comm comm,
+struct remap_plan_2d *remap_2d_create_plan_cfunc(MPI_Comm comm,
        int in_ilo, int in_ihi, int in_jlo, int in_jhi,
        int out_ilo, int out_ihi, int out_jlo, int out_jhi,
        int nqty, int permute, int memory, int precision)
-
 {
-  struct remap_plan_2d *plan;
   MPI_Comm newcomm;
+  struct remap_plan_2d *plan;
   struct extent_2d *array;
   struct extent_2d in,out,overlap;
   int i,iproc,nsend,nrecv,ibuf,size,me,nprocs;
@@ -420,7 +387,7 @@ struct remap_plan_2d *remap_2d_create_plan_cfunc(
     if (iproc == nprocs) iproc = 0;
     nrecv += remap_2d_collide(&out,&array[iproc],&overlap);
   }
-  
+
 /* malloc space for recv info */
 
   if (nrecv) {
@@ -472,7 +439,7 @@ struct remap_plan_2d *remap_2d_create_plan_cfunc(
       plan->recv_bufloc[nrecv] = ibuf;
 
       if (permute == 0) {
-	plan->recv_offset[nrecv] = nqty * ((overlap.jlo-out.jlo)*out.isize + 
+	plan->recv_offset[nrecv] = nqty * ((overlap.jlo-out.jlo)*out.isize +
 					  (overlap.ilo-out.ilo));
 	plan->unpackplan[nrecv].nfast = nqty*overlap.isize;
 	plan->unpackplan[nrecv].nslow = overlap.jsize;
@@ -480,7 +447,7 @@ struct remap_plan_2d *remap_2d_create_plan_cfunc(
 	plan->unpackplan[nrecv].nqty = nqty;
       }
       else {
-	plan->recv_offset[nrecv] = nqty * ((overlap.ilo-out.ilo)*out.jsize + 
+	plan->recv_offset[nrecv] = nqty * ((overlap.ilo-out.ilo)*out.jsize +
 					  (overlap.jlo-out.jlo));
 	plan->unpackplan[nrecv].nfast = overlap.isize;
 	plan->unpackplan[nrecv].nslow = overlap.jsize;
@@ -528,45 +495,35 @@ struct remap_plan_2d *remap_2d_create_plan_cfunc(
     if (plan->sendbuf == NULL) return NULL;
   }
 
-/* if requested, allocate internal scratch space for recvs,
+  /* if requested, allocate internal scratch space for recvs,
    only need it if I will receive any data (including self) */
 
   if (memory == 1) {
     if (nrecv > 0) {
       if (precision == 1)
-	plan->scratch = NULL;
+        plan->scratch = NULL;
       else
-	plan->scratch =
-	  (double *) malloc(nqty*out.isize*out.jsize*sizeof(double));
+        plan->scratch = (double *) malloc(nqty*out.isize*out.jsize*sizeof(double));
       if (plan->scratch == NULL) return NULL;
     }
   }
 
-/* create new MPI communicator for remap */
+  // create new MPI communicator for remap
 
   MPI_Comm_dup(comm,&plan->comm);
 
-/* return pointer to plan */
+  // return pointer to plan
 
   return plan;
 }
 
-/* ------------------------------------------------------------------- */
-/* Destroy a 2d remap plan */
-
-/* Arguments:
-
-   plan         plan returned by previous call to remap_2d_create_plan
-*/
+/* ---------------------------------------------------------------------
+   Destroy a 2d remap plan
+--------------------------------------------------------------------- */
 
 void remap_2d_destroy_plan_cfunc(struct remap_plan_2d *plan)
-
 {
-  /* free MPI communicator */
-
   MPI_Comm_free(&plan->comm);
-
-  /* free internal arrays */
 
   if (plan->nsend) {
     free(plan->send_offset);
@@ -586,33 +543,23 @@ void remap_2d_destroy_plan_cfunc(struct remap_plan_2d *plan)
     if (plan->memory) free(plan->scratch);
   }
 
-  /* free plan itself */
-
   free(plan);
-
-  /*
-  printf("remad_2d: Timing info - RECV=%lf * SEND=%lf * WAITANY=%lf\n",
-	 recv_time, send_time, waitany_time);
-  */
-
 }
 
-/* ------------------------------------------------------------------- */
-/* collide 2 sets of indices to determine overlap */
-
-/* compare bounds of block1 with block2 to see if they overlap
+/* ---------------------------------------------------------------------
+   collide 2 sets of indices to determine overlap
+   compare bounds of block1 with block2 to see if they overlap
    return 1 if they do and put bounds of overlapping section in overlap
-   return 0 if they do not overlap */
+   return 0 if they do not overlap
+--------------------------------------------------------------------- */
 
-int remap_2d_collide(struct extent_2d *block1, struct extent_2d *block2,
-		     struct extent_2d *overlap)
-
+int remap_2d_collide(struct extent_2d *block1, struct extent_2d *block2, struct extent_2d *overlap)
 {
   overlap->ilo = MAX(block1->ilo,block2->ilo);
   overlap->ihi = MIN(block1->ihi,block2->ihi);
   overlap->jlo = MAX(block1->jlo,block2->jlo);
   overlap->jhi = MIN(block1->jhi,block2->jhi);
-  
+
   if (overlap->ilo > overlap->ihi || overlap->jlo > overlap->jhi) return 0;
 
   overlap->isize = overlap->ihi - overlap->ilo + 1;
@@ -621,41 +568,25 @@ int remap_2d_collide(struct extent_2d *block1, struct extent_2d *block2,
   return 1;
 }
 
-/* parallel pack functions - 1998, 1999
-
-   Steve Plimpton, MS 1111, Dept 9221, Sandia National Labs
-   (505) 845-7873
-   sjplimp@cs.sandia.gov
-*/
-
-#if !defined(PACK_POINTER) && !defined(PACK_MEMCPY)
-#define PACK_ARRAY
-#endif
-
-/* ------------------------------------------------------------------- */
-/* Pack and unpack functions:
+/* ---------------------------------------------------------------------
+   Pack and unpack functions:
 
    pack routines copy strided values from data into contiguous locs in buf
    unpack routines copy contiguous values from buf into strided locs in data
-   different versions of unpack depending on permutation
-     and # of values/element
-   PACK_ARRAY routines work via array indices (default)
-   PACK_POINTER routines work via pointers
-   PACK_MEMCPY routines work via pointers and memcpy function
-*/
-/* ------------------------------------------------------------------- */
-
-/* ------------------------------------------------------------------- */
-/* pack/unpack with array indices */
-/* ------------------------------------------------------------------- */
+   different versions of unpack depending on permutation and # of values/element
+      PACK_ARRAY    methods work via array indices (default)
+      PACK_POINTER  methods work via pointers
+      PACK_MEMCPY   methods work via pointers and memcpy function
+                    no memcpy version of unpack_permute methods, just use POINTER versions
+--------------------------------------------------------------------- */
 
 #ifdef PACK_ARRAY
 
-/* ------------------------------------------------------------------- */
-/* pack from data -> buf */
+/* ---------------------------------------------------------------------
+   pack from data -> buf
+--------------------------------------------------------------------- */
 
 void pack_2d(double *data, double *buf, struct pack_plan_2d *plan)
-
 {
   register int in,out,fast,slow;
   register int nfast,nslow,nstride;
@@ -667,16 +598,17 @@ void pack_2d(double *data, double *buf, struct pack_plan_2d *plan)
   in = 0;
   for (slow = 0; slow < nslow; slow++) {
     out = slow*nstride;
-    for (fast = 0; fast < nfast; fast++)
+    for (fast = 0; fast < nfast; fast++) {
       buf[in++] = data[out++];
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data
+--------------------------------------------------------------------- */
 
 void unpack_2d(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register int in,out,fast,slow;
   register int nfast,nslow,nstride;
@@ -688,16 +620,17 @@ void unpack_2d(double *buf, double *data, struct pack_plan_2d *plan)
   out = 0;
   for (slow = 0; slow < nslow; slow++) {
     in = slow*nstride;
-    for (fast = 0; fast < nfast; fast++)
+    for (fast = 0; fast < nfast; fast++) {
       data[in++] = buf[out++];
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_1(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register int in,out,fast,slow;
   register int nfast,nslow,nstride;
@@ -709,16 +642,17 @@ void unpack_2d_permute_1(double *buf, double *data, struct pack_plan_2d *plan)
   out = 0;
   for (slow = 0; slow < nslow; slow++) {
     in = slow;
-    for (fast = 0; fast < nfast; fast++, in += nstride)
+    for (fast = 0; fast < nfast; fast++, in += nstride) {
       data[in] = buf[out++];
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_2(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register int in,out,fast,slow;
   register int nfast,nslow,nstride;
@@ -737,11 +671,11 @@ void unpack_2d_permute_2(double *buf, double *data, struct pack_plan_2d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_n(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register int in,out,iqty,instart,fast,slow;
   register int nfast,nslow,nstride,nqty;
@@ -756,24 +690,21 @@ void unpack_2d_permute_n(double *buf, double *data, struct pack_plan_2d *plan)
     instart = nqty*slow;
     for (fast = 0; fast < nfast; fast++, instart += nstride) {
       in = instart;
-      for (iqty = 0; iqty < nqty; iqty++) data[in++] = buf[out++];
+      for (iqty = 0; iqty < nqty; iqty++) {
+        data[in++] = buf[out++];
+      }
     }
   }
 }
 
 #endif
-
-/* ------------------------------------------------------------------- */
-/* pack/unpack with pointers */
-/* ------------------------------------------------------------------- */
-
 #ifdef PACK_POINTER
 
-/* ------------------------------------------------------------------- */
-/* pack from data -> buf */
+/* ---------------------------------------------------------------------
+   pack from data -> buf
+--------------------------------------------------------------------- */
 
 void pack_2d(double *data, double *buf, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int slow;
@@ -787,16 +718,17 @@ void pack_2d(double *data, double *buf, struct pack_plan_2d *plan)
   for (slow = 0; slow < nslow; slow++) {
     begin = &(data[slow*nstride]);
     end = begin + nfast;
-    for (out = begin; out < end; out++)
+    for (out = begin; out < end; out++) {
       *(in++) = *out;
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data
+--------------------------------------------------------------------- */
 
 void unpack_2d(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int slow;
@@ -810,16 +742,17 @@ void unpack_2d(double *buf, double *data, struct pack_plan_2d *plan)
   for (slow = 0; slow < nslow; slow++) {
     begin = &(data[slow*nstride]);
     end = begin + nfast;
-    for (in = begin; in < end; in++)
+    for (in = begin; in < end; in++) {
       *in = *(out++);
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_1(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int slow;
@@ -833,16 +766,17 @@ void unpack_2d_permute_1(double *buf, double *data, struct pack_plan_2d *plan)
   for (slow = 0; slow < nslow; slow++) {
     begin = &(data[slow]);
     end = begin + nfast*nstride;
-    for (in = begin; in < end; in += nstride)
+    for (in = begin; in < end; in += nstride) {
       *in = *(out++);
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_2(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int slow;
@@ -863,11 +797,11 @@ void unpack_2d_permute_2(double *buf, double *data, struct pack_plan_2d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_n(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*instart,*begin,*end;
   register int iqty,slow;
@@ -884,26 +818,21 @@ void unpack_2d_permute_n(double *buf, double *data, struct pack_plan_2d *plan)
     end = begin + nfast*nstride;
     for (instart = begin; instart < end; instart += nstride) {
       in = instart;
-      for (iqty = 0; iqty < nqty; iqty++) *(in++) = *(out++);
+      for (iqty = 0; iqty < nqty; iqty++) {
+        *(in++) = *(out++);
+      }
     }
   }
 }
 
 #endif
-
-/* ------------------------------------------------------------------- */
-/* pack/unpack with pointers and memcpy function 
-   no memcpy version of unpack_permute routines,
-     just use PACK_POINTER versions */
-/* ------------------------------------------------------------------- */
-
 #ifdef PACK_MEMCPY
 
-/* ------------------------------------------------------------------- */
-/* pack from data -> buf */
+/* ---------------------------------------------------------------------
+   pack from data -> buf
+--------------------------------------------------------------------- */
 
 void pack_2d(double *data, double *buf, struct pack_plan_2d *plan)
-
 {
   register double *in,*out;
   register int slow,size;
@@ -921,11 +850,11 @@ void pack_2d(double *data, double *buf, struct pack_plan_2d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data
+--------------------------------------------------------------------- */
 
 void unpack_2d(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out;
   register int slow,size;
@@ -943,11 +872,11 @@ void unpack_2d(double *buf, double *data, struct pack_plan_2d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, 1 value/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, one axis permutation, 1 value/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_1(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int slow;
@@ -961,16 +890,17 @@ void unpack_2d_permute_1(double *buf, double *data, struct pack_plan_2d *plan)
   for (slow = 0; slow < nslow; slow++) {
     begin = &(data[slow]);
     end = begin + nfast*nstride;
-    for (in = begin; in < end; in += nstride)
+    for (in = begin; in < end; in += nstride) {
       *in = *(out++);
+    }
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, 2 values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, 2 values/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_2(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*begin,*end;
   register int slow;
@@ -991,11 +921,11 @@ void unpack_2d_permute_2(double *buf, double *data, struct pack_plan_2d *plan)
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* unpack from buf -> data, axis permutation, nqty values/element */
+/* ---------------------------------------------------------------------
+   unpack from buf -> data, axis permutation, nqty values/element
+--------------------------------------------------------------------- */
 
 void unpack_2d_permute_n(double *buf, double *data, struct pack_plan_2d *plan)
-
 {
   register double *in,*out,*instart,*begin,*end;
   register int iqty,slow;
@@ -1012,9 +942,13 @@ void unpack_2d_permute_n(double *buf, double *data, struct pack_plan_2d *plan)
     end = begin + nfast*nstride;
     for (instart = begin; instart < end; instart += nstride) {
       in = instart;
-      for (iqty = 0; iqty < nqty; iqty++) *(in++) = *(out++);
+      for (iqty = 0; iqty < nqty; iqty++) {
+        *(in++) = *(out++);
+      }
     }
   }
 }
 
 #endif
+
+/* ------------------------------------------------------------------- */

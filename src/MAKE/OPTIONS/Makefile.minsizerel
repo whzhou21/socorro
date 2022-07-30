@@ -6,7 +6,7 @@ FC		:= mpifort
 FC_FLAGS	:= -Os -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -Os -DFFT_FFTW
+CC_FLAGS	:= -Os
 
 CX		:= mpicxx
 CX_FLAGS	:= -Os
