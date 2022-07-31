@@ -29,6 +29,24 @@
       by specifying hi index < lo index
    on both input and output, data is stored contiguously on a processor
       with a fast-varying, mid-varying, and slow-varying index
+
+   Data layout for 3d remaps:
+
+   data set of Nfast x Nmid x Nslow elements is owned by P procs
+   each element = nqty contiguous datums
+   on input, each proc owns a subsection of the elements
+   on output, each proc will own a (presumably different) subsection
+   my subsection must not overlap with any other proc's subsection,
+      i.e. the union of all proc's input (or output) subsections must
+      exactly tile the global Nfast x Nmid x Nslow data set
+   when called from C, all subsection indices are
+      C-style from 0 to N-1 where N = Nfast or Nmid or Nslow
+   when called from F77, all subsection indices are
+      F77-style from 1 to N where N = Nfast or Nmid or Nslow
+   a proc can own 0 elements on input or output
+      by specifying hi index < lo index
+   on both input and output, data is stored contiguously on a processor
+      with a fast-varying, mid-varying, and slow-varying index
 --------------------------------------------------------------------- */
 
 #include <math.h>
@@ -68,11 +86,13 @@
 #if !defined(FFT_FFTW2)
 #define FFT_FFTW3
 #endif
+
 #ifdef  FFT_FFTW2
 #include <fftw.h>
 typedef FFTW_COMPLEX FFT_DATA;
 #define fftw_destroy_plan fftw2_destroy_plan
 #endif
+
 #ifdef  FFT_FFTW3
 #include <fftw3.h>
 typedef fftw_complex FFT_DATA;
@@ -88,18 +108,18 @@ struct extent_3d {
   int klo,khi,ksize;
 };
 
-/* loop counters for doing a pack/unpack */
+// Loop counters for performing a pack/unpack
 
 struct pack_plan_3d {
-  int nfast;                 /* # of elements in fast index */
-  int nmid;                  /* # of elements in mid index */
-  int nslow;                 /* # of elements in slow index */
-  int nstride_line;          /* stride between successive mid indices */
-  int nstride_plane;         /* stride between successive slow indices */
-  int nqty;                  /* # of values/element */
+  int nfast;                         /* # of elements in fast index */
+  int nmid;                          /* # of elements in mid index */
+  int nslow;                         /* # of elements in slow index */
+  int nstride_line;                  /* stride between successive mid indices */
+  int nstride_plane;                 /* stride between successive slow indices */
+  int nqty;                          /* # of values/element */
 };
 
-/* function prototypes */
+// Function prototypes for the pack/unpack routines
 
 void pack_3d(double *, double *, struct pack_plan_3d *);
 void unpack_3d(double *, double *, struct pack_plan_3d *);
@@ -110,66 +130,62 @@ void unpack_3d_permute2_1(double *, double *, struct pack_plan_3d *);
 void unpack_3d_permute2_2(double *, double *, struct pack_plan_3d *);
 void unpack_3d_permute2_n(double *, double *, struct pack_plan_3d *);
 
-/* details of how to do a 3d remap */
+// Details of how to perform a 3d remap
 
 struct remap_plan_3d {
-  double *sendbuf;                  /* buffer for MPI sends */
-  double *scratch;                  /* scratch buffer for MPI recvs */
-  void (*pack)();                   /* which pack function to use */
-  void (*unpack)();                 /* which unpack function to use */
-  int *send_offset;                 /* extraction loc for each send */
-  int *send_size;                   /* size of each send message */
+  double *sendbuf;                   /* buffer for MPI sends */
+  double *scratch;                   /* scratch buffer for MPI recvs */
+  void (*pack)();                    /* which pack function to use */
+  void (*unpack)();                  /* which unpack function to use */
+  int *send_offset;                  /* extraction loc for each send */
+  int *send_size;                    /* size of each send message */
   int *send_stride;
-  int *send_proc;                   /* proc to send each message to */
+  int *send_proc;                    /* proc to send each message to */
   int send_mallocd;                  /* boolean that tracks whether send the send arrays were malloc'd */
-  struct pack_plan_3d *packplan;    /* pack plan for each send message */
-  int *recv_offset;                 /* insertion loc for each recv */
-  int *recv_size;                   /* size of each recv message */
+  struct pack_plan_3d *packplan;     /* pack plan for each send message */
+  int *recv_offset;                  /* insertion loc for each recv */
+  int *recv_size;                    /* size of each recv message */
   int *recv_stride;
-  int *recv_proc;                   /* proc to recv each message from */
-  int *recv_bufloc;                 /* offset in scratch buf for each recv */
+  int *recv_proc;                    /* proc to recv each message from */
+  int *recv_bufloc;                  /* offset in scratch buf for each recv */
   int recv_mallocd;                  /* boolean that tracks whether  the receive arrays were malloc'd */
-  MPI_Request *request;             /* MPI request for each posted recv */
-  struct pack_plan_3d *unpackplan;  /* unpack plan for each recv message */
-  int nrecv;                        /* # of recvs from other procs */
-  int nsend;                        /* # of sends to other procs */
-  int self;                         /* whether I send/recv with myself */
+  MPI_Request *request;              /* MPI request for each posted recv */
+  struct pack_plan_3d *unpackplan;   /* unpack plan for each recv message */
+  int nrecv;                         /* # of recvs from other procs */
+  int nsend;                         /* # of sends to other procs */
+  int self;                          /* whether I send/recv with myself */
   int howmany;
   int in_stride;
   int out_stride;
-  int memory;                       /* user provides scratch space or not */
-  MPI_Comm comm;                    /* group of procs performing remap */
+  int memory;                        /* user provides scratch space or not */
+  MPI_Comm comm;                     /* group of procs performing remap */
 };
 
-/* function prototypes */
+// Function prototypes for the remap routines
 
-void remap_3d_cfunc(double *, double *, double *, struct remap_plan_3d *);
 struct remap_plan_3d *remap_3d_create_plan_cfunc(MPI_Comm,
-  int, int, int, int, int, int,	int, int, int, int, int, int,
-  int, int, int, int, int);
+  int, int, int, int, int, int,	int, int, int, int, int, int, int, int, int, int, int);
+void remap_3d_cfunc(double *, double *, double *, struct remap_plan_3d *);
 void remap_3d_destroy_plan_cfunc(struct remap_plan_3d *);
-int remap_3d_collide(struct extent_3d *,
-		     struct extent_3d *, struct extent_3d *);
+int remap_3d_collide(struct extent_3d *, struct extent_3d *, struct extent_3d *);
 
-/* ------------------------------------------------------------------ */
-
-/* details of how to do a 3d FFT */
+// Details of how to perform a 3d FFT
 
 struct fft_plan_3d {
-  struct remap_plan_3d *pre_plan;       /* remap from input -> 1st FFTs */
-  struct remap_plan_3d *mid1_plan;      /* remap from 1st -> 2nd FFTs */
-  struct remap_plan_3d *mid2_plan;      /* remap from 2nd -> 3rd FFTs */
-  struct remap_plan_3d *post_plan;      /* remap from 3rd FFTs -> output */
-  FFT_DATA *copy;                   /* memory for remap results (if needed) */
-  FFT_DATA *scratch;                /* scratch space for remaps */
-  int total1,total2,total3;         /* # of 1st,2nd,3rd FFTs (times length) */
-  int length1,length2,length3;      /* length of 1st,2nd,3rd FFTs */
-  int pre_target;                   /* where to put remap results */
+  struct remap_plan_3d *pre_plan;    /* remap from input -> 1st FFTs */
+  struct remap_plan_3d *mid1_plan;   /* remap from 1st -> 2nd FFTs */
+  struct remap_plan_3d *mid2_plan;   /* remap from 2nd -> 3rd FFTs */
+  struct remap_plan_3d *post_plan;   /* remap from 3rd FFTs -> output */
+  FFT_DATA *copy;                    /* memory for remap results (if needed) */
+  FFT_DATA *scratch;                 /* scratch space for remaps */
+  int total1,total2,total3;          /* # of 1st,2nd,3rd FFTs (times length) */
+  int length1,length2,length3;       /* length of 1st,2nd,3rd FFTs */
+  int pre_target;                    /* where to put remap results */
   int mid1_target,mid2_target;
-  int scaled;                       /* whether to scale FFT results */
-  int fftsize;                      /* # of values to rescale */
-  int howmany;                      /* number of contiguous ffts to perform */
-  double norm;                      /* normalization factor for rescaling */
+  int scaled;                        /* whether to scale FFT results */
+  int fftsize;                       /* # of values to rescale */
+  int howmany;                       /* number of contiguous ffts to perform */
+  double norm;                       /* normalization factor for rescaling */
   fftw_plan plan_fast_forward;
   fftw_plan plan_fast_backward;
   fftw_plan plan_mid_forward;
@@ -178,12 +194,12 @@ struct fft_plan_3d {
   fftw_plan plan_slow_backward;
 };
 
-/* function prototypes */
+// Function prototypes for the fft routines
 
+struct fft_plan_3d *fft_3d_create_plan_cfunc(MPI_Comm,
+  int, int, int, int, int, int, int, int, int,
+  int, int, int, int, int, int, int, int, int, int *);
 void fft_3d_cfunc(FFT_DATA *, FFT_DATA *, int, struct fft_plan_3d *);
-struct fft_plan_3d *fft_3d_create_plan_cfunc(MPI_Comm, int, int, int,
-  int, int, int, int, int, int, int, int, int, int, int, int,
-  int, int, int, int *);
 void fft_3d_destroy_plan_cfunc(struct fft_plan_3d *);
 void factor(int, int *, int *);
 void bifactor(int, int *, int *);
@@ -754,27 +770,6 @@ void fft_3d_destroy_plan_cfunc(struct fft_plan_3d *plan)
 
   free(plan);
 }
-
-/* ------------------------------------------------------------------- */
-/* Data layout for 3d remaps:
-
-   data set of Nfast x Nmid x Nslow elements is owned by P procs
-   each element = nqty contiguous datums
-   on input, each proc owns a subsection of the elements
-   on output, each proc will own a (presumably different) subsection
-   my subsection must not overlap with any other proc's subsection,
-     i.e. the union of all proc's input (or output) subsections must
-     exactly tile the global Nfast x Nmid x Nslow data set
-   when called from C, all subsection indices are
-     C-style from 0 to N-1 where N = Nfast or Nmid or Nslow
-   when called from F77, all subsection indices are
-     F77-style from 1 to N where N = Nfast or Nmid or Nslow
-   a proc can own 0 elements on input or output
-     by specifying hi index < lo index
-   on both input and output, data is stored contiguously on a processor
-     with a fast-varying, mid-varying, and slow-varying index
-*/
-/* ------------------------------------------------------------------- */
 
 /* ---------------------------------------------------------------------
    Perform a 3d remap
