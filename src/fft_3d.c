@@ -68,13 +68,11 @@
 #if !defined(FFT_FFTW2)
 #define FFT_FFTW3
 #endif
-
 #ifdef  FFT_FFTW2
 #include <fftw.h>
 typedef FFTW_COMPLEX FFT_DATA;
 #define fftw_destroy_plan fftw2_destroy_plan
 #endif
-
 #ifdef  FFT_FFTW3
 #include <fftw3.h>
 typedef fftw_complex FFT_DATA;
@@ -767,9 +765,9 @@ void fft_3d_destroy_plan_cfunc(struct fft_plan_3d *plan)
    my subsection must not overlap with any other proc's subsection,
      i.e. the union of all proc's input (or output) subsections must
      exactly tile the global Nfast x Nmid x Nslow data set
-   when called from C, all subsection indices are 
+   when called from C, all subsection indices are
      C-style from 0 to N-1 where N = Nfast or Nmid or Nslow
-   when called from F77, all subsection indices are 
+   when called from F77, all subsection indices are
      F77-style from 1 to N where N = Nfast or Nmid or Nslow
    a proc can own 0 elements on input or output
      by specifying hi index < lo index
@@ -778,48 +776,43 @@ void fft_3d_destroy_plan_cfunc(struct fft_plan_3d *plan)
 */
 /* ------------------------------------------------------------------- */
 
-/* ------------------------------------------------------------------- */
-/* Perform 3d remap */
+/* ---------------------------------------------------------------------
+   Perform a 3d remap
 
-/* Arguments:
+   in        starting address of input data on this proc
+   out       starting address of where output data for this proc
+                will be placed (can be same as in)
+   buf       extra memory required for remap
+             if memory=0 was used in call to remap_3d_create_plan
+                then buf must be big enough to hold output result
+                i.e. nqty * (out_ihi-out_ilo+1) * (out_jhi-out_jlo+1) * (out_khi-out_klo+1)
+	     if memory=1 was used in call to remap_3d_create_plan
+                then buf is not used, can just be a dummy pointer
+   plan      plan returned by previous call to remap_3d_create_plan
+--------------------------------------------------------------------- */
 
-   in           starting address of input data on this proc
-   out          starting address of where output data for this proc
-                  will be placed (can be same as in)
-   buf          extra memory required for remap
-                if memory=0 was used in call to remap_3d_create_plan
-		  then buf must be big enough to hold output result
-		  i.e. nqty * (out_ihi-out_ilo+1) * (out_jhi-out_jlo+1) * 
-		              (out_khi-out_klo+1)
-		if memory=1 was used in call to remap_3d_create_plan
-		  then buf is not used, can just be a dummy pointer
-   plan         plan returned by previous call to remap_3d_create_plan
-*/
-
-void remap_3d_cfunc(double *in, double *out, double *buf,
-	      struct remap_plan_3d *plan)
-
+void remap_3d_cfunc(double *in, double *out, double *buf, struct remap_plan_3d *plan)
 {
   MPI_Status status;
   int i,isend,irecv;
   double *scratch;
   int block;
 
-  if (plan->memory == 0)
+  if (plan->memory == 0) {
     scratch = buf;
-  else
+  }
+  else {
     scratch = plan->scratch;
+  }
 
-/* post all recvs into scratch space */
-  for (irecv = 0; irecv < plan->nrecv; irecv++)
-    MPI_Irecv(scratch+plan->recv_bufloc[irecv],
-	      plan->recv_size[irecv],
-	      MPI_DOUBLE_PRECISION,
-	      plan->recv_proc[irecv],0,
-	      plan->comm,
-	      &plan->request[irecv]);
+  // post all recvs into scratch space
 
-/* send all messages to other procs */
+  for (irecv = 0; irecv < plan->nrecv; irecv++) {
+    MPI_Irecv(scratch+plan->recv_bufloc[irecv],plan->recv_size[irecv],MPI_DOUBLE_PRECISION,
+              plan->recv_proc[irecv],0,plan->comm,&plan->request[irecv]);
+  }
+
+  // send all messages to other procs
 
   for (isend = 0; isend < plan->nsend; isend++) {
     for (block = 0; block < plan->howmany; block++)
@@ -830,7 +823,7 @@ void remap_3d_cfunc(double *in, double *out, double *buf,
 	     plan->send_proc[isend],0,plan->comm);
   }
 
-/* copy in -> scratch -> out for self data */
+  // copy in -> scratch -> out for self data
 
   if (plan->self) {
     isend = plan->nsend;
@@ -847,7 +840,7 @@ void remap_3d_cfunc(double *in, double *out, double *buf,
 		   &plan->unpackplan[irecv]);
   }
 
-/* unpack all messages from scratch -> out */
+  // unpack all messages from scratch -> out
 
   for (i = 0; i < plan->nrecv; i++) {
     MPI_Waitany(plan->nrecv,plan->request,&irecv,&status);
@@ -859,39 +852,33 @@ void remap_3d_cfunc(double *in, double *out, double *buf,
   }
 }
 
-/* ------------------------------------------------------------------- */
-/* Create plan for performing a 3d remap */
+/* ---------------------------------------------------------------------
+   Create plan for performing a 3d remap
 
-/* Arguments:
-
-   comm                 MPI communicator for the P procs which own the data
-   in_ilo,in_ihi        input bounds of data I own in fast index
-   in_jlo,in_jhi        input bounds of data I own in mid index
-   in_klo,in_khi        input bounds of data I own in slow index
-   out_ilo,out_ihi      output bounds of data I own in fast index
-   out_jlo,out_jhi      output bounds of data I own in mid index
-   out_klo,out_khi      output bounds of data I own in slow index
-   nqty                 # of datums per element
-   permute              permutation in storage order of indices on output
-                          0 = no permutation
-			  1 = permute once = mid->fast, slow->mid, fast->slow
-			  2 = permute twice = slow->fast, fast->mid, mid->slow
-   memory               user provides buffer memory for remap or system does
-                          0 = user provides memory
-			  1 = system provides memory
-   precision            precision of data
+   comm               MPI communicator for the P procs which own the data
+   in_ilo,in_ihi      input bounds of data I own in fast index
+   in_jlo,in_jhi      input bounds of data I own in mid index
+   in_klo,in_khi      input bounds of data I own in slow index
+   out_ilo,out_ihi    output bounds of data I own in fast index
+   out_jlo,out_jhi    output bounds of data I own in mid index
+   out_klo,out_khi    output bounds of data I own in slow index
+   nqty               # of datums per element
+   permute            permutation in storage order of indices on output
+                         0 = no permutation
+                         1 = permute once = mid->fast, slow->mid, fast->slow
+                         2 = permute twice = slow->fast, fast->mid, mid->slow
+   memory             user provides buffer memory for remap or system does
+                         0 = user provides memory
+                         1 = system provides memory
+   precision          precision of data
                           1 = single precision (4 bytes per datum)
-			  2 = double precision (8 bytes per datum)
-*/
+                          2 = double precision (8 bytes per datum)
+--------------------------------------------------------------------- */
 
-struct remap_plan_3d *remap_3d_create_plan_cfunc(
-       MPI_Comm comm,
-       int in_ilo, int in_ihi, int in_jlo, int in_jhi,
-       int in_klo, int in_khi,
-       int out_ilo, int out_ihi, int out_jlo, int out_jhi,
-       int out_klo, int out_khi,int howmany,
-       int nqty, int permute, int memory, int precision)
-
+struct remap_plan_3d *remap_3d_create_plan_cfunc(MPI_Comm comm,
+       int in_ilo, int in_ihi, int in_jlo, int in_jhi, int in_klo, int in_khi,
+       int out_ilo, int out_ihi, int out_jlo, int out_jhi, int out_klo, int out_khi,
+       int howmany, int nqty, int permute, int memory, int precision)
 {
   struct remap_plan_3d *plan;
   MPI_Comm newcomm;
@@ -899,24 +886,24 @@ struct remap_plan_3d *remap_3d_create_plan_cfunc(
   struct extent_3d in,out,overlap;
   int i,iproc,nsend,nrecv,ibuf,size,me,nprocs;
 
-/* query MPI info */
+  // query MPI info
 
   MPI_Comm_rank(comm,&me);
   MPI_Comm_size(comm,&nprocs);
 
-/* single precision not yet supported */
+  // single precision not yet supported
 
   if (precision == 1) {
     if (me == 0) printf("Single precision not supported\n");
     return NULL;
   }
 
-/* allocate memory for plan data struct */
+  // allocate memory for plan data struct
 
   plan = (struct remap_plan_3d *) malloc(sizeof(struct remap_plan_3d));
   if (plan == NULL) return NULL;
 
-/* store parameters in local data structs */
+  // store parameters in local data structs
 
   in.ilo = in_ilo;
   in.ihi = in_ihi;
@@ -946,15 +933,14 @@ struct remap_plan_3d *remap_3d_create_plan_cfunc(
   plan->out_stride = out.ksize*out.jsize*out.isize*nqty;
   plan->howmany = howmany;
 
-/* combine output extents across all procs */
+  // combine output extents across all procs
 
   array = (struct extent_3d *) malloc(nprocs*sizeof(struct extent_3d));
   if (array == NULL) return NULL;
 
-  MPI_Allgather(&out,sizeof(struct extent_3d),MPI_BYTE,
-		array,sizeof(struct extent_3d),MPI_BYTE,comm);
+  MPI_Allgather(&out,sizeof(struct extent_3d),MPI_BYTE,array,sizeof(struct extent_3d),MPI_BYTE,comm);
 
-/* count send collides, including self */
+  // count send collides, including self
 
   nsend = 0;
   iproc = me;
@@ -964,14 +950,17 @@ struct remap_plan_3d *remap_3d_create_plan_cfunc(
     nsend += remap_3d_collide(&in,&array[iproc],&overlap);
   }
 
-/* malloc space for send info */
-plan->send_mallocd = 0; // Initialize as false
+  // malloc space for send info, initialize as false
+
+  plan->send_mallocd = 0;
 
   if (nsend) {
-    if (precision == 1)
+    if (precision == 1) {
       plan->pack = NULL;
-    else
+    }
+    else {
       plan->pack = pack_3d;
+    }
 
     plan->send_mallocd = 1;
 
@@ -979,15 +968,14 @@ plan->send_mallocd = 0; // Initialize as false
     plan->send_size = (int *) malloc(nsend*sizeof(int));
     plan->send_stride = (int *) malloc(nsend*sizeof(int));
     plan->send_proc = (int *) malloc(nsend*sizeof(int));
-    plan->packplan = (struct pack_plan_3d *) 
-      malloc(nsend*sizeof(struct pack_plan_3d));
+    plan->packplan = (struct pack_plan_3d *) malloc(nsend*sizeof(struct pack_plan_3d));
 
-    if (plan->send_offset == NULL || plan->send_size == NULL || 
-	plan->send_stride == NULL || 
-	plan->send_proc == NULL || plan->packplan == NULL) return NULL;
+    if (plan->send_offset == NULL || plan->send_size == NULL ||
+        plan->send_stride == NULL || plan->send_proc == NULL ||
+        plan->packplan == NULL) return NULL;
   }
 
-/* store send info, with self as last entry */
+  // store send info, with self as last entry
 
   nsend = 0;
   iproc = me;
@@ -996,9 +984,8 @@ plan->send_mallocd = 0; // Initialize as false
     if (iproc == nprocs) iproc = 0;
     if (remap_3d_collide(&in,&array[iproc],&overlap)) {
       plan->send_proc[nsend] = iproc;
-      plan->send_offset[nsend] = nqty * 
-	((overlap.klo-in.klo)*in.jsize*in.isize + 
-	((overlap.jlo-in.jlo)*in.isize + overlap.ilo-in.ilo));
+      plan->send_offset[nsend] = nqty * ((overlap.klo-in.klo)*in.jsize*in.isize +
+                                 ((overlap.jlo-in.jlo)*in.isize + overlap.ilo-in.ilo));
       plan->packplan[nsend].nfast = nqty*overlap.isize;
       plan->packplan[nsend].nmid = overlap.jsize;
       plan->packplan[nsend].nslow = overlap.ksize;
@@ -1011,19 +998,20 @@ plan->send_mallocd = 0; // Initialize as false
     }
   }
 
-/* plan->nsend = # of sends not including self */
+  // plan->nsend = # of sends not including self
 
-  if (nsend && plan->send_proc[nsend-1] == me)
+  if (nsend && plan->send_proc[nsend-1] == me) {
     plan->nsend = nsend - 1;
-  else
+  }
+  else {
     plan->nsend = nsend;
+  }
 
-/* combine input extents across all procs */
+  // combine input extents across all procs
 
-  MPI_Allgather(&in,sizeof(struct extent_3d),MPI_BYTE,
-		array,sizeof(struct extent_3d),MPI_BYTE,comm);
+  MPI_Allgather(&in,sizeof(struct extent_3d),MPI_BYTE,array,sizeof(struct extent_3d),MPI_BYTE,comm);
 
-/* count recv collides, including self */
+  // count recv collides, including self
 
   nrecv = 0;
   iproc = me;
@@ -1033,7 +1021,8 @@ plan->send_mallocd = 0; // Initialize as false
     nrecv += remap_3d_collide(&out,&array[iproc],&overlap);
   }
 
-/* malloc space for recv info */
+  // malloc space for recv info
+
   plan->recv_mallocd = 0;
   if (nrecv) {
     if (precision == 1) {
@@ -1085,16 +1074,15 @@ plan->send_mallocd = 0; // Initialize as false
     plan->recv_proc = (int *) malloc(nrecv*sizeof(int));
     plan->recv_bufloc = (int *) malloc(nrecv*sizeof(int));
     plan->request = (MPI_Request *) malloc(nrecv*sizeof(MPI_Request));
-    plan->unpackplan = (struct pack_plan_3d *) 
-      malloc(nrecv*sizeof(struct pack_plan_3d));
+    plan->unpackplan = (struct pack_plan_3d *) malloc(nrecv*sizeof(struct pack_plan_3d));
 
-    if (plan->recv_offset == NULL || plan->recv_size == NULL || 
-	plan->recv_stride == NULL || 
-	plan->recv_proc == NULL || plan->recv_bufloc == NULL ||
-	plan->request == NULL || plan->unpackplan == NULL) return NULL;
+    if (plan->recv_offset == NULL || plan->recv_size == NULL ||
+        plan->recv_stride == NULL || plan->recv_proc == NULL ||
+        plan->recv_bufloc == NULL || plan->request == NULL ||
+        plan->unpackplan == NULL) return NULL;
   }
 
-/* store recv info, with self as last entry */
+  // store recv info, with self as last entry
 
   ibuf = 0;
   nrecv = 0;
@@ -1108,9 +1096,8 @@ plan->send_mallocd = 0; // Initialize as false
       plan->recv_bufloc[nrecv] = ibuf;
 
       if (permute == 0) {
-	plan->recv_offset[nrecv] = nqty *
-	  ((overlap.klo-out.klo)*out.jsize*out.isize +
-	   (overlap.jlo-out.jlo)*out.isize + (overlap.ilo-out.ilo));
+	plan->recv_offset[nrecv] = nqty * ((overlap.klo-out.klo)*out.jsize*out.isize +
+                                   (overlap.jlo-out.jlo)*out.isize + (overlap.ilo-out.ilo));
 	plan->unpackplan[nrecv].nfast = nqty*overlap.isize;
 	plan->unpackplan[nrecv].nmid = overlap.jsize;
 	plan->unpackplan[nrecv].nslow = overlap.ksize;
@@ -1119,9 +1106,8 @@ plan->send_mallocd = 0; // Initialize as false
 	plan->unpackplan[nrecv].nqty = nqty;
       }
       else if (permute == 1) {
-	plan->recv_offset[nrecv] = nqty *
-	  ((overlap.ilo-out.ilo)*out.ksize*out.jsize +
-	   (overlap.klo-out.klo)*out.jsize + (overlap.jlo-out.jlo));
+	plan->recv_offset[nrecv] = nqty * ((overlap.ilo-out.ilo)*out.ksize*out.jsize +
+                                   (overlap.klo-out.klo)*out.jsize + (overlap.jlo-out.jlo));
 	plan->unpackplan[nrecv].nfast = overlap.isize;
 	plan->unpackplan[nrecv].nmid = overlap.jsize;
 	plan->unpackplan[nrecv].nslow = overlap.ksize;
@@ -1130,9 +1116,8 @@ plan->send_mallocd = 0; // Initialize as false
 	plan->unpackplan[nrecv].nqty = nqty;
       }
       else {
-	plan->recv_offset[nrecv] = nqty *
-	  ((overlap.jlo-out.jlo)*out.isize*out.ksize +
-	   (overlap.ilo-out.ilo)*out.ksize + (overlap.klo-out.klo));
+	plan->recv_offset[nrecv] = nqty * ((overlap.jlo-out.jlo)*out.isize*out.ksize +
+                                   (overlap.ilo-out.ilo)*out.ksize + (overlap.klo-out.klo));
 	plan->unpackplan[nrecv].nfast = overlap.isize;
 	plan->unpackplan[nrecv].nmid = overlap.jsize;
 	plan->unpackplan[nrecv].nslow = overlap.ksize;
@@ -1148,31 +1133,36 @@ plan->send_mallocd = 0; // Initialize as false
     }
   }
 
-/* plan->nrecv = # of recvs not including self */
+  // plan->nrecv = # of recvs not including self
 
-  if (nrecv && plan->recv_proc[nrecv-1] == me)
+  if (nrecv && plan->recv_proc[nrecv-1] == me) {
     plan->nrecv = nrecv - 1;
-  else
+  }
+  else {
     plan->nrecv = nrecv;
+  }
 
-/* init remaining fields in remap plan */
+  // init remaining fields in remap plan
 
   plan->memory = memory;
 
-  if (nrecv == plan->nrecv)
+  if (nrecv == plan->nrecv) {
     plan->self = 0;
-  else
+  }
+  else {
     plan->self = 1;
+  }
 
-/* free locally malloced space */
+  // free locally malloced space
 
   free(array);
 
-/* find biggest send message (not including self) and malloc space for it */
+  // find biggest send message (not including self) and malloc space for it
 
   size = 0;
-  for (nsend = 0; nsend < plan->nsend; nsend++)
+  for (nsend = 0; nsend < plan->nsend; nsend++) {
     size = MAX(size,plan->send_size[nsend]);
+  }
 
   if (size) {
     if (precision == 1)
@@ -1181,11 +1171,12 @@ plan->send_mallocd = 0; // Initialize as false
       plan->sendbuf = (double *) malloc(size*sizeof(double));
     if (plan->sendbuf == NULL) return NULL;
   }
-  else
+  else {
     plan->sendbuf = NULL;
+  }
 
-/* if requested, allocate internal scratch space for recvs,
-   only need it if I will receive any data (including self) */
+  // if requested, allocate internal scratch space for recvs,
+  // only need it if I will receive any data (including self)
 
   if (memory == 1) {
     if (nrecv > 0) {
@@ -1198,11 +1189,11 @@ plan->send_mallocd = 0; // Initialize as false
     }
   }
 
-/* create new MPI communicator for remap */
+  // create new MPI communicator for remap
 
   MPI_Comm_dup(comm,&plan->comm);
 
-/* return pointer to plan */
+  // return pointer to plan
 
   return plan;
 }
