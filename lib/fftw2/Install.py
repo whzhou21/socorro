@@ -89,7 +89,7 @@ if cloneflag:
          f = open(buildpath+"/fftw/fftw.h.in", "r")
          contents = f.readlines()
          f.close()
-         contents.insert(23, '#define fftw_destroy_plan fftw_destroy_planK\n')
+         contents.insert(23, '#define fftw_destroy_plan fftw2_destroy_plan\n')
          f = open(buildpath+"/fftw/fftw.h.in", "w")
          contents = "".join(contents)
          f.write(contents)

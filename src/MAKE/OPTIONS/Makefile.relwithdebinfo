@@ -22,10 +22,6 @@ LD_FLAGS	:= $(FC_FLAGS) -lstdc++
 #  Libraries
 #* ---------------------------------------------------------------------
 
-FFTW2_PATH	:= ../../lib/fftw2/fftw2/bin
-FFTW2_INCS	:= -I ${FFTW2_PATH}/include
-FFTW2_LIBS	:= -L ${FFTW2_PATH}/lib -lfftw
-
 LIBXC_PATH	:= ../../lib/libxc/libxc/bin
 LIBXC_INCS	:= -I ${LIBXC_PATH}/include
 LIBXC_LIBS	:= -L ${LIBXC_PATH}/lib -lxc
@@ -53,13 +49,13 @@ SCALAPACK_LIBS	:= -L ${SCALAPACK_PATH} -lscalapack
 FC_INCS		:= $(LIBXC_INCS) $(FFTW3_INCS) $(BLAS_INCS) $(LAPACK_INCS) $(SCALAPACK_INCS)
 FCFLAGS		:= $(FC_FLAGS) $(FC_INCS)
 
-CC_INCS		:= $(FFTW2_INCS)
+CC_INCS		:= $(FFTW3_INCS)
 CCFLAGS		:= $(CC_FLAGS) $(CC_INCS)
 
 CX_INCS		:=
 CXFLAGS		:= $(CX_FLAGS) $(CX_INCS)
 
-LD_LIBS		:= $(LIBXC_LIBS) $(FFTW2_LIBS) $(FFTW3_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
+LD_LIBS		:= $(LIBXC_LIBS) $(FFTW3_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
 
 #* ---------------------------------------------------------------------
 #  Build rules: Do not edit

@@ -65,15 +65,19 @@
 #define FFT_PRECISION 2
 #endif
 
-#define FFT_FFTW2
-#ifdef  FFT_FFTW3
-#include <fftw3.h>
-typedef fftw_complex FFT_DATA;
+#if !defined(FFT_FFTW2)
+#define FFT_FFTW3
 #endif
+
 #ifdef  FFT_FFTW2
 #include <fftw.h>
 typedef FFTW_COMPLEX FFT_DATA;
-#define fftw_destroy_plan fftw_destroy_planK
+#define fftw_destroy_plan fftw2_destroy_plan
+#endif
+
+#ifdef  FFT_FFTW3
+#include <fftw3.h>
+typedef fftw_complex FFT_DATA;
 #endif
 
 /* ------------------------------------------------------------------ */
