@@ -15,30 +15,28 @@
 !     The module which holds kind info.
 
 !cod$
-
-      use cpointer_mod
-
-      implicit none
-      public
+      implicit none ; public
 
 !doc$
 
       ! Data types
 
-      integer, parameter :: single = kind(1.0e0)
-      integer, parameter :: double = kind(1.0d0)
-
-      integer, parameter :: longlong = selected_int_kind(16)
-      integer, parameter :: long = selected_int_kind(9)
-
-      integer, parameter :: sizeof_longlong = 8
-      integer, parameter :: sizeof_long     = 4
-      integer, parameter :: sizeof_single = 4
-      integer, parameter :: sizeof_double = 8
-
       integer, parameter :: tag_sz = 8
       integer, parameter :: line_len = 132
 
-!cod$
+      integer, parameter :: single = kind(1.0e0)
+      integer, parameter :: double = kind(1.0d0)
 
+      integer, parameter :: long = selected_int_kind(9)
+      integer, parameter :: longlong = selected_int_kind(16)
+
+      integer, parameter :: sizeof_single = 4
+      integer, parameter :: sizeof_double = 8
+
+      integer, parameter :: sizeof_long = 4
+      integer, parameter :: sizeof_longlong = 8
+
+      integer, parameter :: CPTR = selected_int_kind(16)
+
+!cod$
       end module
