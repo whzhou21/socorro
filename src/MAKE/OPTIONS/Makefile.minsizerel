@@ -23,24 +23,24 @@ LD_FLAGS	:= $(FC_FLAGS) -lstdc++
 #* ---------------------------------------------------------------------
 
 LIBXC_PATH	:= ../../lib/libxc/libxc/bin
-LIBXC_INCS	:= -I ${LIBXC_PATH}/include
-LIBXC_LIBS	:= -L ${LIBXC_PATH}/lib -lxc
+LIBXC_INCS	:= -I $(LIBXC_PATH)/include
+LIBXC_LIBS	:= -L $(LIBXC_PATH)/lib -lxc
 
 FFTW3_PATH	:= ../../lib/fftw3/fftw3/bin
-FFTW3_INCS	:= -I ${FFTW3_PATH}/include
-FFTW3_LIBS	:= -L ${FFTW3_PATH}/lib -lfftw3 -lfftw3_threads
+FFTW3_INCS	:= -I $(FFTW3_PATH)/include
+FFTW3_LIBS	:= -L $(FFTW3_PATH)/lib -lfftw3 -lfftw3_threads
 
 BLAS_PATH	:= ../../lib/lapack/lapack
 BLAS_INCS	:=
-BLAS_LIBS	:= -L ${BLAS_PATH} -lrefblas
+BLAS_LIBS	:= -L $(BLAS_PATH) -lrefblas
 
 LAPACK_PATH	:= ../../lib/lapack/lapack
 LAPACK_INCS	:=
-LAPACK_LIBS	:= -L ${LAPACK_PATH} -llapack
+LAPACK_LIBS	:= -L $(LAPACK_PATH) -llapack
 
 SCALAPACK_PATH	:= ../../lib/scalapack/scalapack
 SCALAPACK_INCS	:=
-SCALAPACK_LIBS	:= -L ${SCALAPACK_PATH} -lscalapack
+SCALAPACK_LIBS	:= -L $(SCALAPACK_PATH) -lscalapack
 
 #* ---------------------------------------------------------------------
 #  Combined libraries and includes: Do not edit
