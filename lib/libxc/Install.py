@@ -70,7 +70,7 @@ if cloneflag:
 
 # *** Build the library ********************************************** #
 
-cmd = 'cd %s && autoreconf -i && ./configure FC=mpifort FCFLAGS="-O3" CC=mpicc CFLAGS="-O3" --prefix=%s && make && make install' % (buildpath,libprefix)
+cmd = 'cd %s && autoreconf -i && ./configure FC=mpif90 FCFLAGS="-O3" CC=mpicc CFLAGS="-O3" --prefix=%s && make && make install' % (buildpath,libprefix)
 
 if buildflag:
    print("Building the LIBXC library ...")
