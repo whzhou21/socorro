@@ -259,7 +259,7 @@
 
          the_mpi%error = 0
 
-#ifdef   USE_OMP
+#if defined(_OPENMP)
          call MPI_Init_thread(MPI_THREAD_FUNNELED,provided,the_mpi%error)
 #else
          call MPI_Init(the_mpi%error)
@@ -332,9 +332,7 @@
 
          ! Initialize the use of OpenMP threads
 
-         the_mpi%omp_nthreads = 0
-
-#ifdef   USE_OMP
+#if defined(_OPENMP)
          call get_environment_variable("OMP_NUM_THREADS",value=val)
          select case ( trimstr( val ) )
          case ( "" )
@@ -344,6 +342,8 @@
          end select
          call MPI_Bcast(the_mpi%omp_nthreads,1,MPI_INTEGER,0,the_mpi%world_comm,the_mpi%error)
          call omp_set_num_threads(the_mpi%omp_nthreads)
+#else
+         the_mpi%omp_nthreads = 0
 #endif
 
       end subroutine

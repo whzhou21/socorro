@@ -17,7 +17,9 @@
       use diary_mod
       use timing_mod
       use point_blas_mod
+#if defined(_OPENMP)
       use omp_lib
+#endif
 
 !     This module encapsulates fast-Fourier transform routines that utilize fftw3
 !     interfaces for transforms on serial data and fftw2 interfaces for transforms
@@ -27,8 +29,7 @@
 !                      +1: q -> r  Backward tranform
 
 !cod$
-      implicit none
-      private
+      implicit none ; private
 
       include 'fftw3.f'
 
@@ -106,12 +107,12 @@
 !doc$ subroutine fft_start()
         integer :: fft_rthreads
 
+#if defined(_OPENMP)
         fft_nthreads = omp_get_max_threads()
-
         call dfftw_init_threads(fft_rthreads)
         if (error(fft_rthreads == 0,"FATAL ERROR: fft_rthreads = 0")) goto 100
-
         call dfftw_plan_with_nthreads(fft_nthreads)
+#endif
 
 100     if (error("Exit fft_mod::fft_start")) continue
 

@@ -2,7 +2,7 @@
 #  Compiler and compiler flags
 #* ---------------------------------------------------------------------
 
-FC		:= mpifort
+FC		:= mpif90
 FC_FLAGS	:= -Os -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
