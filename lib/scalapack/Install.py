@@ -70,7 +70,7 @@ if cloneflag:
 
 # *** Build the library ********************************************** #
 
-cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make lib FC=mpifort FCFLAGS="-O3 -fallow-argument-mismatch" CC=mpicc CCFLAGS="-O3 -Wno-error=implicit-function-declaration"' % (buildpath)
+cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make lib FC=mpif90 FCFLAGS="-O3 -fallow-argument-mismatch" CC=mpicc CCFLAGS="-O3 -Wno-error=implicit-function-declaration"' % (buildpath)
 
 if buildflag:
    print("Building the SCALAPACK library ...")
