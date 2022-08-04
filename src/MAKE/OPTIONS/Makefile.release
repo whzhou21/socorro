@@ -6,10 +6,10 @@ FC		:= mpif90
 FC_FLAGS	:= -O3 -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -O3
+CC_FLAGS	:= -O3 -std=c11
 
 CX		:= mpicxx
-CX_FLAGS	:= -O3
+CX_FLAGS	:= -O3 -std=c++11
 
 #* ---------------------------------------------------------------------
 #  Linker and linker flags
