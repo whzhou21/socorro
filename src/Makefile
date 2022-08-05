@@ -5,8 +5,7 @@ PYTHON	= python
 
 # ----- Definitions -------------------------------------------------- #
 
-EXE	= socorro
-
+ROOT	= socorro
 FSRC	= $(shell ls *.F90)
 CSRC	= $(shell ls *.c)
 OBJS	= $(FSRC:.F90=.o) $(CSRC:.c=.o)
@@ -17,18 +16,18 @@ LIB_DIR	= $(@:lib-%=%)
 # ----- Cleanup ------------------------------------------------------ #
 
 clean	:
-	@ echo 'Removing the object files in src ...' ; sleep 0.5s
+	@ echo 'Removing the object files in src ...'
 	@ rm -rf $(OBJ_DIR)
 
 cleanall:
-	@ echo 'Removing all build related files in src ...' ; sleep 0.5s
-	@ rm -rf $(OBJ_DIR) $(EXE) Makefile.depends
+	@ echo 'Removing all build related files in src ...'
+	@ rm -rf $(OBJ_DIR) $(ROOT) Makefile.depends
 
 # ----- Library installation ----------------------------------------- #
 
 lib-%   :
 	@ if [ -e ../lib/$(LIB_DIR)/Install.py ] ; then \
-	  echo -e "Installing ../lib/$(@:lib-%=%)\n" ; sleep 0.5s ; \
+	  echo -e "Installing ../lib/$(@:lib-%=%)\n" ; \
 	  ( cd ../lib/$(LIB_DIR) ; $(PYTHON) Install.py $(args) ) ; \
 	else \
 	  echo "Install.py file for lib $(@:lib-%=%) does not exist" ; \
@@ -40,7 +39,7 @@ f90mods	:
 	@ rm -rf Makefile.depends ; MAKE/TOOLS/f90makedep.pl $(FSRC)
 
 depends	:
-	@ echo 'Creating the module dependency list ...' ; sleep 0.5s
+	@ echo 'Creating the module dependency list ...'
 	@ make f90mods
 
 .DEFAULT:
@@ -48,7 +47,7 @@ depends	:
 	       -f MAKE/MINE/Makefile.$@ -o \
 	       -f MAKE/OPTIONS/Makefile.$@
 	@ if [ ! -d $(OBJ_DIR) ] ; then mkdir $(OBJ_DIR) ; fi
-	@ echo 'Gathering build information ...' ; sleep 0.5s
+	@ echo 'Gathering build information ...'
 	@ if [ -f MAKE/MACHINES/Makefile.$@ ] ; \
 	  then cp MAKE/MACHINES/Makefile.$@ $(OBJ_DIR)/Makefile ; fi
 	@ if [ -f MAKE/MINE/Makefile.$@ ] ; \
@@ -56,8 +55,8 @@ depends	:
 	@ if [ -f MAKE/OPTIONS/Makefile.$@ ] ; \
 	  then cp MAKE/OPTIONS/Makefile.$@ $(OBJ_DIR)/Makefile ; fi
 	@ make f90mods ; mv Makefile.depends $(OBJ_DIR)
-	@ echo 'Compiling socorro with Makefile.$@ settings ...' ; sleep 0.5s
-	@ cd $(OBJ_DIR) ; $(MAKE) "OBJ = $(OBJS)" "EXE = ../$(EXE)"
+	@ echo 'Compiling socorro with Makefile.$@ settings ...'
+	@ cd $(OBJ_DIR) ; $(MAKE) "OBJ = $(OBJS)" "EXE = ../$(ROOT)"
 
 # ----- Create a tarball of the src dir ------------------------------ #
 
