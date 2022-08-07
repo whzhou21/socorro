@@ -1056,7 +1056,7 @@ call allreduce(MOD_SCOPE,mpi_sum,check_tmp_local,check_tmp)
       !                 
       !                 m
       !                 __
-      !                 \  
+      !                 \
       !        |v(t)> = /_  ( d_j(t) )*|w_j>
       !                 j=1
       !        
