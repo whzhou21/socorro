@@ -1,26 +1,22 @@
-# *** 
+# *** Initialize package options ************************************* #
 
-set( PKG_SCALAPACK "DownloadSource" CACHE STRING "Choose the library retrieval type, options are: CMakeFindPackage DownloadSource ExistingSource" )
-set( PKG_OPTIONS CMakeFindPackage DownloadSource ExistingSource )
+set( PKG_SCALAPACK "Download" CACHE STRING "Choose the library retrieval type, options are: Download Existing Find_PKG" )
+set( PKG_OPTIONS Download Existing Find_PKG )
 set_property( CACHE PKG_SCALAPACK PROPERTY STRINGS ${PKG_OPTIONS} )
 
-# *** 
+# *** Package options ************************************************ #
 
-if ( PKG_SCALAPACK STREQUAL "CMakeFindPackage" )
+if ( PKG_SCALAPACK STREQUAL "Download" )
 
-   message( STATUS "Existing package requested - we will link to a pre-compiled SCALAPACK" )
+   message( STATUS "Download package requested - we will download, compile, and link to SCALAPACK (Version: 2.2.1)" )
 
-elseif ( PKG_SCALAPACK STREQUAL "DownloadSource" )
-
-   message( STATUS "Download package requested - we will build our own SCALAPACK" )
-   unset( PKG_SCALAPACK_PATH CACHE )
-   set( PKG_SCALAPACK_VERSION "v2.2.1" CACHE STRING "Version of the library to be downloaded (Specify a git tag)" )
+   unset( PKG_SCALAPACK_PREFIX CACHE )
 
    include( ExternalProject )
    ExternalProject_Add( scalapack
-      PREFIX            ${SOCORRO_DLC_DIR}/scalapack-${PKG_SCALAPACK_VERSION}
+      PREFIX            ${SOCORRO_DOWNLOADS_DIR}/scalapack-v2.2.1
       GIT_REPOSITORY    "https://github.com/Reference-ScaLAPACK/scalapack.git"
-      GIT_TAG           ${PKG_SCALAPACK_VERSION}
+      GIT_TAG           v2.2.1
       GIT_SHALLOW       YES
       GIT_PROGRESS      YES
       UPDATE_COMMAND    ""
@@ -35,39 +31,30 @@ elseif ( PKG_SCALAPACK STREQUAL "DownloadSource" )
    ExternalProject_Get_Property( scalapack BINARY_DIR )
 
    add_library( SOCORRO::SCALAPACK UNKNOWN IMPORTED )
-   set_target_properties( SOCORRO::SCALAPACK PROPERTIES IMPORTED_LOCATION "${BINARY_DIR}/libscalapack.a")
-   target_link_libraries( ${SOCORRO_BINARY} SOCORRO::SCALAPACK )
-   add_dependencies( SOCORRO::SCALAPACK scalapack )
-
-   target_compile_definitions( ${SOCORRO_BINARY} PRIVATE -D_USE_SCALAPACK_ )
-
-elseif ( PKG_SCALAPACK STREQUAL "ExistingSource" )
-
-   message( STATUS "Existing package requested - we will build our own SCALAPACK" )
-   unset( PKG_SCALAPACK_VERSION CACHE )
-   set( PKG_SCALAPACK_PATH "${SOCORRO_LIB_DIR}/scalapack/" CACHE STRING "Path to the top-level SCALAPACK folder to be built" )
-
-   include( ExternalProject )
-   ExternalProject_Add( scalapack
-      DOWNLOAD_COMMAND  ""
-      SOURCE_DIR        ${PKG_SCALAPACK_PATH}
-      PREFIX            ${SOCORRO_BLD_DIR}/build_scalapack
-#      CMAKE_ARGS        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-#                        -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-#                        -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
-#                        -DBUILD_TESTING=OFF
-#                        -DENABLE_FORTRAN=ON
-#                        -DENABLE_XHOST=OFF
-      INSTALL_COMMAND   ""
+   set_target_properties( SOCORRO::SCALAPACK PROPERTIES
+      IMPORTED_LOCATION "${BINARY_DIR}/libscalapack.a"
    )
-   ExternalProject_Get_Property( scalapack BINARY_DIR )
+   add_dependencies( SOCORRO::SCALAPACK scalapack )
+   target_link_libraries( ${SOCORRO_EXE} SOCORRO::SCALAPACK )
 
-#   add_library(SOCORRO::LIBXC UNKNOWN IMPORTED)
-#   set_target_properties(SOCORRO::LIBXC PROPERTIES IMPORTED_LOCATION "${BINARY_DIR}/libxc.a")
-#   target_link_libraries( ${SOCORRO_BINARY} SOCORRO::LIBXC )
-#   add_dependencies(SOCORRO::LIBXC libxc)
-   target_compile_definitions( ${SOCORRO_BINARY} PRIVATE -DUSE_SCALAPACK )
+elseif ( PKG_SCALAPACK STREQUAL "Existing" )
+
+   message( STATUS "Existing package requested - we will link to a user-specified and pre-compiled SCALAPACK" )
+
+   set( PKG_SCALAPACK_PREFIX "${SOCORRO_LIB_DIR}/scalapack/scalapack" CACHE STRING "Absolute path to the SCALAPACK installation directory" )
+
+   add_library( SOCORRO::SCALAPACK UNKNOWN IMPORTED )
+   set_target_properties( SOCORRO::SCALAPACK PROPERTIES
+      IMPORTED_LOCATION "${PKG_SCALAPACK_PREFIX}/libscalapack.a"
+   )
+   target_link_libraries( ${SOCORRO_EXE} SOCORRO::SCALAPACK )
+
+elseif ( PKG_SCALAPACK STREQUAL "Find_PKG" )
+
+   message( STATUS "Existing package requested - we will search for and link to a pre-compiled SCALAPACK" )
+
+   unset( PKG_SCALAPACK_PREFIX CACHE )
 
 endif()
 
-# *** 
+# *** End of the file ************************************************ #

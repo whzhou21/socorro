@@ -39,6 +39,7 @@ add_executable( ${SOCORRO_EXE} ${SOURCE_FILES} )
 file( GLOB SOURCE_CLIBS ${SOCORRO_SRC_DIR}/*.c )
 add_library( clib ${SOURCE_CLIBS} )
 
+add_dependencies( ${SOCORRO_EXE} clib )
 target_link_libraries( ${SOCORRO_EXE} clib )
 
 # *** Project build options ****************************************** #
@@ -93,6 +94,8 @@ if ( BUILD_WITH_OMP )
 endif()
 
 # *** Build the project with the required libraries ****************** #
+
+message( "\n" )
 
 include( Packages/FFTW3 )
 include( Packages/LIBXC )
