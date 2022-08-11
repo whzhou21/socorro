@@ -98,8 +98,8 @@ endif()
 message( "\n" )
 
 include( Packages/FFTW3 )
-include( Packages/LIBXC )
 include( Packages/LAPACK )
+include( Packages/LIBXC )
 include( Packages/SCALAPACK )
 
 # *** Print a summary of the project build configuration ************* #
