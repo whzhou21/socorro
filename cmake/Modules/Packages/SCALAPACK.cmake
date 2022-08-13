@@ -16,6 +16,7 @@ if ( PKG_SCALAPACK STREQUAL "Download" )
       set ( FC_EXTRA "-fallow-argument-mismatch" )
    endif()
 
+   include( ExternalProject )
    ExternalProject_Add( scalapack
       PREFIX            ${SOCORRO_DOWNLOADS_DIR}/scalapack-v2.2.1
       GIT_REPOSITORY    "https://github.com/Reference-ScaLAPACK/scalapack.git"
