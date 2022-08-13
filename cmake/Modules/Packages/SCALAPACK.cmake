@@ -12,7 +12,10 @@ if ( PKG_SCALAPACK STREQUAL "Download" )
 
    unset( PKG_SCALAPACK_PREFIX CACHE )
 
-   include( ExternalProject )
+   if ( CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0 )
+      set ( FC_EXTRA "-fallow-argument-mismatch" )
+   endif()
+
    ExternalProject_Add( scalapack
       PREFIX            ${SOCORRO_DOWNLOADS_DIR}/scalapack-v2.2.1
       GIT_REPOSITORY    "https://github.com/Reference-ScaLAPACK/scalapack.git"
@@ -24,7 +27,7 @@ if ( PKG_SCALAPACK STREQUAL "Download" )
       CONFIGURE_COMMAND ""
       BUILD_COMMAND     ${CMAKE_COMMAND} -E copy_if_different <SOURCE_DIR>/SLmake.inc.example <SOURCE_DIR>/SLmake.inc
       COMMAND           make lib CC=${MPI_C_COMPILER} FC=${MPI_Fortran_COMPILER}
-                        CCFLAGS+="-Wno-error=implicit-function-declaration" FCFLAGS+="-fallow-argument-mismatch"
+                        CCFLAGS+="-Wno-error=implicit-function-declaration" FCFLAGS+="${FC_EXTRA}"
       BUILD_IN_SOURCE   YES
       INSTALL_COMMAND   ""
    )
