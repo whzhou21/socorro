@@ -8,9 +8,6 @@ FC_FLAGS	:= -O2 -g -fopenmp -ffree-line-length-none -fallow-argument-mismatch
 CC		:= mpicc
 CC_FLAGS	:= -O2 -g -std=c11 -DFFT_FFTW2
 
-CX		:= mpicxx
-CX_FLAGS	:= -O2 -g -std=c++11
-
 #* ---------------------------------------------------------------------
 #  Linker and linker flags
 #* ---------------------------------------------------------------------
@@ -56,9 +53,6 @@ FCFLAGS		:= $(FC_FLAGS) $(FC_INCS)
 CC_INCS		:= $(FFTW2_INCS)
 CCFLAGS		:= $(CC_FLAGS) $(CC_INCS)
 
-CX_INCS		:=
-CXFLAGS		:= $(CX_FLAGS) $(CX_INCS)
-
 LD_LIBS		:= $(LIBXC_LIBS) $(FFTW2_LIBS) $(FFTW3_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
 
 #* ---------------------------------------------------------------------
@@ -67,16 +61,13 @@ LD_LIBS		:= $(LIBXC_LIBS) $(FFTW2_LIBS) $(FFTW3_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS
 
 vpath		%.F90 ..
 vpath		%.c ..
-vpath		%.cpp ..
+vpath		%.h ..
 
 %.o		: %.F90
-		$(FC) $(FCFLAGS) -c $< -o $@
+		$(FC) $(FCFLAGS) -c $<
 
 %.o		: %.c
-		$(CC) $(CCFLAGS) -c $< -o $@
-
-%.o		: %.cpp
-		$(CX) $(CXFLAGS) -c $< -o $@
+		$(CC) $(CCFLAGS) -c $<
 
 $(EXE)		: $(OBJ)
 		$(LD) $(LD_FLAGS) $(LD_LIBS) $(OBJ) -o $(EXE)
