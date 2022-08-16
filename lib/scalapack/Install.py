@@ -27,21 +27,24 @@ Syntax from lib dir: python Install.py -d
 Syntax from src dir: make lib-scalapack args="-d"
                  or: make lib-scalapack args="-b"
                  or: make lib-scalapack args="-c"
+                 or: make lib-scalapack args="-b -old"
 """
 
 # *** Input arguments ************************************************ #
 
 parser = ArgumentParser(prog = 'Install.py', description = "Helper script to download and build the SCALAPACK library")
 
-parser.add_argument("-d", action = "store_true", help = "download the SCALAPACK library to ../lib/scalapack") 
+parser.add_argument("-d", action = "store_true", help = "download the SCALAPACK library to ../lib/scalapack")
 parser.add_argument("-b", action = "store_true", help = "build the SCALAPACK library")
 parser.add_argument("-c", action = "store_true", help = "clean the SCALAPACK build space")
+parser.add_argument("-old", action = "store_true", help = "build without the -fallow-argument-mismatch flag")
 
 args = parser.parse_args()
 
 cloneflag = args.d
 buildflag = args.b
 cleanflag = args.c
+flagsflag = args.old
 
 clonepath = os.path.join(os.path.abspath(os.path.expanduser(".")),"scalapack")
 buildpath = clonepath
@@ -70,7 +73,10 @@ if cloneflag:
 
 # *** Build the library ********************************************** #
 
-cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make lib FC=mpif90 FCFLAGS="-O3 -fallow-argument-mismatch" CC=mpicc CCFLAGS="-O3 -Wno-error=implicit-function-declaration"' % (buildpath)
+if ( args.old ):
+   cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make lib FC=mpif90 FCFLAGS="-O3" CC=mpicc CCFLAGS="-O3 -Wno-error=implicit-function-declaration"' % (buildpath)
+else:
+   cmd = 'cd %s && cp SLmake.inc.example SLmake.inc && make lib FC=mpif90 FCFLAGS="-O3 -fallow-argument-mismatch" CC=mpicc CCFLAGS="-O3 -Wno-error=implicit-function-declaration"' % (buildpath)
 
 if buildflag:
    print("Building the SCALAPACK library ...")
