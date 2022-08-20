@@ -13,7 +13,7 @@ import os, shutil, subprocess, sys
 
 # *** Library version ************************************************ #
 
-version = "2.1.2"
+version = "4.3.4"
 
 # *** Help message *************************************************** #
 
