@@ -3,10 +3,10 @@
 #* ---------------------------------------------------------------------
 
 FC		:= mpif90
-FC_FLAGS	:= -O2 -g -fopenmp -ffree-line-length-none -fallow-argument-mismatch
+FC_FLAGS	:= -ffree-line-length-none #-fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -O2 -g -std=c11 -DFFT_FFTW2
+CC_FLAGS	:= -std=c11 -DFFT_FFTW2
 
 #* ---------------------------------------------------------------------
 #  Linker and linker flags
@@ -21,7 +21,7 @@ LD_FLAGS	:= $(FC_FLAGS) -lstdc++
 
 FFTW2_PATH	:= ../../lib/fftw2/fftw2/bin
 FFTW2_INCS	:= -I $(FFTW2_PATH)/include
-FFTW2_LIBS	:= -L $(FFTW2_PATH)/lib -lfftw
+FFTW2_LIBS	:= -L $(FFTW2_PATH)/lib -lfftw -lxcf90
 
 LIBXC_PATH	:= ../../lib/libxc/libxc/bin
 LIBXC_INCS	:= -I $(LIBXC_PATH)/include

@@ -3,10 +3,10 @@
 #* ---------------------------------------------------------------------
 
 FC		:= mpif90
-FC_FLAGS	:= -O0 -g -Wall -fopenmp -ffree-line-length-none #-fallow-argument-mismatch
+FC_FLAGS	:= -ffree-line-length-none #-fallow-argument-mismatch
 
 CC		:= mpicc
-CC_FLAGS	:= -O0 -g -std=c11
+CC_FLAGS	:= -std=c11
 
 #* ---------------------------------------------------------------------
 #  Linker and linker flags

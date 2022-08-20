@@ -3,7 +3,7 @@
 #* ---------------------------------------------------------------------
 
 FC		:= mpif90
-FC_FLAGS	:= -Os -fopenmp -ffree-line-length-none -fallow-argument-mismatch
+FC_FLAGS	:= -Os -fopenmp -ffree-line-length-none #-fallow-argument-mismatch
 
 CC		:= mpicc
 CC_FLAGS	:= -Os -std=c11
@@ -21,7 +21,7 @@ LD_FLAGS	:= $(FC_FLAGS) -lstdc++
 
 LIBXC_PATH	:= ../../lib/libxc/libxc/bin
 LIBXC_INCS	:= -I $(LIBXC_PATH)/include
-LIBXC_LIBS	:= -L $(LIBXC_PATH)/lib -lxc
+LIBXC_LIBS	:= -L $(LIBXC_PATH)/lib -lxc -lxcf90
 
 FFTW3_PATH	:= ../../lib/fftw3/fftw3/bin
 FFTW3_INCS	:= -I $(FFTW3_PATH)/include
