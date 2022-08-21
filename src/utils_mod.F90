@@ -9,102 +9,175 @@
 
 #include "macros.h"
 
-module utils_mod
+      module utils_mod
+!doc$ module utils_mod
 
-   use kind_mod
+!     Comments...
 
-   implicit none ; private
+      use kind_mod
 
-   !* Publicly available parameters and procedures
+!cod$
+      implicit none ; private
 
-   public :: basename
-   public :: num2str
-   public :: trimstr
+!doc$
+      public :: basename
+      public :: num2str
+      public :: time_and_date
+      public :: trimstr
 
-   !* Interfaces for the publicly available procedures
+!cod$
+      interface basename
+         module procedure basename_
+      end interface
 
-   interface basename
-      module procedure basename_
-   end interface basename
+      interface num2str
+         module procedure int2str_ , real2str_
+      end interface
 
-   interface num2str
-      module procedure int2str_ , real2str_
-   end interface num2str
+      interface time_and_date
+         module procedure time_and_date_
+      end interface
 
-   interface trimstr
-      module procedure trimstr_
-   end interface trimstr
+      interface trimstr
+         module procedure trimstr_
+      end interface
 
-contains
+      contains
 
+! *** Public routines
 
-   !* Method to retrieve the base filename from a path
+      function basename_( path ) result( fname )
+!doc$ function socorro()
+!        effects:
+!        errors:
+!        requires:
+!        notes:
 
-   function basename_( path ) result( fname )
+!cod$
+         character(*) :: path
+         character(:), allocatable :: fname
 
-      character(*) :: path
-      character(:), allocatable :: fname
+         character(line_len) :: str
+         integer :: i, j
+         logical :: back = .true.
 
-      character(line_len) :: str
-      integer :: i, j
-      logical :: back = .true.
+         i = index(path,"/",back) + 1
+         j = len_trim(path)
 
-      i = index(path,"/",back) + 1
-      j = len_trim(path)
+         write(str,'(a)') path(i:j)
+         fname = trimstr(str)
 
-      write(str,'(a)') path(i:j)
-      fname = trimstr(str)
+      end function basename_
 
-   end function basename_
+      function int2str_( val ) result( str )
+!doc$ function socorro()
+!        effects:
+!        errors:
+!        requires:
+!        notes:
 
+!cod$
+         integer :: val
+         character(:), allocatable :: str
 
-   !* Method to convert an integer to a string
+         character(line_len) :: tmp
 
-   function int2str_( val ) result( str )
+         write(tmp,'(i0)') val
+         str = trimstr(tmp)
 
-      integer :: val
-      character(:), allocatable :: str
+      end function int2str_
 
-      character(line_len) :: tmp
+      function real2str_( val , nd ) result( str )
+!doc$ function socorro()
+!        effects:
+!        errors:
+!        requires:
+!        notes:
 
-      write(tmp,'(i0)') val
-      str = trimstr(tmp)
+!cod$
+         real(double) :: val
+         integer, optional :: nd
+         character(:), allocatable :: str
 
-   end function int2str_
+         character(line_len) :: tmp, fmt
 
+         if (present(nd)) then
+            write(fmt,'("f128.",i0)') nd
+         else
+            write(fmt,'("f128.",i0)') 5
+         end if
 
-   !* Method to convert a real to a string
+         write(tmp,'('//trimstr(fmt)//')') val
+         str = trimstr(tmp)
 
-   function real2str_( val , nd ) result( str )
+      end function real2str_
 
-      real(double) :: val
-      integer, optional :: nd
-      character(:), allocatable :: str
+      function time_and_date_() result( r )
+!doc$ function time_and_date()
+!        effects:
+!        errors:
+!        requires:
+!        notes:
 
-      character(line_len) :: tmp, fmt
+!cod$
+         character(line_len) :: date, time, tmp
+         character(:), allocatable :: d, n, y, h, m, s, month, r
 
-      if ( present( nd ) ) then
-         write(fmt,'("f128.",i0)') nd
-      else
-         write(fmt,'("f128.",i0)') 5
-      end if
+         call date_and_time(date,time)
 
-      write(tmp,'('//trimstr(fmt)//')') val
-      str = trimstr(tmp)
+         d = trimstr(date(7:8))
+         n = trimstr(date(5:6))
+         y = trimstr(date(1:4))
 
-   end function real2str_
+         h = trimstr(time(1:2))
+         m = trimstr(time(3:4))
+         s = trimstr(time(5:6))
 
+         select case (trimstr(n))
+         case ( "01" )
+            month = "Jan"
+         case ( "02" )
+            month = "Feb"
+         case ( "03" )
+            month = "Mar"
+         case ( "04" )
+            month = "Apr"
+         case ( "05" )
+            month = "May"
+         case ( "06" )
+            month = "June"
+         case ( "07" )
+            month = "July"
+         case ( "08" )
+            month = "Aug"
+         case ( "09" )
+            month = "Sep"
+         case ( "10" )
+            month = "Oct"
+         case ( "11" )
+            month = "Nov"
+         case ( "12" )
+            month = "Dec"
+         end select
 
-   !* Method to remove any leading and trailing whitespace from a string
+         write(tmp,'(a," ",a," ",a," at ",a,":",a,":",a)') d,month,y,h,m,s
+         r = trimstr(tmp)
 
-   function trimstr_( str1 ) result ( str2 )
+      end function time_and_date_
 
-      character(*) :: str1
-      character(:), allocatable :: str2
+      function trimstr_( strin ) result( strout )
+!doc$ function socorro()
+!        effects:
+!        errors:
+!        requires:
+!        notes:
 
-      str2 = trim(adjustl(str1))
+!cod$
+         character(*) :: strin
+         character(:), allocatable :: strout
 
-   end function trimstr_
+         strout = trim(adjustl(strin))
 
+      end function trimstr_
 
-end module utils_mod
+      end module utils_mod
