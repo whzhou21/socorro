@@ -9,39 +9,43 @@
 
 #include "macros.h"
 
-module version_mod
+      module version_mod
+!doc$ module version_mod
 
-   use kind_mod
-   use utils_mod
+!     Comments ...
 
-   implicit none ; private
+      use kind_mod
+      use utils_mod
 
-   !* Tag for the current stable version of Socorro
+!cod$
+      implicit none ; private
 
-   character(line_len), parameter :: socorro_release = "(13 May 2022)"
+      character(line_len), parameter :: socorro_release = "(13 May 2022)"
 
-   !* Publicly available parameters and procedures
+!doc$
+      public :: x_version
 
-   public :: x_version
+!cod$
+      interface x_version
+         module procedure x_version_
+      end interface
 
-   !* Interfaces for the publicly available procedures
+      contains
 
-   interface x_version
-      module procedure x_version_
-   end interface x_version
+! *** Public routines
 
-contains
+      function x_version_() result( v )
+!doc$ function x_version_()
+!        effects:
+!        errors:
+!        requires:
+!        notes:
 
+!cod$
+         character(:), allocatable :: v
 
-   !* Method to retrieve the current stable version of Socorro
+         v = trimstr(socorro_release)
 
-   function x_version_() result( v )
+      end function x_version_
 
-      character(len_trim(socorro_release)) :: v
-
-      v = trimstr(socorro_release)
-
-   end function x_version_
-
-
-end module version_mod
+      end module version_mod

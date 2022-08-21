@@ -116,19 +116,8 @@
 
 !cod$
          integer :: nc, ncp, nkg, nkgp, np, nsg, nsgp, nt, un
-         character(line_len) :: date, time
-         character(:), allocatable :: dd, mo, yy, hh, mm, ss
 
          un = x_unit(diary_file)
-
-         call date_and_time(date,time)
-
-         dd = trimstr(date(7:8))
-         mo = trimstr(date(5:6))
-         yy = trimstr(date(1:4))
-         hh = trimstr(time(1:2))
-         mm = trimstr(time(3:4))
-         ss = trimstr(time(5:6))
 
          np = mpi_nprocs(WORLD)
          nt = x_nthreads()
@@ -144,8 +133,8 @@
 
          if ( i_access(diary_file) ) then
 
-            write(un,'("Socorro ",a)') trimstr(x_version())
-            write(un,'(/,t4,"Started on ",a," ",a," ",a," at ",a,":",a,":",a)') dd,mo,yy,hh,mm,ss
+            write(un,'("Socorro ",a)') x_version()
+            write(un,'(/,t4,"Started on ",a)') time_and_date()
             write(un,'(/,"Runtime environment:")')
 
             if ( nc == 1 ) then
@@ -168,9 +157,9 @@
             if ( nt == 0 ) then
                continue
             else if ( nt == 1 ) then
-               write(un,'(t4,a," OMP thread is running per MPI process")') num2str(nt)
+               write(un,'(t4,a," OMP thread is working per MPI process")') num2str(nt)
             else
-               write(un,'(t4,a, " OMP threads are running per MPI process")') num2str(nt)
+               write(un,'(t4,a, " OMP threads are working per MPI process")') num2str(nt)
             end if
 
             if ( nsg == 1 ) then
