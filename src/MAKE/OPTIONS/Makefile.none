@@ -13,19 +13,19 @@ CC_FLAGS	:= -std=c11
 #* ---------------------------------------------------------------------
 
 LD		:= $(FC)
-LD_FLAGS	:= $(FC_FLAGS) -lstdc++
+LD_FLAGS	:= $(FC_FLAGS)
 
 #* ---------------------------------------------------------------------
 #  Libraries
 #* ---------------------------------------------------------------------
 
-LIBXC_PATH	:= ../../lib/libxc/libxc/bin
-LIBXC_INCS	:= -I $(LIBXC_PATH)/include
-LIBXC_LIBS	:= -L $(LIBXC_PATH)/lib -lxc -lxcf90
-
 FFTW3_PATH	:= ../../lib/fftw3/fftw3/bin
 FFTW3_INCS	:= -I $(FFTW3_PATH)/include
 FFTW3_LIBS	:= -L $(FFTW3_PATH)/lib -lfftw3 -lfftw3_threads
+
+LIBXC_PATH	:= ../../lib/libxc/libxc/bin
+LIBXC_INCS	:= -I $(LIBXC_PATH)/include
+LIBXC_LIBS	:= -L $(LIBXC_PATH)/lib -lxcf90 -lxc
 
 BLAS_PATH	:= ../../lib/lapack/lapack
 BLAS_INCS	:=
@@ -43,13 +43,13 @@ SCALAPACK_LIBS	:= -L $(SCALAPACK_PATH) -lscalapack
 #  Combined libraries and includes: Do not edit
 #* ---------------------------------------------------------------------
 
-FC_INCS		:= $(LIBXC_INCS) $(FFTW3_INCS) $(BLAS_INCS) $(LAPACK_INCS) $(SCALAPACK_INCS)
+FC_INCS		:= $(FFTW3_INCS) $(LIBXC_INCS) $(SCALAPACK_INCS) $(LAPACK_INCS) $(BLAS_INCS)
 FCFLAGS		:= $(FC_FLAGS) $(FC_INCS)
 
 CC_INCS		:= $(FFTW3_INCS)
 CCFLAGS		:= $(CC_FLAGS) $(CC_INCS)
 
-LD_LIBS		:= $(LIBXC_LIBS) $(FFTW3_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) $(SCALAPACK_LIBS)
+LD_LIBS		:= $(FFTW3_LIBS) $(LIBXC_LIBS) $(SCALAPACK_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS)
 
 #* ---------------------------------------------------------------------
 #  Build rules: Do not edit
@@ -66,7 +66,7 @@ vpath		%.h ..
 		$(CC) $(CCFLAGS) -c $<
 
 $(EXE)		: $(OBJ)
-		$(LD) $(LD_FLAGS) $(LD_LIBS) $(OBJ) -o $(EXE)
+		$(LD) $(LD_FLAGS) $(OBJ) $(LD_LIBS) -o $(EXE)
 
 include		Makefile.depends
 
